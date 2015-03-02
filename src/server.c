@@ -1,4 +1,5 @@
 #include <iostream>
+#include "boost/asio.hpp"
 #include "components.h"
 
 using namespace std;
@@ -30,7 +31,7 @@ public:
 	 * @param  ecode Navratov kod
 	 * @return       vraci Navratov kod
 	 */
-	int stop(ecode ecode){
+	ecode stop(ecode ecode){
 		cerr << ERR_MSG[ecode] << endl;
 		exit (ecode);
 	}
@@ -40,7 +41,7 @@ public:
 	 * @param  ecode Navratov kod programu
 	 * @return       Navratov kod programu
 	 */
-	int print(ecode ecode){
+	ecode print(ecode ecode){
 		cerr << ERR_MSG[ecode] << endl;
 		return ecode;
 	}

@@ -1,4 +1,4 @@
-src: src/*
+all:
 	make -C src/
 
 run:
@@ -6,6 +6,8 @@ run:
 
 d:
 	make d -C src/
+
+doc:
 
 pack:
 
