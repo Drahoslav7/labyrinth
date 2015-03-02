@@ -3,8 +3,81 @@
 
 using namespace std;
 
+/**
+ * Trida pro zpracovani chyb
+ */
+class Err {
+private:
+	/**
+	 * Chybove hlasky
+	 */
+	string ERR_MSG[2] = {
+		"",
+		"invalid port",
+	};
+
+public:
+	/**
+	 * Navratov kody (index do ERR_MSG)
+	 */
+	enum ecode {
+		OK,
+		INVALID_PORT,
+	};
+
+	/**
+	 * Vypise chybovou hlasku na stderr a ukonci program
+	 * @param  ecode Navratov kod
+	 * @return       vraci Navratov kod
+	 */
+	int stop(ecode ecode){
+		cerr << ERR_MSG[ecode] << endl;
+		exit (ecode);
+	}
+
+	/**
+	 * Vypise chybovou hlasku na stderr
+	 * @param  ecode Navratov kod programu
+	 * @return       Navratov kod programu
+	 */
+	int print(ecode ecode){
+		cerr << ERR_MSG[ecode] << endl;
+		return ecode;
+	}
+	
+} err; // rovnou vytvorit globalni instanci tridy
+
+
+/**
+ * Vraci port zadany jako prvni argument programu
+ * nebo nulu pokud je neco spatne
+ * @param  argc 
+ * @param  argv 
+ * @return      port
+ */
+int getPort(int argc, char const *argv[]){
+	int port = 0;
+	if(argc > 1)
+		port = atoi(argv[1]);
+	return port;
+}
+
+
+/**
+ * TOTO JE MAIN
+ * @param  argc 
+ * @param  argv 
+ * @return      
+ */
 int main(int argc, char const *argv[])
 {
+
+	int port = getPort(argc, argv);
+	if(port == 0){
+		err.stop(Err::INVALID_PORT);
+	}
+
+
 	// prilad volani
 
 	// staticky
@@ -34,7 +107,7 @@ int main(int argc, char const *argv[])
 	blockB->rotate(3*LEFT);
 
 
-	Board board(9);
+	Board board(5);
 	cout << board.toString();
 
 	return 0;
