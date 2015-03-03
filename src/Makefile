@@ -1,13 +1,13 @@
-OPTS=-std=c++11 -I.
-LIBS=-L$(CURDIR)/stage/lib/ -lboost_system
+FLAGS=-std=c++11 
+LFLAGS=  -lwsock32 -lws2_32 -l boost_system
 
 labyrinth: labyrinth2015-server labyrinth2015
 
 labyrinth2015: client.c
-	g++ $(OPTS) $(LIBS) -o $@ $^ 	
+	g++ $(FLAGS) -o $@ $^ $(LFLAGS) 
 
 labyrinth2015-server: server.c
-	g++ $(OPTS) $(LIBS) -o $@ $^ 
+	g++ $(FLAGS) -o $@ $^  $(DEFS) $(LFLAGS) 
 
 run:
 	./labyrinth2015-server 1620
