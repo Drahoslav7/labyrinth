@@ -12,3 +12,4 @@ doc:
 pack:
 
 clean:
+	make clean -C src/
