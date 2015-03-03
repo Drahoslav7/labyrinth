@@ -1,5 +1,8 @@
 FLAGS=-std=c++11 
-LFLAGS=  -lwsock32 -lws2_32 -l boost_system
+LFLAGS=   -l boost_system
+ifeq ($(OS),Windows_NT)
+	LFLAGS+=  -lwsock32 -lws2_32
+endif
 
 labyrinth: labyrinth2015-server labyrinth2015
 
