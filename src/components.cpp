@@ -1,12 +1,75 @@
+#include <ctime>
+#include <boost/random.hpp>
 #include "components.h"
+
+/////////////////////////////////////////////////////////////////////////
+/// ostatni
+
+boost::random::mt19937 gen{42};
+
+int randomInt(int max){
+	gen.seed(42234);
+	return gen() % 1;
+}
+
+Shape randomShape(){
+	int i = randomInt(2);
+	switch(i){
+		case 0:
+			return Shape::I;
+			break;
+		case 1:
+			return Shape::L;
+			break;
+		case 2:
+			return Shape::T;
+	}
+
+	// 5*5 = 25
+	// 25/3 = 8.33
+	// T 8 - (9-4) 	=> 3
+	// L 8 - 4			=> 4
+	// I 8 - 0 		=> 8
+	// -> 3:4:8
+
+	// 7*7 = 49
+	// 49/3 = 16.33
+	// T 16 - (16-4) 	=> 4
+	// L 16 - 4 		=> 12
+	// I 16 - 0 		=> 16
+	// -> 4:12:16
+
+	// 9*9 = 81
+	// 81/3 = 27
+	// T 27 - (25-4)	=> 6
+	// L 27 - 4 		=> 23
+	// I 27 - 0		=> 27
+	// -> 6:23:27
+
+	// 11*11 = 121
+	// 121/3 = 40.33
+	// T 40 - (36-4)	=> 8
+	// L 40 - 4 		=> 32
+	// I 40 - 0		=> 40
+
+	// ((size/2)+1)*((size/2)+1) - 4
+
+}
+
 
 /////////////////////////////////////////////////////////////
 //  metody tridy block:
 
 //konstruktor
-Block::Block(Shape shape = Shape::I, int rotation = 0){ 
+
+// random
+Block::Block(){
+	Block(randomShape(),randomInt(3));
+}
+// nerandom
+Block::Block(Shape shape, int rotation){
 	this->shape = shape;
-	this->oriantation = 0;
+	this->orientation = 0;
 	top = left = right = bottom = false;
 	switch(shape){
 		case Shape::I:
@@ -25,8 +88,8 @@ Block::Block(Shape shape = Shape::I, int rotation = 0){
 // destruktor
 Block::rotate(int rotation){
 	bool tmp;
-	this->oriantation += rotation;
-	this->oriantation %= 4;
+	this->orientation += rotation;
+	this->orientation %= 4;
 	if(rotation > 0){ // to the left
 		while(rotation--){
 			tmp = left;
@@ -116,7 +179,7 @@ Board::Board(int size = 7){
 				continue;
 			}
 			//random
-			board[i][j] = new Block(randomShape(), randomInt(3));
+			board[i][j] = new Block;
 
 		}
 	}
@@ -152,48 +215,3 @@ std::string Board::toString(){
 	}
 	return str;
 }
-
-
-/////////////////////////////////////////////////////////////////////////
-/// ostatni
-
-int randomInt(int max){
-	return 0;
-}
-
-Shape randomShape(){
-	return Shape::O;
-
-	// 5*5 = 25
-	// 25/3 = 8.33
-	// T 8 - (9-4) 	=> 3
-	// L 8 - 4			=> 4
-	// I 8 - 0 		=> 8
-	// -> 3:4:8
-
-	// 7*7 = 49
-	// 49/3 = 16.33
-	// T 16 - (16-4) 	=> 4
-	// L 16 - 4 		=> 12
-	// I 16 - 0 		=> 16
-	// -> 4:12:16
-
-	// 9*9 = 81
-	// 81/3 = 27
-	// T 27 - (25-4)	=> 6
-	// L 27 - 4 		=> 23
-	// I 27 - 0		=> 27
-	// -> 6:23:27
-
-	// 11*11 = 121
-	// 121/3 = 40.33
-	// T 40 - (36-4)	=> 8
-	// L 40 - 4 		=> 32
-	// I 40 - 0		=> 40
-
-	// ((size/2)+1)*((size/2)+1) - 4
-
-}
-
-
-

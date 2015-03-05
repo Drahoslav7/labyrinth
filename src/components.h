@@ -7,15 +7,13 @@ enum class Shape {
 	I,
 	L,
 	T,
-	O,
+	O, // uzavreny block, nepouziva se
 };
 
-int randomInt(int);
-Shape randomShape();
 
 // policko bludiste
 class Block {
-
+private:
 	bool top;
 	bool right;
 	bool left;
@@ -23,18 +21,14 @@ class Block {
 
 	// pro ucely vykreslovani:
 	Shape shape;
-	int oriantation;
+	int orientation;
 	
 public:
 	// constructory
-	Block(){
-		Block(Shape::I,0);
-	}
-	Block(Shape shape){
-		Block(shape,0);
-	}
-	Block(Shape, int);
+	Block();
+	Block(Shape, int = 0);
 
+	// dalsi metody
 	rotate(int);
 
 	bool isTop(){

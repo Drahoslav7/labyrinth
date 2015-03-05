@@ -82,9 +82,10 @@ int main(int argc, char const *argv[])
 	// prilad volani
 
 	// staticky
-	Block blockA (Shape::T);
+	Block blockA(Shape::T,LEFT);
 
-	// cout << blockA.toString() << endl;
+
+	cout << blockA.toString() << endl;
 
 	// cout << "doprava"<< endl;
 	// blockA.rotate(RIGHT);
