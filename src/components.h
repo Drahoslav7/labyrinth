@@ -10,6 +10,12 @@ enum class Shape {
 	O, // uzavreny block, nepouziva se
 };
 
+enum class Direction {
+	LEFT,
+	RIGHT,
+	UP,
+	DOWN,
+};
 
 // policko bludiste
 class Block {
@@ -61,6 +67,10 @@ public:
 	~Board();
 
 	std::string toString();
+
+	// push pop
+	Block * shift(Direction, unsigned, Block*);
+
 };
 
 

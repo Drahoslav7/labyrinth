@@ -216,3 +216,42 @@ std::string Board::toString(){
 	}
 	return str;
 }
+
+
+Block * Board::shift(Direction to, unsigned i, Block * pushedBlock){
+	Block * poppedBlock = pushedBlock;
+	if(i >= size || i%2 == 0){ // nejde shiftovat
+		return poppedBlock;
+	}
+	if(to == Direction::RIGHT){
+		poppedBlock = board[i][size-1];
+		for (int j = size-1; j > 0 ; --j){
+			board[i][j] = board[i][j-1];
+		}
+		board[i][0] = pushedBlock;
+	}
+	if(to == Direction::LEFT){
+		poppedBlock = board[i][0];
+		for (int j = 0; j < size-1; ++j){
+			board[i][j] = board[i][j+1];
+		}
+		board[i][size-1] = pushedBlock;
+	}
+	if(to == Direction::DOWN){
+		poppedBlock = board[size-1][i];
+		for (int j = size-1; j > 0 ; --j){
+			board[j][i] = board[j-1][i];
+		}
+		board[0][i] = pushedBlock;
+	}
+	if(to == Direction::UP){
+		poppedBlock = board[0][i];
+		for (int j = 0; j < size-1; ++j){
+			board[j][i] = board[j+1][i];
+		}
+		board[size-1][i] = pushedBlock;
+	}
+
+
+	return poppedBlock;
+}

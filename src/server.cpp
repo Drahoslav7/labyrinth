@@ -79,40 +79,36 @@ int main(int argc, char const *argv[])
 	}
 
 
-	// prilad volani
 
-	// staticky
-	// Block blockA(Shape::T,LEFT);
+	// herni plocha
+	Board * board = new Board(5);
 
+	// a jeden dilek navic
+	Block * spareBlock = new Block(Shape::T, LEFT);
+	spareBlock->rotate(3*LEFT);
 
-	// cout << blockA.toString() << endl;
+	cout << board->toString() << endl;
+	cout << spareBlock->toString() << endl;
+	cout << "shift LEFT 3" << endl;
+	spareBlock = board->shift(Direction::LEFT,3,spareBlock);
 
-	// cout << "doprava"<< endl;
-	// blockA.rotate(RIGHT);
-	// cout << blockA.toString() << endl;
-	// blockA.rotate(RIGHT);
-	// cout << blockA.toString() << endl;
-	// blockA.rotate(RIGHT);
-	// cout << blockA.toString() << endl;
+	cout << board->toString() << endl;
+	cout << spareBlock->toString() << endl;
+	cout << "shift RIGHT 1" << endl;
+	spareBlock = board->shift(Direction::RIGHT,1,spareBlock);
 
-	// cout << "doleva"<< endl;
-	// blockA.rotate(LEFT);
-	// cout << blockA.toString() << endl;
-	// blockA.rotate(LEFT);
-	// cout << blockA.toString() << endl;
-	// blockA.rotate(LEFT);
-	// cout << blockA.toString() << endl;
-	// 
-	// 
-	// 
+	cout << board->toString() << endl;
+	cout << spareBlock->toString() << endl;
+	cout << "shift UP 1" << endl;
+	spareBlock = board->shift(Direction::UP,1,spareBlock);
 
-	// dynamicky
-	Block * blockB = new Block(Shape::T, LEFT);
-	blockB->rotate(3*LEFT);
+	cout << board->toString() << endl;
+	cout << spareBlock->toString() << endl;
+	cout << "shift DOWN 3" << endl;
+	spareBlock = board->shift(Direction::DOWN,3,spareBlock);
 
-
-	Board board(5);
-	cout << board.toString();
+	cout << board->toString() << endl;
+	cout << spareBlock->toString() << endl;
 
 	return 0;
 }
