@@ -5,15 +5,15 @@
 /////////////////////////////////////////////////////////////////////////
 /// ostatni
 
-boost::random::mt19937 gen{42};
+std::time_t now = std::time(0);
+boost::random::mt19937 gen{static_cast<std::uint32_t>(now)};
 
 int randomInt(int max){
-	gen.seed(42234);
-	return gen() % 1;
+	return gen() % max; // <0;max)
 }
 
 Shape randomShape(){
-	int i = randomInt(2);
+	int i = randomInt(3);
 	switch(i){
 		case 0:
 			return Shape::I;
@@ -23,7 +23,9 @@ Shape randomShape(){
 			break;
 		case 2:
 			return Shape::T;
+			break;
 	}
+	return Shape::O;
 
 	// 5*5 = 25
 	// 25/3 = 8.33
@@ -51,6 +53,7 @@ Shape randomShape(){
 	// T 40 - (36-4)	=> 8
 	// L 40 - 4 		=> 32
 	// I 40 - 0		=> 40
+	// -> 8:32:40
 
 	// ((size/2)+1)*((size/2)+1) - 4
 
@@ -63,9 +66,7 @@ Shape randomShape(){
 //konstruktor
 
 // random
-Block::Block(){
-	Block(randomShape(),randomInt(3));
-}
+Block::Block() : Block(randomShape(), randomInt(4)) {};
 // nerandom
 Block::Block(Shape shape, int rotation){
 	this->shape = shape;
@@ -201,16 +202,16 @@ std::string Board::toString(){
 	std::string str = "";
 	for (int i = 0; i < size; ++i){
 		for (int j = 0; j < size; ++j)
-				str += board[i][j]->isTop() ? "#.#" : "###";
+				str += (board[i][j])->isTop() ? "#.#" : "###";
 		str += "\n";
 		for (int j = 0; j < size; ++j){
-			str += board[i][j]->isLeft() ? "." : "#";
+			str += (board[i][j])->isLeft() ? "." : "#";
 			str += ".";
-			str += board[i][j]->isRight() ? "." : "#";
+			str += (board[i][j])->isRight() ? "." : "#";
 		}
 		str += "\n";
 		for (int j = 0; j < size; ++j)
-				str += board[i][j]->isBottom() ? "#.#" : "###";
+				str += (board[i][j])->isBottom() ? "#.#" : "###";
 		str += "\n";
 	}
 	return str;
