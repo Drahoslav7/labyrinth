@@ -1,6 +1,8 @@
 #include <ctime>
 #include <boost/random.hpp>
 #include "components.h"
+#include <iostream>
+
 
 /////////////////////////////////////////////////////////////////////////
 /// ostatni
@@ -262,7 +264,7 @@ bool Board::blocksConnection(Coords startcoords, Coords endcoords){
 	Block* endBlock = board[endcoords.x][endcoords.y];
 
 	// end je nad start blokem
-	if(startcoords.y == endcoords.y && startcoords.x-endcoords.x == 1){
+	if(startcoords.y == endcoords.y && startcoords.x - endcoords.x == 1){
 		if(startBlock->isTop() && endBlock->isBottom()){
 			return true;
 		}else{
@@ -270,7 +272,7 @@ bool Board::blocksConnection(Coords startcoords, Coords endcoords){
 		}
 	}
 	// end je pod start blokem
-	if(startcoords.y == endcoords.y && endcoords.x-startcoords.x == 1){
+	if(startcoords.y == endcoords.y && endcoords.x - startcoords.x == 1){
 		if(startBlock->isBottom() && endBlock->isTop()){
 			return true;
 		}else{
@@ -279,7 +281,7 @@ bool Board::blocksConnection(Coords startcoords, Coords endcoords){
 	}
 
 	// end je napravo od start bloku
-	if(startcoords.x == endcoords.x && endcoords.y-startcoords.y == 1){
+	if(startcoords.x == endcoords.x && endcoords.y - startcoords.y == 1){
 		if(startBlock->isRight() && endBlock->isLeft()){
 			return true;
 		}else{
@@ -288,8 +290,8 @@ bool Board::blocksConnection(Coords startcoords, Coords endcoords){
 	}
 
 	// end je nalevo od start bloku
-	if(startcoords.x == endcoords.x && startcoords.y-endcoords.y == 1){
-		if(startBlock->isRight() && endBlock->isLeft()){
+	if(startcoords.x == endcoords.x && startcoords.y - endcoords.y == 1){
+		if(startBlock->isLeft() && endBlock->isRight()){
 			return true;
 		}else{
 			return false;
@@ -330,14 +332,15 @@ bool Board::isConnected(Coords startcoords, Coords endcoords){
 		open_queue.pop_front();
 		
 		// kontrola vrchniho bloku
-		topcoords.x = actcoords.x + 1;
+		topcoords.x = actcoords.x - 1;
 		topcoords.y = actcoords.y; 
 		
-		if(topcoords.x < size){
+		if(topcoords.x >= 0){
 			if(!isInQueue(topcoords, &open_queue) && !isInQueue(topcoords, &closed_queue) && blocksConnection(topcoords, actcoords)){
 				if(topcoords == endcoords){
 					return true;
 				}
+				//std::cout << "Push TOP" << std::endl;
 				open_queue.push_back(topcoords);
 			}
 		}
@@ -351,6 +354,7 @@ bool Board::isConnected(Coords startcoords, Coords endcoords){
 				if(rightcoords == endcoords){
 					return true;
 				}
+				//std::cout << "Push RIGHT" << std::endl;
 				open_queue.push_back(rightcoords);
 			}
 		}
@@ -364,19 +368,21 @@ bool Board::isConnected(Coords startcoords, Coords endcoords){
 				if(leftcoords == endcoords){
 					return true;
 				}
+				//std::cout << "Push LEFT" << std::endl;
 				open_queue.push_back(leftcoords);
 			}
 		}
 
 		// kontrola spodniho bloku
-		bottomcoords.x = actcoords.x - 1;
+		bottomcoords.x = actcoords.x + 1;
 		bottomcoords.y = actcoords.y;
 
-		if(bottomcoords.x >= 0){
+		if(bottomcoords.x < size){
 			if(!isInQueue(bottomcoords, &open_queue) && !isInQueue(bottomcoords, &closed_queue) && blocksConnection(bottomcoords, actcoords)){
 				if(bottomcoords == endcoords){
 					return true;
 				}
+				//std::cout << "Push BOTTOM" << std::endl;
 				open_queue.push_back(bottomcoords);
 			}
 		}
