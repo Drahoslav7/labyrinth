@@ -26,37 +26,6 @@ Shape randomShape(){
 			break;
 	}
 	return Shape::O;
-
-	// 5*5 = 25
-	// 25/3 = 8.33
-	// T 8 - (9-4) 	=> 3
-	// L 8 - 4			=> 4
-	// I 8 - 0 		=> 8
-	// -> 3:4:8
-
-	// 7*7 = 49
-	// 49/3 = 16.33
-	// T 16 - (16-4) 	=> 4
-	// L 16 - 4 		=> 12
-	// I 16 - 0 		=> 16
-	// -> 4:12:16
-
-	// 9*9 = 81
-	// 81/3 = 27
-	// T 27 - (25-4)	=> 6
-	// L 27 - 4 		=> 23
-	// I 27 - 0		=> 27
-	// -> 6:23:27
-
-	// 11*11 = 121
-	// 121/3 = 40.33
-	// T 40 - (36-4)	=> 8
-	// L 40 - 4 		=> 32
-	// I 40 - 0		=> 40
-	// -> 8:32:40
-
-	// ((size/2)+1)*((size/2)+1) - 4
-
 }
 
 
@@ -69,6 +38,7 @@ Shape randomShape(){
 Block::Block() : Block(randomShape(), randomInt(4)) {};
 // nerandom
 Block::Block(Shape shape, int rotation){
+	this->item = NONE;
 	this->shape = shape;
 	this->orientation = 0;
 	top = left = right = bottom = false;
@@ -113,13 +83,13 @@ Block::rotate(int rotation){
 
 std::string Block::toString(){
 	std::string str = "";
-	str += isTop() ? "#.#" : "###" ;
+	str += isTop() ? "# #" : "###" ;
 	str += "\n";
-	str += isLeft() ? "." : "#";
-	str += ".";
-	str += isRight() ? "." : "#";
+	str += isLeft() ? " " : "#";
+	str += item ? item + '@' : ' ';
+	str += isRight() ? " " : "#";
 	str += "\n";
-	str += isBottom() ? "#.#" : "###";
+	str += isBottom() ? "# #" : "###";
 	str += "\n";
 	return str;
 }
@@ -202,16 +172,16 @@ std::string Board::toString(){
 	std::string str = "";
 	for (int i = 0; i < size; ++i){
 		for (int j = 0; j < size; ++j)
-				str += (board[i][j])->isTop() ? "#.#|" : "###|";
+				str += board[i][j]->isTop() ? "# #|" : "###|";
 		str += "\n";
 		for (int j = 0; j < size; ++j){
-			str += (board[i][j])->isLeft() ? "." : "#";
-			str += ".";
-			str += (board[i][j])->isRight() ? ".|" : "#|";
+			str += board[i][j]->isLeft() ? " " : "#";
+			str += board[i][j]->item?(board[i][j]->item + '@'):' ';
+			str += board[i][j]->isRight() ? " |" : "#|";
 		}
 		str += "\n";
 		for (int j = 0; j < size; ++j)
-				str += (board[i][j])->isBottom() ? "#.#|" : "###|";
+				str += board[i][j]->isBottom() ? "# #|" : "###|";
 		str += "\n";
 		for (int j = 0; j < size; ++j)
 				str += "---+";
@@ -219,6 +189,52 @@ std::string Board::toString(){
 	}
 	return str;
 }
+
+
+// rozmistit predmety po hracim poli
+bool Board::placeItems(std::vector<Item> * items){
+	Coords pos;
+	for(Item item : *items){
+		do {
+			pos.x = randomInt(size);
+			pos.y = randomInt(size);
+		} while(board[pos.x][pos.y]->item != NONE);
+
+		board[pos.x][pos.y]->item  = item;
+	}
+
+}
+
+
+// umisti figurku na hraci pole
+bool Board::placeFigure(Figure * figure){
+	int size = figurestack.size();
+	if(size <= 4){
+		return false;
+	}
+	figurestack.push_back(figure);
+	switch(size){
+		case 0:
+			figure->pos.x = 0;
+			figure->pos.y = 0;
+			break;
+		case 1:
+			figure->pos.x = size-1;
+			figure->pos.y = size-1;
+			break;
+		case 2:
+			figure->pos.x = 0;
+			figure->pos.y = size-1;
+			break;
+		case 3:
+			figure->pos.x = size-1;
+			figure->pos.y = 0;
+			break;
+	}
+	return true;
+
+};
+
 
 Block * Board::shift(Direction to, unsigned i, Block * pushedBlock){
 	Block * poppedBlock = pushedBlock;

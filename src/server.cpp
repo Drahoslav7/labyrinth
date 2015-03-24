@@ -82,15 +82,19 @@ int main(int argc, char const *argv[])
 
 	// herni plocha
 	Board * board = new Board(5);
+	std::vector<Item> items;
+	for (Item i = 1; i <= 12; ++i){
+		items.push_back(i);
+	}
+
+	board->placeItems(&items);
+
 
 	// a jeden dilek navic
 	Block * spareBlock = new Block(Shape::T, LEFT);
 	spareBlock->rotate(3*LEFT);
 
-	cout << board->toString() << endl;
-	cout << spareBlock->toString() << endl;
-	cout << "shift LEFT 3" << endl;
-	spareBlock = board->shift(Direction::LEFT,3,spareBlock);
+	spareBlock->item = items[2];
 
 	cout << board->toString() << endl;
 	cout << spareBlock->toString() << endl;
@@ -100,6 +104,7 @@ int main(int argc, char const *argv[])
 
 	bool result = board->isConnected(pos1, pos2);
 	cout << "Cesta je:" << result << endl;
+
 
 	return 0;
 }

@@ -1,8 +1,29 @@
 #include <string>
 #include <deque>
 
+#include <vector>
+
+typedef char Item;
+
+const Item NONE = 0;
+const Item XX = 4;
+
 const int LEFT = +1;
 const int RIGHT = -1;
+
+
+
+enum class Color {
+	BLACK,
+	WHITE,
+	GREY,
+	RED,
+	GREEN,
+	BLUE,
+	ORANGE,
+	PURPLE,
+	YELLOW,
+};
 
 enum class Shape {
 	I,
@@ -29,8 +50,10 @@ private:
 	// pro ucely vykreslovani:
 	Shape shape;
 	int orientation;
+
 	
 public:
+	Item item;
 	// constructory
 	Block();
 	Block(Shape, int = 0);
@@ -75,6 +98,13 @@ public:
 	} 
 };
 
+class Figure {
+
+	// Color color;
+public:
+	Coords pos;
+};
+
 
 // hraci deska
 class Board {
@@ -83,6 +113,7 @@ class Board {
 	int size;
 
 	bool blocksConnection(Coords, Coords);
+	std::vector<Figure *> figurestack;
 
 public:
 	Board(int);
@@ -94,6 +125,12 @@ public:
 	Block * shift(Direction, unsigned, Block*);
 
 	bool isConnected(Coords, Coords); 
+
+	// umistit itemy
+	bool placeItems(std::vector<Item> *);
+	// umisti figurku na hraci pole
+	bool placeFigure(Figure *);
+
 };
 
 
