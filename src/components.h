@@ -1,4 +1,5 @@
 #include <string>
+#include <deque>
 
 const int LEFT = +1;
 const int RIGHT = -1;
@@ -54,6 +55,25 @@ public:
 
 };
 
+//souradnice policka bludiste
+class Coords{
+public:
+	Coords(){
+		this->x = 0;
+		this->y = 0;
+	};
+
+	Coords(int x, int y){
+		this->x = x;
+		this->y = y;
+	};
+	int x;
+	int y;
+
+	bool operator==(Coords &pos2){
+		return (this->x == pos2.x && this->y == pos2.y);
+	} 
+};
 
 
 // hraci deska
@@ -61,6 +81,8 @@ class Board {
 
 	Block*** board;
 	int size;
+
+	bool blocksConnection(Coords, Coords);
 
 public:
 	Board(int);
@@ -71,6 +93,7 @@ public:
 	// push pop
 	Block * shift(Direction, unsigned, Block*);
 
+	bool isConnected(Coords, Coords); 
 };
 
 

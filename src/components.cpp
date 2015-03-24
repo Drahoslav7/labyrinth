@@ -202,21 +202,23 @@ std::string Board::toString(){
 	std::string str = "";
 	for (int i = 0; i < size; ++i){
 		for (int j = 0; j < size; ++j)
-				str += (board[i][j])->isTop() ? "#.#" : "###";
+				str += (board[i][j])->isTop() ? "#.#|" : "###|";
 		str += "\n";
 		for (int j = 0; j < size; ++j){
 			str += (board[i][j])->isLeft() ? "." : "#";
 			str += ".";
-			str += (board[i][j])->isRight() ? "." : "#";
+			str += (board[i][j])->isRight() ? ".|" : "#|";
 		}
 		str += "\n";
 		for (int j = 0; j < size; ++j)
-				str += (board[i][j])->isBottom() ? "#.#" : "###";
+				str += (board[i][j])->isBottom() ? "#.#|" : "###|";
+		str += "\n";
+		for (int j = 0; j < size; ++j)
+				str += "---+";
 		str += "\n";
 	}
 	return str;
 }
-
 
 Block * Board::shift(Direction to, unsigned i, Block * pushedBlock){
 	Block * poppedBlock = pushedBlock;
@@ -252,6 +254,136 @@ Block * Board::shift(Direction to, unsigned i, Block * pushedBlock){
 		board[size-1][i] = pushedBlock;
 	}
 
-
 	return poppedBlock;
+}
+
+bool Board::blocksConnection(Coords startcoords, Coords endcoords){
+	Block* startBlock = board[startcoords.x][startcoords.y];
+	Block* endBlock = board[endcoords.x][endcoords.y];
+
+	// end je nad start blokem
+	if(startcoords.y == endcoords.y && startcoords.x-endcoords.x == 1){
+		if(startBlock->isTop() && endBlock->isBottom()){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	// end je pod start blokem
+	if(startcoords.y == endcoords.y && endcoords.x-startcoords.x == 1){
+		if(startBlock->isBottom() && endBlock->isTop()){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	// end je napravo od start bloku
+	if(startcoords.x == endcoords.x && endcoords.y-startcoords.y == 1){
+		if(startBlock->isRight() && endBlock->isLeft()){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	// end je nalevo od start bloku
+	if(startcoords.x == endcoords.x && startcoords.y-endcoords.y == 1){
+		if(startBlock->isRight() && endBlock->isLeft()){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	return false;
+}
+
+bool isInQueue(Coords coordinates, std::deque<Coords>* queue){
+	for(auto pos : *queue){
+		if(pos == coordinates){
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool Board::isConnected(Coords startcoords, Coords endcoords){
+	std::deque<Coords> open_queue;
+	std::deque<Coords> closed_queue;
+
+	if(blocksConnection(startcoords, endcoords)){
+		return true;
+	}
+
+	open_queue.push_back(startcoords);
+
+	Coords actcoords;
+	Coords topcoords;
+	Coords rightcoords;
+	Coords leftcoords;
+	Coords bottomcoords;
+
+	while(!open_queue.empty()){
+		actcoords = open_queue.front();
+		open_queue.pop_front();
+		
+		// kontrola vrchniho bloku
+		topcoords.x = actcoords.x + 1;
+		topcoords.y = actcoords.y; 
+		
+		if(topcoords.x < size){
+			if(!isInQueue(topcoords, &open_queue) && !isInQueue(topcoords, &closed_queue) && blocksConnection(topcoords, actcoords)){
+				if(topcoords == endcoords){
+					return true;
+				}
+				open_queue.push_back(topcoords);
+			}
+		}
+
+		// kontrola praveho bloku
+		rightcoords.x = actcoords.x;
+		rightcoords.y = actcoords.y + 1;
+
+		if(rightcoords.y < size){
+			if(!isInQueue(rightcoords, &open_queue) && !isInQueue(rightcoords, &closed_queue) && blocksConnection(rightcoords, actcoords)){
+				if(rightcoords == endcoords){
+					return true;
+				}
+				open_queue.push_back(rightcoords);
+			}
+		}
+
+		// kontrola leveho bloku
+		leftcoords.x = actcoords.x;
+		leftcoords.y = actcoords.y - 1;
+
+		if(leftcoords.y >= 0){
+			if(!isInQueue(leftcoords, &open_queue) && !isInQueue(leftcoords, &closed_queue) && blocksConnection(leftcoords, actcoords)){
+				if(leftcoords == endcoords){
+					return true;
+				}
+				open_queue.push_back(leftcoords);
+			}
+		}
+
+		// kontrola spodniho bloku
+		bottomcoords.x = actcoords.x - 1;
+		bottomcoords.y = actcoords.y;
+
+		if(bottomcoords.x >= 0){
+			if(!isInQueue(bottomcoords, &open_queue) && !isInQueue(bottomcoords, &closed_queue) && blocksConnection(bottomcoords, actcoords)){
+				if(bottomcoords == endcoords){
+					return true;
+				}
+				open_queue.push_back(bottomcoords);
+			}
+		}
+
+		// nahrani do closed pole po rozvinutí uzlu
+		closed_queue.push_back(actcoords);
+	}
+
+	return false;
 }

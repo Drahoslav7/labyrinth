@@ -94,21 +94,12 @@ int main(int argc, char const *argv[])
 
 	cout << board->toString() << endl;
 	cout << spareBlock->toString() << endl;
-	cout << "shift RIGHT 1" << endl;
-	spareBlock = board->shift(Direction::RIGHT,1,spareBlock);
 
-	cout << board->toString() << endl;
-	cout << spareBlock->toString() << endl;
-	cout << "shift UP 1" << endl;
-	spareBlock = board->shift(Direction::UP,1,spareBlock);
+	Coords pos1(1,2);
+	Coords pos2(3,4);
 
-	cout << board->toString() << endl;
-	cout << spareBlock->toString() << endl;
-	cout << "shift DOWN 3" << endl;
-	spareBlock = board->shift(Direction::DOWN,3,spareBlock);
-
-	cout << board->toString() << endl;
-	cout << spareBlock->toString() << endl;
+	bool result = board->isConnected(pos1, pos2);
+	cout << "Cesta je:" << result << endl;
 
 	return 0;
 }
