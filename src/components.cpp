@@ -107,6 +107,7 @@ std::string Block::toString(){
  */
 Board::Board(int size = 7){
 	this->size = size;
+	spareBlock = new Block;
 	board = new Block** [size];
 
 	for(int i = 0; i < size; ++i){			
@@ -168,6 +169,8 @@ Board::~Board(){
 		delete[] board[i];
 	}
 	delete[] board;
+
+	delete spareBlock;
 }
 
 std::string Board::toString(){
@@ -189,6 +192,11 @@ std::string Board::toString(){
 				str += "---+";
 		str += "\n";
 	}
+	str += spareBlock->toString();
+	for (auto figure : figurestack){
+		str += "figure: " + std::to_string(figure->pos.x) + " " + std::to_string(figure->pos.y) + "\n";  
+	}
+
 	return str;
 }
 
@@ -210,12 +218,11 @@ bool Board::placeItems(std::vector<Item> * items){
 
 // umisti figurku na hraci pole
 bool Board::placeFigure(Figure * figure){
-	int size = figurestack.size();
-	if(size <= 4){
+	int len = figurestack.size();
+	if(len >= 4){
 		return false;
 	}
-	figurestack.push_back(figure);
-	switch(size){
+	switch(len){
 		case 0:
 			figure->pos.x = 0;
 			figure->pos.y = 0;
@@ -233,46 +240,48 @@ bool Board::placeFigure(Figure * figure){
 			figure->pos.y = 0;
 			break;
 	}
+	figurestack.push_back(figure);
 	return true;
 
 };
 
 
-Block * Board::shift(Direction to, unsigned i, Block * pushedBlock){
-	Block * poppedBlock = pushedBlock;
+bool Board::shift(Direction to, unsigned i){
+	Block * poppedBlock;
 	if(i >= size || i%2 == 0){ // nejde shiftovat
-		return poppedBlock;
+		return false;
 	}
 	if(to == Direction::RIGHT){
 		poppedBlock = board[i][size-1];
 		for (int j = size-1; j > 0 ; --j){
 			board[i][j] = board[i][j-1];
 		}
-		board[i][0] = pushedBlock;
+		board[i][0] = spareBlock;
 	}
 	if(to == Direction::LEFT){
 		poppedBlock = board[i][0];
 		for (int j = 0; j < size-1; ++j){
 			board[i][j] = board[i][j+1];
 		}
-		board[i][size-1] = pushedBlock;
+		board[i][size-1] = spareBlock;
 	}
 	if(to == Direction::DOWN){
 		poppedBlock = board[size-1][i];
 		for (int j = size-1; j > 0 ; --j){
 			board[j][i] = board[j-1][i];
 		}
-		board[0][i] = pushedBlock;
+		board[0][i] = spareBlock;
 	}
 	if(to == Direction::UP){
 		poppedBlock = board[0][i];
 		for (int j = 0; j < size-1; ++j){
 			board[j][i] = board[j+1][i];
 		}
-		board[size-1][i] = pushedBlock;
+		board[size-1][i] = spareBlock;
 	}
 
-	return poppedBlock;
+	spareBlock = poppedBlock;
+	return true;
 }
 
 bool Board::blocksConnection(Coords startcoords, Coords endcoords){

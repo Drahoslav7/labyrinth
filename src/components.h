@@ -14,6 +14,7 @@ const int RIGHT = -1;
 
 
 enum class Color {
+	INVISIBLE,
 	BLACK,
 	WHITE,
 	GREY,
@@ -100,8 +101,18 @@ public:
 
 class Figure {
 
-	// Color color;
+	Color color;
 public:
+	Figure () {
+		this->color = Color::INVISIBLE;
+	}
+	Figure (Color color){
+		this->color = color;
+	}
+	Color getColor(){
+		return color;
+	}
+
 	Coords pos;
 };
 
@@ -110,6 +121,8 @@ public:
 class Board {
 
 	Block*** board;
+	Block* spareBlock;
+
 	int size;
 
 	bool blocksConnection(Coords, Coords);
@@ -122,7 +135,7 @@ public:
 	std::string toString();
 
 	// push pop
-	Block * shift(Direction, unsigned, Block*);
+	bool shift(Direction, unsigned);
 
 	bool isConnected(Coords, Coords); 
 
