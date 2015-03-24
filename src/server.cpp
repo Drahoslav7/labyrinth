@@ -103,7 +103,39 @@ int main(int argc, char const *argv[])
 	Coords pos2(3,4);
 
 	bool result = board->isConnected(pos1, pos2);
-	cout << "Cesta je:" << result << endl;
+	cout << "Cesta z [1,2] do [3,4] je:" << result << endl;
+
+	Coords pos3(1,1);
+	Coords pos4(2,2);
+
+	result = board->isConnected(pos3, pos4);
+	cout << "Cesta z [1,1] do [2,2] je:" << result << endl;
+
+	Coords pos5(0,0);
+	Coords pos6(0,1);
+
+	result = board->isConnected(pos5, pos6);
+	cout << "Cesta -> je:" << result << endl;
+
+	Coords pos7(0,0);
+	Coords pos8(1,0);
+
+	result = board->isConnected(pos7, pos8);
+	cout << "Cesta | je:" << result << endl;
+
+	Coords pos9(1,1);
+	Coords pos10(0,1);
+
+	result = board->isConnected(pos9, pos10);
+	cout << "Cesta ^ je:" << result << endl;
+
+	Coords pos11(1,1);
+	Coords pos12(1,0);
+
+	result = board->isConnected(pos11, pos12);
+	cout << "Cesta <- je:" << result << endl;
+
+
 
 
 	return 0;
