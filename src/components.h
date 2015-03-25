@@ -1,7 +1,9 @@
 #include <string>
 #include <deque>
-
 #include <vector>
+
+// #include <QtWidgets>
+
 
 typedef char Item;
 
@@ -10,7 +12,6 @@ const Item XX = 4;
 
 const int LEFT = +1;
 const int RIGHT = -1;
-
 
 
 enum class Color {
@@ -33,11 +34,75 @@ enum class Shape {
 	O, // uzavreny block, nepouziva se
 };
 
+// pro shiftovani
 enum class Direction {
 	LEFT,
 	RIGHT,
 	UP,
 	DOWN,
+};
+
+
+//souradnice policka bludiste
+class Coords{
+public:
+	Coords(){
+		this->x = 0;
+		this->y = 0;
+	};
+
+	Coords(int x, int y){
+		this->x = x;
+		this->y = y;
+	};
+	unsigned int x;
+	unsigned int y;
+
+	bool operator==(Coords &pos2){
+		return (this->x == pos2.x && this->y == pos2.y);
+	} 
+};
+
+class Pack {
+	std::vector<Item> cards;
+
+public:
+	// vychozi
+	Pack() : Pack(12) {};
+
+	// custom
+	Pack(unsigned int count){
+		for (Item i = 1; i <= count; ++i)
+			cards.push_back(i);
+	}
+
+	std::vector<Item> * get(){
+		return &cards;
+	}
+
+	void shuffle();
+
+	std::string toString();
+
+};
+
+
+// figurka
+class Figure {
+
+	Color color;
+public:
+	Figure () {
+		this->color = Color::INVISIBLE;
+	}
+	Figure (Color color){
+		this->color = color;
+	}
+	Color getColor(){
+		return color;
+	}
+
+	Coords pos;
 };
 
 // policko bludiste
@@ -60,7 +125,7 @@ public:
 	Block(Shape, int = 0);
 
 	// dalsi metody
-	rotate(int);
+	void rotate(int);
 
 	bool isTop(){
 		return top;
@@ -79,54 +144,16 @@ public:
 
 };
 
-//souradnice policka bludiste
-class Coords{
-public:
-	Coords(){
-		this->x = 0;
-		this->y = 0;
-	};
-
-	Coords(int x, int y){
-		this->x = x;
-		this->y = y;
-	};
-	int x;
-	int y;
-
-	bool operator==(Coords &pos2){
-		return (this->x == pos2.x && this->y == pos2.y);
-	} 
-};
-
-class Figure {
-
-	Color color;
-public:
-	Figure () {
-		this->color = Color::INVISIBLE;
-	}
-	Figure (Color color){
-		this->color = color;
-	}
-	Color getColor(){
-		return color;
-	}
-
-	Coords pos;
-};
-
-
 // hraci deska
 class Board {
 
+	int size;
 	Block*** board;
 	Block* spareBlock;
 
-	int size;
-
-	bool blocksConnection(Coords, Coords);
 	std::vector<Figure *> figurestack;
+
+	bool canPass(Coords, Coords);
 
 public:
 	Board(int);

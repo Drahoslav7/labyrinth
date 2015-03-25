@@ -83,18 +83,24 @@ int main(int argc, char const *argv[])
 	// herni plocha
 	Board * board = new Board(7);
 
-	std::vector<Item> items;
-	for (Item i = 1; i <= 12; ++i){
-		items.push_back(i);
-	}
+	// balicek karet
+	Pack cards(12);
+	cout << cards.toString() << endl;
+	//zamichat
+	cards.shuffle();
+	cout << cards.toString() << endl;
 
-	board->placeItems(&items);
+	//rozhazet po bludisti
+	board->placeItems(cards.get());
+
+	// vytvorit figurky
 	Figure * gandalf = new Figure(Color::GREY);
 	Figure * saruman = new Figure(Color::WHITE);
 	// Figure * frodo = new Figure(Color::INVISIBLE);
 	// Figure * bilbo = new Figure(Color::INVISIBLE);
 	// Figure * glum = new Figure(Color::GREEN);
 
+	// a umistit na pocatecni lokace
 	board->placeFigure(gandalf);
 	board->placeFigure(saruman);
 	// board->placeFigure(frodo);
@@ -102,7 +108,6 @@ int main(int argc, char const *argv[])
 	// board->placeFigure(glum);
 
 	cout << board->toString() << endl;
-
 
 	// test hledani cesty
 	Coords pos1(1,2);

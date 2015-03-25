@@ -1,7 +1,7 @@
 #include <ctime>
 #include <boost/random.hpp>
 #include "components.h"
-#include <iostream>
+// #include <iostream>
 
 
 /////////////////////////////////////////////////////////////////////////
@@ -29,6 +29,28 @@ Shape randomShape(){
 	}
 	return Shape::O;
 }
+
+/////////////////////////////////////////////////////////////
+// metody tridy Pack:
+
+void Pack::shuffle(){
+	Item card;
+	int size = cards.size();
+
+	for(int i = 1; i <= size; ++i){
+		card = cards.back(); 
+		cards.pop_back();
+		cards.insert(cards.begin() + randomInt(i), card);
+	}
+}
+
+std::string Pack::toString(){
+	std::string str = "";
+	for(Item item : cards)
+		str += (item + '@');
+	return str;
+}
+
 
 
 /////////////////////////////////////////////////////////////
@@ -58,8 +80,7 @@ Block::Block(Shape shape, int rotation){
 	rotate(rotation);
 }
 
-// destruktor
-Block::rotate(int rotation){
+void Block::rotate(int rotation){
 	bool tmp;
 	this->orientation += rotation;
 	this->orientation %= 4;
@@ -204,15 +225,16 @@ std::string Board::toString(){
 // rozmistit predmety po hracim poli
 bool Board::placeItems(std::vector<Item> * items){
 	Coords pos;
+	// if ((size * size) < items->size())
+	// 	return false;
 	for(Item item : *items){
 		do {
 			pos.x = randomInt(size);
 			pos.y = randomInt(size);
 		} while(board[pos.x][pos.y]->item != NONE);
-
-		board[pos.x][pos.y]->item  = item;
+		board[pos.x][pos.y]->item = item;
 	}
-
+	return true;
 }
 
 
@@ -284,43 +306,28 @@ bool Board::shift(Direction to, unsigned i){
 	return true;
 }
 
-bool Board::blocksConnection(Coords startcoords, Coords endcoords){
-	Block* startBlock = board[startcoords.x][startcoords.y];
-	Block* endBlock = board[endcoords.x][endcoords.y];
+bool Board::canPass(Coords startpos, Coords endpos){
+	if(endpos.x >= size || endpos.y >= size || startpos.x >= size || startpos.y >= size)
+		return false;
+
+	Block* startBlock = board[startpos.x][startpos.y];
+	Block* endBlock = board[endpos.x][endpos.y];
 
 	// end je nad start blokem
-	if(startcoords.y == endcoords.y && startcoords.x - endcoords.x == 1){
-		if(startBlock->isTop() && endBlock->isBottom()){
-			return true;
-		}else{
-			return false;
-		}
+	if(startpos.y == endpos.y && startpos.x - endpos.x == 1){
+		return (startBlock->isTop() && endBlock->isBottom());
 	}
 	// end je pod start blokem
-	if(startcoords.y == endcoords.y && endcoords.x - startcoords.x == 1){
-		if(startBlock->isBottom() && endBlock->isTop()){
-			return true;
-		}else{
-			return false;
-		}
+	if(startpos.y == endpos.y && endpos.x - startpos.x == 1){
+		return (startBlock->isBottom() && endBlock->isTop());
 	}
-
 	// end je napravo od start bloku
-	if(startcoords.x == endcoords.x && endcoords.y - startcoords.y == 1){
-		if(startBlock->isRight() && endBlock->isLeft()){
-			return true;
-		}else{
-			return false;
-		}
+	if(startpos.x == endpos.x && endpos.y - startpos.y == 1){
+		return (startBlock->isRight() && endBlock->isLeft());
 	}
-
 	// end je nalevo od start bloku
-	if(startcoords.x == endcoords.x && startcoords.y - endcoords.y == 1){
-		if(startBlock->isLeft() && endBlock->isRight()){
-			return true;
-		}else{
-			return false;
-		}
+	if(startpos.x == endpos.x && startpos.y - endpos.y == 1){
+		return (startBlock->isLeft() && endBlock->isRight());
 	}
 
 	return false;
@@ -336,84 +343,76 @@ bool isInQueue(Coords coordinates, std::deque<Coords>* queue){
 	return false;
 }
 
-bool Board::isConnected(Coords startcoords, Coords endcoords){
-	std::deque<Coords> open_queue;
-	std::deque<Coords> closed_queue;
+bool Board::isConnected(Coords startPos, Coords endPos){
+	std::deque<Coords> open;
+	std::deque<Coords> closed;
 
-	if(blocksConnection(startcoords, endcoords)){
+	if(canPass(startPos, endPos))
 		return true;
-	}
 
-	open_queue.push_back(startcoords);
+	open.push_back(startPos);
 
-	Coords actcoords;
-	Coords topcoords;
-	Coords rightcoords;
-	Coords leftcoords;
-	Coords bottomcoords;
+	Coords actPos;
+	Coords topPos;
+	Coords rightPos;
+	Coords leftPos;
+	Coords bottomPos;
 
-	while(!open_queue.empty()){
-		actcoords = open_queue.front();
-		open_queue.pop_front();
+	while(!open.empty()){
+		actPos = open.front();
+		open.pop_front();
 		
 		// kontrola vrchniho bloku
-		topcoords.x = actcoords.x - 1;
-		topcoords.y = actcoords.y; 
+		topPos.x = actPos.x - 1;
+		topPos.y = actPos.y; 
 		
-		if(topcoords.x >= 0){
-			if(!isInQueue(topcoords, &open_queue) && !isInQueue(topcoords, &closed_queue) && blocksConnection(topcoords, actcoords)){
-				if(topcoords == endcoords){
-					return true;
-				}
-				//std::cout << "Push TOP" << std::endl;
-				open_queue.push_back(topcoords);
+		if(canPass(topPos, actPos) && !isInQueue(topPos, &closed) && !isInQueue(topPos, &open)){
+			if(topPos == endPos){
+				return true;
 			}
+			//std::cout << "Push TOP" << std::endl;
+			open.push_back(topPos);
 		}
 
 		// kontrola praveho bloku
-		rightcoords.x = actcoords.x;
-		rightcoords.y = actcoords.y + 1;
+		rightPos.x = actPos.x;
+		rightPos.y = actPos.y + 1;
 
-		if(rightcoords.y < size){
-			if(!isInQueue(rightcoords, &open_queue) && !isInQueue(rightcoords, &closed_queue) && blocksConnection(rightcoords, actcoords)){
-				if(rightcoords == endcoords){
-					return true;
-				}
-				//std::cout << "Push RIGHT" << std::endl;
-				open_queue.push_back(rightcoords);
+		if(canPass(rightPos, actPos) && !isInQueue(rightPos, &closed) && !isInQueue(rightPos, &open)){
+			if(rightPos == endPos){
+				return true;
 			}
+			//std::cout << "Push RIGHT" << std::endl;
+			open.push_back(rightPos);
 		}
 
 		// kontrola leveho bloku
-		leftcoords.x = actcoords.x;
-		leftcoords.y = actcoords.y - 1;
+		leftPos.x = actPos.x;
+		leftPos.y = actPos.y - 1;
 
-		if(leftcoords.y >= 0){
-			if(!isInQueue(leftcoords, &open_queue) && !isInQueue(leftcoords, &closed_queue) && blocksConnection(leftcoords, actcoords)){
-				if(leftcoords == endcoords){
-					return true;
-				}
-				//std::cout << "Push LEFT" << std::endl;
-				open_queue.push_back(leftcoords);
+		if(canPass(leftPos, actPos) && !isInQueue(leftPos, &closed) && !isInQueue(leftPos, &open)){
+			if(leftPos == endPos){
+				return true;
 			}
+			//std::cout << "Push LEFT" << std::endl;
+			open.push_back(leftPos);
 		}
 
 		// kontrola spodniho bloku
-		bottomcoords.x = actcoords.x + 1;
-		bottomcoords.y = actcoords.y;
+		bottomPos.x = actPos.x + 1;
+		bottomPos.y = actPos.y;
 
-		if(bottomcoords.x < size){
-			if(!isInQueue(bottomcoords, &open_queue) && !isInQueue(bottomcoords, &closed_queue) && blocksConnection(bottomcoords, actcoords)){
-				if(bottomcoords == endcoords){
-					return true;
-				}
-				//std::cout << "Push BOTTOM" << std::endl;
-				open_queue.push_back(bottomcoords);
+		if(canPass(bottomPos, actPos) && !isInQueue(bottomPos, &closed) && !isInQueue(bottomPos, &open)){
+			if(bottomPos == endPos){
+				return true;
 			}
+			//std::cout << "Push BOTTOM" << std::endl;
+			open.push_back(bottomPos);
 		}
 
-		// nahrani do closed pole po rozvinutí uzlu
-		closed_queue.push_back(actcoords);
+
+		// presun do closed pole po rozvinutí uzlu
+		closed.push_back(actPos);
 	}
 
 	return false;
