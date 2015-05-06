@@ -1,5 +1,6 @@
 #include "../shared/err.h"
 #include "server.h"
+#include "player.h"
 
 
 using namespace std;
@@ -20,7 +21,7 @@ int main(int argc, char const *argv[])
 
 
 
-	// test bordel
+	// test bordel na herni plochu
 	#if 0 
 
 	// herni plocha
@@ -90,6 +91,33 @@ int main(int argc, char const *argv[])
 	cout << "Cesta <- je:" << result << endl;
 	
 	#endif
+
+
+	// test bordel na playera
+	#if 0
+
+	Player player1;
+
+	player1.setNickname("Prdelka");
+
+	Player player2;
+
+	player2.setNickname("zadecek");
+
+	Player player3;
+
+	player3.setNickname("zadecek");
+
+	Player player4;
+
+
+	cout << "Nick je: " << player1.nickname << endl;
+	cout << "Nick je: " << player2.nickname << endl;
+	cout << "Nick je: " << player3.nickname << endl;
+	cout << "Nick je: " << player4.nickname << endl;
+
+
+	#endif 
 
 	// try {
 	// 	boost::asio::io_service io_service;
