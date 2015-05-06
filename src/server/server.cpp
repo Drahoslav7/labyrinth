@@ -1,5 +1,6 @@
 #include "server.h"
 #include "../shared/components.h"
+#include "../shared/debug.cpp"
 
 using namespace std;
 
@@ -47,6 +48,8 @@ void Server::listen(){
 
 	Connection * conn = new Connection(acceptor.get_io_service());
 
+	listenningConnection = conn;
+
 	acceptor.async_accept(
 		conn->socket,
 		boost::bind(&Server::acceptClient, this, conn, boost::asio::placeholders::error)
@@ -54,11 +57,22 @@ void Server::listen(){
 
 }
 
+void Server::stop(){
+	Server::io_service->stop();
+	acceptor.close();
+
+	// games.clear(); TODO
+	waitingPlayers.clear();
+
+	delete listenningConnection;
+
+}
+
 void Server::acceptClient(Connection * conn, const boost::system::error_code& e){
 	if(!e){
-		// Player * player = new Plaer(conn);
-		// waitingPlayers.push_back(player);
-		// listen();
+		Player * player = new Player(); // todo předat conn
+		waitingPlayers.push_back(player);
+		listen();
 	}else{
 		Server::kill(0);
 	}
@@ -67,7 +81,9 @@ void Server::acceptClient(Connection * conn, const boost::system::error_code& e)
 
 void Server::kill(int sig){
 	std::cout << "exiting" << endl;
+	Server::getInstance()->stop();
 }
+
 
 /**
  * Vraci port zadany jako prvni argument programu

@@ -1,6 +1,6 @@
 #include "../shared/err.h"
 #include "server.h"
-#include "player.h"
+// #include "player.h"
 
 
 using namespace std;
@@ -14,7 +14,6 @@ using namespace std;
 int main(int argc, char const *argv[])
 {
 
-	Server * server;
 	
 	int port = Server::getPort(argc, argv);
 	if(port == 0){
@@ -28,11 +27,10 @@ int main(int argc, char const *argv[])
 
 		Server::create(io_service.get(), port);
 
-		server = Server::getInstance();
-		server->listen();
+		Server::getInstance()->listen();
 		io_service.get()->run();
 		
-	} catch ( std::exception& e) {
+	} catch (std::exception & e) {
 		std::cerr << e.what() << std::endl;
 	}
 
