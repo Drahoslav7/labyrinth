@@ -145,10 +145,7 @@ int main(int argc, char const *argv[])
 
 	result = board->isConnected(pos11, pos12);
 	cout << "Cesta <- je:" << result << endl;
-
-
-
-
+	
 	return 0;
 }
 

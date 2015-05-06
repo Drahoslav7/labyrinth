@@ -1,9 +1,9 @@
 #include <string>
 #include <deque>
 #include <vector>
+#include "debug.cpp"
 
 // #include <QtWidgets>
-
 
 typedef char Item;
 
