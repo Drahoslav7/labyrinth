@@ -3,8 +3,6 @@
 #include "server.h"
 #include "game.h"
 
-
-
 using namespace std;
 
 /**
