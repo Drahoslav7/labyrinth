@@ -10,10 +10,10 @@ FILES = components.cpp debug.cpp
 
 labyrinth: labyrinth2015-server labyrinth2015
 
-labyrinth2015: client.cpp $(FILES)
+labyrinth2015: client/client.cpp $(FILES)
 	g++ $(FLAGS) -o $@ $^ $(LFLAGS) 
 
-labyrinth2015-server: server.cpp $(FILES)
+labyrinth2015-server: server/main.cpp server/server.cpp $(FILES)
 	g++ $(FLAGS) -o $@ $^ $(LFLAGS) 
 
 run:
