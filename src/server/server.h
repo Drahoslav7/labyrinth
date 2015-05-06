@@ -6,8 +6,8 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <vector>
+#include "player.h"
 // #include "game.h"
-// #include "player.h"
 
 
 class Server;
@@ -38,8 +38,9 @@ public:
 	// std::vector<Game *> games;
 
 private:
+	Connection * listenningConnection;
 	boost::asio::ip::tcp::acceptor acceptor;
-	// std::vector<Player *> waitingPlayers;
+	std::vector<Player *> waitingPlayers;
 
 	Server(boost::asio::io_service & io_service);
 	void acceptClient(Connection * conn, const boost::system::error_code& e);

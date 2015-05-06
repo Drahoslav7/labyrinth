@@ -5,16 +5,20 @@ ifeq ($(OS),Windows_NT)
 	LFLAGS += -lwsock32 -lws2_32
 endif
 
-FILES = shared/components.cpp shared/debug.cpp
+FILES = shared/components.o shared/debug.o
 
 
 labyrinth: labyrinth2015-server labyrinth2015
 
-labyrinth2015: client/client.cpp $(FILES)
+labyrinth2015: client/client.o $(FILES)
 	g++ $(FLAGS) -o $@ $^ $(LFLAGS) 
 
-labyrinth2015-server: server/main.cpp server/server.cpp server/player.cpp server/game.cpp $(FILES)
+labyrinth2015-server: server/main.o server/server.o server/player.o server/game.o $(FILES)
 	g++ $(FLAGS) -o $@ $^ $(LFLAGS) 
+
+
+%.o: %.cpp
+	g++ $(FLAGS) -c $< -o $@
 
 run:
 	./labyrinth2015-server 1620
@@ -27,6 +31,9 @@ dd: setdebug labyrinth run
 d: labyrinth run 
 
 clean:
-	rm labyrinth2015.exe labyrinth2015-server.exe labyrinth2015 labyrinth2015-server
+	rm labyrinth2015.exe labyrinth2015-server.exe labyrinth2015 labyrinth2015-server server/*.o client/*.o
+
+pack:
+	#todo
 
 .PHONY: setdebug labyrinth run
