@@ -21,6 +21,9 @@ public:
     	games[id]=NULL;
    	};
 
+   	int addPlayer(Player *player);
+   	int removePlayer(Player *player);
+
 private:
 
 	int id;

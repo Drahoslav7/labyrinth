@@ -1,6 +1,7 @@
+#include <iostream>
 #include "../shared/err.h"
 #include "server.h"
-#include "player.h"
+#include "game.h"
 
 
 using namespace std;
@@ -29,8 +30,8 @@ int main(int argc, char const *argv[])
 		Server::create(io_service.get(), port);
 
 		server = Server::getInstance();
-		server->listen();
-		io_service.get()->run();
+		//server->listen();
+		//io_service.get()->run();
 		
 	} catch ( std::exception& e) {
 		std::cerr << e.what() << std::endl;
@@ -133,6 +134,38 @@ int main(int argc, char const *argv[])
 	cout << "Nick je: " << player3.nickname << endl;
 	cout << "Nick je: " << player4.nickname << endl;
 
+
+	#endif 
+
+
+	// bordel test na Game 
+	#if 1
+
+	Player player1;
+
+	player1.setNickname("Prdelka");
+
+	Player player2;
+
+	player2.setNickname("zadecek");
+
+	Player player3;
+
+	player3.setNickname("prsicka");
+
+	Player player4;
+
+	player4.setNickname("pipinka");
+
+	Game game(&player1);
+
+	game.addPlayer(&player2);
+	game.addPlayer(&player3);
+	game.addPlayer(&player4);
+
+	for(auto &player : game.players){
+		cout << "Hraci tu jsou takovi: " << player->nickname << endl;
+	}
 
 	#endif 
 

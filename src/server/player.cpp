@@ -21,7 +21,7 @@ int Player::setNickname(string nickname){
 	}
 
 	this->nickname = nickname;
-	this->status = WAITING;
+	this->state = WAITING;
 
 	return 0;
 };

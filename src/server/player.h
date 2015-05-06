@@ -6,13 +6,22 @@ using namespace std;
 class Player{
 public:
 	string nickname;
-	enum {STARTED, WAITING, CREATING, CONNECTING, READY, PLAYING};
 
-	int status;
+	enum {
+		STARTED,
+		WAITING,
+		INVITED,
+		READY,
+		INVITING, 
+		CREATING, 
+		PLAYING
+	};
+
+	int state;
 
 	Player(){
 		nickname = "";
-		status = STARTED;
+		state = STARTED;
 		id = players.size();
 		players.push_back(this);
 	};
