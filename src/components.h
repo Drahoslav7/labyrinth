@@ -3,8 +3,6 @@
 #include <vector>
 #include "debug.cpp"
 
-// #include <QtWidgets>
-
 typedef char Item;
 
 const Item NONE = 0;
