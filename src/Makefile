@@ -5,7 +5,7 @@ ifeq ($(OS),Windows_NT)
 	LFLAGS += -lwsock32 -lws2_32
 endif
 
-FILES = components.cpp debug.cpp
+FILES = shared/components.cpp shared/debug.cpp
 
 
 labyrinth: labyrinth2015-server labyrinth2015

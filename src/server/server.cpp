@@ -1,5 +1,5 @@
 #include "server.h"
-#include "../components.h"
+#include "../shared/components.h"
 
 using namespace std;
 
