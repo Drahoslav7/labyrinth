@@ -9,7 +9,7 @@
 #include <boost/enable_shared_from_this.hpp>
 #include <vector>
 #include "player.h"
-// #include "game.h"
+#include "game.h"
 
 
 class Server;
@@ -37,7 +37,7 @@ public:
 	static boost::asio::io_service * io_service;
 	static int port;
 
-	// std::vector<Game *> games;
+	std::vector<Game *> games;
 
 private:
 	Connection * listenningConnection;
