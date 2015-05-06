@@ -14,15 +14,32 @@ using namespace std;
 int main(int argc, char const *argv[])
 {
 
+	Server * server;
+	
 	int port = Server::getPort(argc, argv);
 	if(port == 0){
 		err.stop(Err::INVALID_PORT);
 	}
 
+	signal(SIGINT, Server::kill);
+	
+	try {
+		boost::shared_ptr<boost::asio::io_service> io_service(new boost::asio::io_service());
+
+		Server::create(io_service.get(), port);
+
+		server = Server::getInstance();
+		server->listen();
+		io_service.get()->run();
+		
+	} catch ( std::exception& e) {
+		std::cerr << e.what() << std::endl;
+	}
 
 
 	// test bordel na herni plochu
 	#if 0 
+
 
 	// herni plocha
 	Board * board = new Board(7);
@@ -127,6 +144,7 @@ int main(int argc, char const *argv[])
 	// } catch ( std::exception& e) {
 	// 	std::cerr << e.what() << std::endl;
 	// }
+
 
 
 

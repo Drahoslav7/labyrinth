@@ -4,6 +4,71 @@
 using namespace std;
 
 
+//////////////////////////////////
+///
+Connection::Connection(boost::asio::io_service & io_service): socket(io_service){
+
+}
+
+Connection::~Connection(){
+	socket.close();
+}
+
+
+/////////////////////////////////
+///
+
+boost::asio::io_service * Server::io_service;
+int Server::port;
+
+
+Server::Server(boost::asio::io_service & io_service): acceptor(io_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port))
+{
+}
+
+Server::~Server(){
+
+}
+
+
+void Server::create(boost::asio::io_service * io_service, int port){
+	Server::io_service = io_service; 
+	Server::port = port;
+}
+
+
+Server * Server::getInstance(){
+	static Server instance(*(Server::io_service));
+	return &instance;
+}
+
+
+void Server::listen(){
+
+	Connection * conn = new Connection(acceptor.get_io_service());
+
+	acceptor.async_accept(
+		conn->socket,
+		boost::bind(&Server::acceptClient, this, conn, boost::asio::placeholders::error)
+	);
+
+}
+
+void Server::acceptClient(Connection * conn, const boost::system::error_code& e){
+	if(!e){
+		// Player * player = new Plaer(conn);
+		// waitingPlayers.push_back(player);
+		// listen();
+	}else{
+		Server::kill(0);
+	}
+}
+
+
+void Server::kill(int sig){
+	std::cout << "exiting" << endl;
+}
+
 /**
  * Vraci port zadany jako prvni argument programu
  * nebo nulu pokud je neco spatne
@@ -17,7 +82,5 @@ int Server::getPort(int argc, char const *argv[]){
 		port = atoi(argv[1]);
 	return port;
 }
-
-
 
 
