@@ -6,14 +6,15 @@ ifeq ($(OS),Windows_NT)
 endif
 
 FILES = shared/components.o shared/debug.o
-
+CFILES = client/client.o
+SFILES =  server/server.o server/player.o server/game.o
 
 labyrinth: labyrinth2015-server labyrinth2015
 
-labyrinth2015: client/client.o $(FILES)
+labyrinth2015: $(CFILES) $(FILES)
 	g++ $(FLAGS) -o $@ $^ $(LFLAGS) 
 
-labyrinth2015-server: server/main.o server/server.o server/player.o server/game.o $(FILES)
+labyrinth2015-server: server/main.o $(SFILES) $(FILES)
 	g++ $(FLAGS) -o $@ $^ $(LFLAGS) 
 
 
@@ -29,6 +30,10 @@ setdebug:
 dd: setdebug labyrinth run 
 
 d: labyrinth run 
+
+test: tests/main.o $(SFILES)
+	g++ $(FLAGS) -o $@ $^ $(LFLAGS)
+	./test.exe
 
 clean:
 	rm labyrinth2015.exe labyrinth2015-server.exe labyrinth2015 labyrinth2015-server server/*.o client/*.o

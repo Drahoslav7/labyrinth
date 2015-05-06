@@ -5,10 +5,13 @@ run:
 	make run -C src/
 
 d:
-	make d -C  src/	
+	make d -C src/	
 
 dd:
 	make dd -C src/
+
+test:
+	make test -C src/
 
 doc:
 
