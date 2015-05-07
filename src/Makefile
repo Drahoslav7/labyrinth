@@ -5,7 +5,7 @@ ifeq ($(OS),Windows_NT)
 	LFLAGS += -lwsock32 -lws2_32
 endif
 
-FILES = shared/components.o shared/debug.o
+FILES = shared/components.o shared/debug.o shared/connection.o
 CFILES = client/client.o
 SFILES = server/server.o server/player.o server/game.o
 

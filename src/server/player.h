@@ -5,6 +5,7 @@ class Player;
 #include <string>
 #include <boost/thread.hpp>
 #include "server.h"
+#include "../shared/connection.h"
 #include "game.h"
 
 using namespace std;
