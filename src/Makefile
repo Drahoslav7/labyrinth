@@ -34,7 +34,7 @@ dd: clean setdebug labyrinth run
 
 d: labyrinth run 
 
-test: tests/main.o $(SFILES)
+test: tests/main.o $(SFILES) $(FILES) $(CFILES)
 	g++ $(FLAGS) -o $@ $^ $(LFLAGS)
 	./test.exe
 
