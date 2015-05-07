@@ -35,3 +35,21 @@ int Player::acceptInvite(Game *game){
 
 	return 0;
 };
+
+void Player::work(){
+
+	std::string msg;
+
+	PRD("player work");
+
+	while(1){
+		connection->receive(&msg);
+		std::cout << "msg: " << msg << endl;
+
+		if(msg == "DIE"){
+			break;
+		}
+	}
+
+	PRD("player work2");
+}

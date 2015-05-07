@@ -13,6 +13,29 @@ Connection::~Connection(){
 	socket.close();
 }
 
+void Connection::receive(std::string * target){
+	boost::asio::read_until(
+		socket,
+		rbuffer,
+		'\n'
+	);
+
+	std::istream readStream(&rbuffer);
+	std::getline(readStream, *target);
+	target->erase(target->end()-1, target->end());
+	rbuffer.consume(rbuffer.size());
+	std::cout << "Recv:" << *target << std::endl;
+}
+
+void Connection::send(std::string * message){
+	std::cout << *message << std::endl;
+	boost::asio::write(
+		socket,
+		boost::asio::buffer(*message),
+		boost::asio::transfer_all()
+	);
+}
+
 
 /////////////////////////////////
 ///
@@ -62,6 +85,9 @@ void Server::stop(){
 	acceptor.close();
 
 	games.clear();
+	for(auto &player : waitingPlayers){
+		delete player;
+	}
 	waitingPlayers.clear();
 
 	delete listenningConnection;
@@ -69,13 +95,17 @@ void Server::stop(){
 }
 
 void Server::acceptClient(Connection * connection, const boost::system::error_code& e){ // handler
+	PRD("client accept 1"); 
+
 	if(!e){
-		Player * player = new Player(); // todo předat connection
+		Player * player = new Player(connection); // todo předat connection
 		waitingPlayers.push_back(player);
 		listen();
 	}else{
 		Server::kill(0);
 	}
+
+	PRD("client accept 2");
 }
 
 

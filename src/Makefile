@@ -1,6 +1,6 @@
 FLAGS = -std=c++11
 
-LFLAGS = -l boost_system -l Qt5Core -l Qt5Gui
+LFLAGS = -l boost_system -l boost_thread -l Qt5Core -l Qt5Gui
 ifeq ($(OS),Windows_NT)
 	LFLAGS += -lwsock32 -lws2_32
 endif
@@ -30,7 +30,7 @@ run:
 setdebug: 
 	$(eval FLAGS += -D DEBUG=1)
 
-dd: setdebug labyrinth run 
+dd: clean setdebug labyrinth run 
 
 d: labyrinth run 
 
@@ -39,7 +39,7 @@ test: tests/main.o $(SFILES)
 	./test.exe
 
 clean:
-	rm labyrinth2015.exe labyrinth2015-server.exe labyrinth2015 labyrinth2015-server test test.exe server/*.o client/*.o shared/*.o tests/*.o
+	-rm labyrinth2015.exe labyrinth2015-server.exe labyrinth2015 labyrinth2015-server test test.exe server/*.o client/*.o shared/*.o tests/*.o
 
 pack:
 	#todo
