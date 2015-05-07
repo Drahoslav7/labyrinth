@@ -11,7 +11,7 @@ SFILES = server/server.o server/player.o server/game.o
 
 labyrinth: labyrinth2015-server labyrinth2015
 
-labyrinth2015: $(CFILES) $(FILES)
+labyrinth2015: client/main.o $(CFILES) $(FILES)
 	g++ $(FLAGS) -o $@ $^ $(LFLAGS) 
 
 labyrinth2015-server: server/main.o $(SFILES) $(FILES)

@@ -3,6 +3,7 @@ class Player;
 
 #include <vector>
 #include <string>
+#include "server.h"
 #include "game.h"
 
 using namespace std;
@@ -10,6 +11,7 @@ using namespace std;
 class Player{
 public:
 	string nickname;
+	Connection *connection;
 
 	enum {
 		STARTED,
@@ -23,7 +25,8 @@ public:
 
 	int state;
 
-	Player(){
+	Player(Connection *con){
+		connection = con;
 		nickname = "";
 		state = STARTED;
 		id = players.size();
