@@ -25,6 +25,7 @@ int Server::port;
 
 Server::Server(boost::asio::io_service & io_service): acceptor(io_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port))
 {
+
 }
 
 Server::~Server(){
@@ -53,6 +54,7 @@ void Server::listen(){
 	acceptor.async_accept(
 		conn->socket,
 		boost::bind(&Server::acceptClient, this, conn, boost::asio::placeholders::error)
+		
 	);
 
 }
@@ -61,7 +63,7 @@ void Server::stop(){
 	Server::io_service->stop();
 	acceptor.close();
 
-	// games.clear(); TODO
+	games.clear();
 	waitingPlayers.clear();
 
 	delete listenningConnection;

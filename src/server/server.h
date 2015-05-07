@@ -37,7 +37,7 @@ public:
 	static boost::asio::io_service * io_service;
 	static int port;
 
-	// std::vector<Game *> games;
+	std::vector<Game *> games;
 
 private:
 	Connection * listenningConnection;
