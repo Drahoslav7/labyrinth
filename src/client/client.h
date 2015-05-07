@@ -19,6 +19,6 @@ private:
 
 public:
 	Client(address serveraddr);
-	void sendMessage(string message);
+	string sendMessage(string message);
 
 };

@@ -42,9 +42,19 @@ void Player::work(){
 
 	PRD("player work");
 
-	while(1){
-		connection->receive(&msg);
+	bool ok = true;
+	while(ok){
+		try{
+			connection->receive(&msg);
+		} catch (boost::system::system_error & e) {
+			ok = false;
+			// game->remove_player(this); // todo vykopnout neposlušneho hrače?
+		}
 		std::cout << "msg: " << msg << endl;
+		
+		string response = "OK";
+
+		connection->send(&response);
 
 		if(msg == "DIE"){
 			break;

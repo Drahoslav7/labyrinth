@@ -21,7 +21,15 @@ int main(int argc, char const *argv[])
 
 	Client client(serveraddr);
 
-	client.sendMessage("HELLODOLLY\n");
+	string msg = "HI";
+	
+	while(msg != "DIE"){
+		msg = client.sendMessage(msg);
+		cout << msg << endl;
+		// cin >> msg;
+		getline(cin, msg);
+		// readline(cin, &msg);
+	}
 
 
 	return 0;

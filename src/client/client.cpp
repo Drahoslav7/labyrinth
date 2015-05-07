@@ -10,6 +10,9 @@ Client::Client(address serveraddr){
 	boost::asio::connect(connection->socket, endpoint_iterator);
 };
 
-void Client::sendMessage(string message){
+std::string Client::sendMessage(string message){
 	connection->send(&message);
+	connection->receive(&message);
+	return message;
 };
+
