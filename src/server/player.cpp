@@ -25,3 +25,13 @@ int Player::setNickname(string nickname){
 
 	return 0;
 };
+
+int Player::acceptInvite(Game *game){
+	if(game->addPlayer(this)){
+		return 1;
+	}
+
+	this->state = READY;
+
+	return 0;
+};

@@ -1,7 +1,9 @@
 #pragma once
+class Player;
 
 #include <vector>
 #include <string>
+#include "game.h"
 
 using namespace std;
 
@@ -33,6 +35,7 @@ public:
    	};
 
 	int setNickname(string nickname);
+	int acceptInvite(Game *game);
 
 private:
 

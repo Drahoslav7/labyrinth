@@ -18,7 +18,7 @@ labyrinth2015-server: server/main.o $(SFILES) $(FILES)
 	g++ $(FLAGS) -o $@ $^ $(LFLAGS) 
 
 
-%.o: %.cpp
+%.o: %.cpp %.h
 	g++ $(FLAGS) -c $< -o $@
 
 run:
@@ -36,7 +36,7 @@ test: tests/main.o $(SFILES)
 	./test.exe
 
 clean:
-	rm labyrinth2015.exe labyrinth2015-server.exe labyrinth2015 labyrinth2015-server server/*.o client/*.o
+	rm labyrinth2015.exe labyrinth2015-server.exe labyrinth2015 labyrinth2015-server test test.exe server/*.o client/*.o shared/*.o tests/*.o
 
 pack:
 	#todo

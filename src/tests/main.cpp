@@ -109,7 +109,7 @@ int main(int argc, char const *argv[]){
 
 
 	// bordel test na Game 
-	#if 1
+	#if 0
 
 	Player player1;
 
@@ -133,6 +133,13 @@ int main(int argc, char const *argv[]){
 	game.addPlayer(&player3);
 	game.addPlayer(&player4);
 
+	for(auto &player : game.players){
+		cout << "Hraci tu jsou takovi: " << player->nickname << endl;
+	}
+
+	game.removePlayer(&player3);
+
+	cout << "Pocet hracu je: " << game.players.size() << endl;
 	for(auto &player : game.players){
 		cout << "Hraci tu jsou takovi: " << player->nickname << endl;
 	}

@@ -1,4 +1,5 @@
 #pragma once
+class Game;
 
 #include <vector>
 #include <string>
@@ -9,7 +10,6 @@ using namespace std;
 
 class Game{
 public:
-
 	vector<Player *> players;
 
 	Game(Player *player){

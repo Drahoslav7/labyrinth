@@ -2,6 +2,7 @@
 #include "../shared/err.h"
 #include "server.h"
 #include "game.h"
+#include "player.h"
 
 using namespace std;
 
