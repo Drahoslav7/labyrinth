@@ -6,6 +6,8 @@ class Player;
 #include <boost/thread.hpp>
 #include "server.h"
 #include "../shared/connection.h"
+#include "../shared/tools.h"
+#include "server.h"
 #include "game.h"
 
 using namespace std;
@@ -16,44 +18,37 @@ public:
 	Connection *connection;
 
 	enum {
+		NONE,
 		STARTED,
 		WAITING,
 		INVITED,
 		READY,
 		INVITING, 
 		CREATING, 
-		PLAYING
+		PLAYING,
+		DEAD
 	};
 
 	int state;
 
-	Player(Connection *con){
-		connection = con;
-		nickname = "";
-		state = STARTED;
-		id = players.size();
-		players.push_back(this);
-
-		thread = boost::thread(&Player::work, this);
-		PRD("Player thread");
-	};
-
-	~Player(){
-		players[id] = NULL;
-		thread.join();
-		delete connection;
-	};
+	Player(Connection *con);
+	~Player();
 
 	int setNickname(string nickname);
 	int acceptInvite(Game *game);
 
 private:
-
-	void work();
-
 	boost::thread thread;
 	int id;
 	static vector<Player *> players;
 
+	void work();
+	std::string command(std::string, std::string);
+
+	static std::string getPlayers(int state);
+	
+public:
+	static void wipeall();
+	// static int remove(Player * player);
 
 };

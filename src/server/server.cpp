@@ -50,10 +50,11 @@ void Server::stop(){
 	acceptor.close();
 
 	games.clear();
-	for(auto &player : waitingPlayers){
-		delete player;
-	}
-	waitingPlayers.clear();
+	// for(auto &player : waitingPlayers){
+	// 	delete player;
+	// }
+	// waitingPlayers.clear();
+	Player::wipeall();
 
 	delete listenningConnection;
 
@@ -64,7 +65,7 @@ void Server::acceptClient(Connection * connection, const boost::system::error_co
 
 	if(!e){
 		Player * player = new Player(connection); // todo předat connection
-		waitingPlayers.push_back(player);
+		// waitingPlayers.push_back(player);
 		listen();
 	}else{
 		Server::kill(0);
@@ -94,4 +95,26 @@ int Server::getPort(int argc, char const *argv[]){
 	return port;
 }
 
+// std::string Server::getPlayers(){
+// 	std::string players = "";
+// 	for(auto &player : waitingPlayers){
+// 		players += player->nickname;
+// 		players += ' ';
+// 	}
+// 	return players;
+// }
 
+
+// void Server::removePlayer(Player player){
+// 	int pos = 0;
+
+// 	for(auto &p : waitingPlayers){
+// 		if(p == player){
+// 			waitingPlayers.erase(waitingPlayers.begin() + pos);
+// 			return 0;
+// 		}
+// 		pos++;
+// 	}
+
+// 	return 1;
+// }

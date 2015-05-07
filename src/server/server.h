@@ -26,7 +26,7 @@ public:
 private:
 	Connection * listenningConnection;
 	boost::asio::ip::tcp::acceptor acceptor;
-	std::vector<Player *> waitingPlayers;
+	// std::vector<Player *> waitingPlayers;
 
 	Server(boost::asio::io_service & io_service);
 	void acceptClient(Connection * conn, const boost::system::error_code& e);
