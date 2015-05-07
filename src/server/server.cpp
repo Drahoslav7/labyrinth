@@ -1,6 +1,4 @@
 #include "server.h"
-#include "../shared/components.h"
-#include "../shared/debug.cpp"
 
 using namespace std;
 
@@ -23,7 +21,8 @@ boost::asio::io_service * Server::io_service;
 int Server::port;
 
 
-Server::Server(boost::asio::io_service & io_service): acceptor(io_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port))
+Server::Server(boost::asio::io_service & io_service):
+	acceptor(io_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port))
 {
 
 }
@@ -47,14 +46,13 @@ Server * Server::getInstance(){
 
 void Server::listen(){
 
-	Connection * conn = new Connection(acceptor.get_io_service());
+	Connection * connection = new Connection(acceptor.get_io_service());
 
-	listenningConnection = conn;
+	listenningConnection = connection;
 
 	acceptor.async_accept(
-		conn->socket,
-		boost::bind(&Server::acceptClient, this, conn, boost::asio::placeholders::error)
-		
+		connection->socket,
+		boost::bind(&Server::acceptClient, this, connection, boost::asio::placeholders::error)
 	);
 
 }
@@ -70,9 +68,9 @@ void Server::stop(){
 
 }
 
-void Server::acceptClient(Connection * conn, const boost::system::error_code& e){
+void Server::acceptClient(Connection * connection, const boost::system::error_code& e){ // handler
 	if(!e){
-		Player * player = new Player(); // todo předat conn
+		Player * player = new Player(); // todo předat connection
 		waitingPlayers.push_back(player);
 		listen();
 	}else{

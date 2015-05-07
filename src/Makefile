@@ -1,4 +1,4 @@
-FLAGS = -std=c++11 
+FLAGS = -std=c++11
 
 LFLAGS = -l boost_system -l Qt5Core -l Qt5Gui
 ifeq ($(OS),Windows_NT)
@@ -7,7 +7,7 @@ endif
 
 FILES = shared/components.o shared/debug.o
 CFILES = client/client.o
-SFILES =  server/server.o server/player.o server/game.o
+SFILES = server/server.o server/player.o server/game.o
 
 labyrinth: labyrinth2015-server labyrinth2015
 
@@ -21,11 +21,14 @@ labyrinth2015-server: server/main.o $(SFILES) $(FILES)
 %.o: %.cpp %.h
 	g++ $(FLAGS) -c $< -o $@
 
+%.o: %.cpp
+	g++ $(FLAGS) -c $< -o $@
+
 run:
 	./labyrinth2015-server 1620
 
 setdebug: 
-	$(eval FLAGS += -D DEBUG=1)	
+	$(eval FLAGS += -D DEBUG=1)
 
 dd: setdebug labyrinth run 
 

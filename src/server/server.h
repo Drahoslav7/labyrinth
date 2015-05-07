@@ -1,19 +1,20 @@
 #pragma once
 
-#include <ctime>
+class Server;
+class Connection;
+
+
+
 #include <iostream>
 #include <string>
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/enable_shared_from_this.hpp>
 #include <vector>
 #include "player.h"
 #include "game.h"
+#include "../shared/components.h"
+#include "../shared/debug.cpp"
 
-
-class Server;
-class Connection;
 
 ///////////////////////////////////////////////////////////////
 
