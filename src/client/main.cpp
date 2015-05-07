@@ -1,5 +1,4 @@
 #include <iostream>
-#include <stdlib.h>
 #include "client.h"
 
 // #include <QtGui/QApplication>
@@ -21,16 +20,17 @@ int main(int argc, char const *argv[])
 
 	Client client(serveraddr);
 
-	string msg = "HI";
 	
-	while(msg != "DIE"){
-		msg = client.sendMessage(msg);
-		cout << msg << endl;
-		// cin >> msg;
-		getline(cin, msg);
-		// readline(cin, &msg);
+	while(1){
+		int ecode = client.doAction();
+		if(ecode == 1){
+			cout << "Server se nastval!" << endl;
+			break;
+		}else if(ecode == 2){	
+			cout << "Ukonceni aplikace!" << endl;
+			break;
+		}	
 	}
-
 
 	return 0;
 }

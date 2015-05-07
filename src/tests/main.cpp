@@ -145,4 +145,13 @@ int main(int argc, char const *argv[]){
 	}
 
 	#endif 
+
+	#if 0
+
+	string word = "zadek";
+	string word2 = "prdelka";
+
+	cout << word+word2 << endl;
+
+	#endif
 }
