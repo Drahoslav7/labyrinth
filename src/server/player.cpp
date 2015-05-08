@@ -18,6 +18,8 @@ Player::Player(Connection *con){
 
 Player::~Player(){
 	thread.join();
+	string DIE = "DIE";
+	connection->send(&DIE);
 	// remove(this);
 	delete connection;
 };
@@ -117,7 +119,7 @@ std::string Player::handleUserRequest(std::string cmd, std::string data){
 				res = "OK";
 			}
 			if(cmd == "WHOISTHERE"){
-				res = "HERE " + Player::getPlayers(WAITING);
+				res = "OK " + Player::getPlayers(WAITING);
 			}
 			break;
 
@@ -127,7 +129,7 @@ std::string Player::handleUserRequest(std::string cmd, std::string data){
 				res = "OK";
 			}
 			if(cmd == "WHOISTHERE"){
-				res = "HERE " + Player::getPlayers(WAITING);
+				res = "OK " + Player::getPlayers(WAITING);
 			}
 			break;
 
@@ -154,7 +156,7 @@ std::string Player::handleUserRequest(std::string cmd, std::string data){
 				}
 			}
 			if(cmd == "WHOISTHERE"){
-				res = "HERE " + Player::getPlayers(WAITING);
+				res = "OK " + Player::getPlayers(WAITING);
 			}
 			break;
 
