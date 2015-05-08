@@ -15,3 +15,11 @@ void split(std::string what, char delim, std::string * left, std::string *right)
 			*left += c;
 	}
 }
+
+std::string itos(int i){
+	std::string str;
+	std::ostringstream oss;
+	oss << i;
+	str = oss.str();
+	return str;
+}

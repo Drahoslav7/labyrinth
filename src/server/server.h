@@ -20,6 +20,7 @@ class Server {
 public:
 	static boost::asio::io_service * io_service;
 	static int port;
+	static boost::asio::deadline_timer * timer;
 
 	std::vector<Game *> games;
 
@@ -31,6 +32,7 @@ private:
 	Server(boost::asio::io_service & io_service);
 	void acceptClient(Connection * conn, const boost::system::error_code& e);
 
+	static void maintenance();
 
 public:
 	static Server * getInstance();

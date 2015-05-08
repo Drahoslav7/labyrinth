@@ -7,6 +7,7 @@ using namespace std;
 
 boost::asio::io_service * Server::io_service;
 int Server::port;
+boost::asio::deadline_timer * Server::timer = NULL;
 
 
 Server::Server(boost::asio::io_service & io_service):
@@ -23,6 +24,7 @@ Server::~Server(){
 void Server::create(boost::asio::io_service * io_service, int port){
 	Server::io_service = io_service; 
 	Server::port = port;
+	maintenance();
 }
 
 
@@ -95,26 +97,22 @@ int Server::getPort(int argc, char const *argv[]){
 	return port;
 }
 
-// std::string Server::getPlayers(){
-// 	std::string players = "";
-// 	for(auto &player : waitingPlayers){
-// 		players += player->nickname;
-// 		players += ' ';
-// 	}
-// 	return players;
-// }
+void Server::maintenance() { 
+
+	PRD("udrzba");
+
+	// vypsat všechny
+	cout << Player::getPlayersInfo() << endl;
 
 
-// void Server::removePlayer(Player player){
-// 	int pos = 0;
+	Player::pokeAll();
 
-// 	for(auto &p : waitingPlayers){
-// 		if(p == player){
-// 			waitingPlayers.erase(waitingPlayers.begin() + pos);
-// 			return 0;
-// 		}
-// 		pos++;
-// 	}
+	delete timer;
 
-// 	return 1;
-// }
+	timer = new boost::asio::deadline_timer(*io_service);
+	
+	timer->expires_from_now(boost::posix_time::milliseconds(2000));
+	timer->async_wait(boost::bind(&Server::maintenance));
+
+}
+

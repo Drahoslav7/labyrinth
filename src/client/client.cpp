@@ -168,14 +168,12 @@ string Client::doActionServer(string recvCmd, string data){
 }
 
 string Client::formatPlayers(string data){
-	ostringstream oss;
 	string first, msg, position;
 	msg += "Zacatek vypisu\n";
 	int pos = 1;
 	while(data != ""){
 		split(data, ' ', &first, &data);
-		oss << pos;
-		msg += "\t" + oss.str() + ". " + first + "\n";
+		msg += "\t" + itos(pos) + ". " + first + "\n";
 		pos++;
 	}
 	msg += "Konec vypisu";

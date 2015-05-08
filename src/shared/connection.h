@@ -27,3 +27,4 @@ private:
 	void handle_recv(boost::function<void()>);
 
 };
+

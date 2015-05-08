@@ -4,6 +4,10 @@ using namespace std;
 
 vector<Player *> Player::players = vector<Player *>();
 
+// Player::STATES[] = {
+// 	Player::NONE : "NONE",
+// }
+
 Player::Player(Connection *con){
 	connection = con;
 	nickname = "";
@@ -25,29 +29,40 @@ Player::~Player(){
 };
 
 
-int Player::setNickname(string nickname){
+bool Player::setNickname(string nickname){
 	if(nickname.length() < 3 || nickname.length() > 17){
-		return 2;
+		return false;
 	}
 
 	for(auto &player : players){
 		for(auto &c : nickname){
 			if(!isalnum(c)){
-				return 2;
+				return false;
 			}
 		}
 
 		if(player->state != DEAD && player->nickname == nickname){
-			return 1;
+			return false;
 		}
 	}
 
 	this->nickname = nickname;
 	this->state = WAITING;
 
-	return 0;
+	return true;
 };
 
+bool Player::invitePlayer(string nickname){
+	std::string msg = "INVITATION " + this->nickname; 
+	for(auto & p : players){
+		if(p->nickname == nickname && p->state == WAITING){
+			p->game = this->game;
+			p->connection->send(&msg);
+			return true;
+		}
+	}
+	return false;
+};
 
 void Player::work(){
 
@@ -100,7 +115,7 @@ std::string Player::handleUserRequest(std::string cmd, std::string data){
 
 		case STARTED:
 			if(cmd == "IAM"){ // nick
-				if(!setNickname(data)){
+				if(setNickname(data)){
 					state = WAITING;
 					res = "OK";
 				} else {
@@ -116,6 +131,7 @@ std::string Player::handleUserRequest(std::string cmd, std::string data){
 		case WAITING:
 			if(cmd == "CREATE"){
 				state = INVITING;
+				game = new Game(this);
 				res = "OK";
 			}
 			if(cmd == "WHOISTHERE"){
@@ -125,11 +141,17 @@ std::string Player::handleUserRequest(std::string cmd, std::string data){
 
 		case INVITING:
 			if(cmd == "INVITE"){ // koho
-				// invite(data);
-				res = "OK";
+				if(invitePlayer(data)){
+					res = "OK";
+				}else{
+					res = "NOPE";
+				}
 			}
-			if(cmd == "WHOISTHERE"){
+			if(cmd == "WHOISWAITING" || cmd == "WHOISTHERE"){
 				res = "OK " + Player::getPlayers(WAITING);
+			}
+			if(cmd == "WHOISREADY"){
+				res = "OK " + Player::getPlayers(READY);
 			}
 			break;
 
@@ -148,15 +170,18 @@ std::string Player::handleUserRequest(std::string cmd, std::string data){
 
 		case GODMODE:
 			if(cmd == "IAM"){ // nick
-				if(!setNickname(data)){
+				if(setNickname(data)){
 					state = WAITING;
 					res = "OK";
 				} else {
 					res = "NOPE";
 				}
 			}
-			if(cmd == "WHOISTHERE"){
+			if(cmd == "WHOISWAITING" || cmd == "WHOISTHERE"){
 				res = "OK " + Player::getPlayers(WAITING);
+			}
+			if(cmd == "WHOISREADY"){
+				res = "OK " + Player::getPlayers(READY);
 			}
 			break;
 
@@ -169,6 +194,9 @@ std::string Player::handleUserRequest(std::string cmd, std::string data){
 }
 
 
+
+////// STATICKÉ
+
 std::string Player::getPlayers(int state){
  	std::string str = "";
 	for(auto &player : players){
@@ -176,6 +204,14 @@ std::string Player::getPlayers(int state){
 			str += player->nickname;
 			str += ' ';
 		}
+	}
+	return str;
+}
+
+std::string Player::getPlayersInfo(){
+	std::string str = "";
+	for(auto &p : players){
+		str += p->nickname + " " + itos(p->getState()) + "\n";
 	}
 	return str;
 }
@@ -200,4 +236,23 @@ void Player::wipeall(){
 		delete players.back();
 		players.pop_back();
 	}
+}
+
+
+void Player::sendToAll(std::string msg){
+	std::vector<Player *>::iterator nextpit;
+	if(players.size()){
+		nextpit = players.begin() + 1;
+		players.front()->connection->send_async(&msg, boost::bind(&Player::sendToNext, nextpit, msg));
+	}
+}
+
+void Player::sendToNext(std::vector<Player *>::iterator pit, std::string msg){
+	std::vector<Player *>::iterator nextpit;
+
+	if(pit != players.end()){
+		nextpit = pit + 1;
+		(*pit)->connection->send_async(&msg, boost::bind(&Player::sendToNext, nextpit, msg));
+	}
+	
 }

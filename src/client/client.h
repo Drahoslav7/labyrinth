@@ -2,7 +2,6 @@
 
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
-#include <sstream>
 #include <string>
 #include <deque>
 #include "../shared/connection.h"

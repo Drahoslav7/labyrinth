@@ -26,10 +26,10 @@ void Connection::recv(std::string * target){
 
 void Connection::send(std::string * message){
 	std::cout <<  "Send:" << *message << std::endl;
-	*message += '\n';
+	std::string msg = *message + "\n";
 	boost::asio::write(
 		socket,
-		boost::asio::buffer(*message),
+		boost::asio::buffer(msg),
 		boost::asio::transfer_all()
 	);
 }
@@ -41,9 +41,10 @@ void Connection::send(std::string * message){
 
 void Connection::send_async(std::string * message, boost::function<void()> handler )
 {
+	std::string msg = *message + '\n';
 	boost::asio::async_write(
 		socket,
-		boost::asio::buffer(*message),
+		boost::asio::buffer(msg),
 		boost::bind(handler)
 	);
 }
@@ -65,7 +66,7 @@ void Connection::handle_recv(boost::function<void()> handler)
 	target->assign(boost::asio::buffer_cast<const char*>(rbuffer.data()));
 	rbuffer.consume(rbuffer.size());
 	*target = target->substr(0, target->size()-1);
-	cout << "-->" << *target << "<--" << endl;
+	// cout << "-->" << *target << "<--" << endl;
 	handler();
 }
 

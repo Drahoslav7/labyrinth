@@ -9,7 +9,7 @@ int Game::addPlayer(Player *player){
 	}
 
 	players.push_back(player);
-	player->state = Player::READY;
+	player->setState(Player::READY);
 
 	return 0;
 };
