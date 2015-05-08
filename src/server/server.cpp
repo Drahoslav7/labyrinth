@@ -105,7 +105,7 @@ void Server::maintenance() {
 	cout << Player::getPlayersInfo() << endl;
 
 
-	Player::pokeAll();
+	// Player::pokeAll();
 
 	delete timer;
 

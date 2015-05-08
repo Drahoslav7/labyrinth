@@ -23,3 +23,10 @@ std::string itos(int i){
 	str = oss.str();
 	return str;
 }
+
+// std::string strbuftos(boost::asio::streambuf * strbuf){
+// 	std::ostringstream ss;
+// 	ss << *strbuf;
+// 	std::string s = ss.str();
+// 	return s;
+// }

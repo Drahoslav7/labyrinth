@@ -57,6 +57,7 @@ bool Player::invitePlayer(string nickname){
 	for(auto & p : players){
 		if(p->nickname == nickname && p->state == WAITING){
 			p->game = this->game;
+			p->setState(INVITED);
 			p->connection->send(&msg);
 			return true;
 		}
@@ -142,9 +143,9 @@ std::string Player::handleUserRequest(std::string cmd, std::string data){
 		case INVITING:
 			if(cmd == "INVITE"){ // koho
 				if(invitePlayer(data)){
-					res = "OK";
+					res = "OK "+data;
 				}else{
-					res = "NOPE";
+					res = "NOPE "+data;
 				}
 			}
 			if(cmd == "WHOISWAITING" || cmd == "WHOISTHERE"){
@@ -157,9 +158,13 @@ std::string Player::handleUserRequest(std::string cmd, std::string data){
 
 		case INVITED:
 			if(cmd == "ACCEPT"){
-				game->addPlayer(this);
-				state = READY;
-				res = "OK";
+				if(game->addPlayer(this)){
+					state = READY;
+					res = "OK";
+				} else {
+					state = WAITING;
+					res = "NOPE";
+				}
 			}
 			if(cmd == "DECLINE"){
 				game = NULL;

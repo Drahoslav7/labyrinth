@@ -3,15 +3,15 @@
 using namespace std;
 vector<Game *> Game::games = vector<Game *>();
 
-int Game::addPlayer(Player *player){
+bool Game::addPlayer(Player *player){
 	if(players.size() == 4){
-		return 1;
+		return false;
 	}
 
 	players.push_back(player);
 	player->setState(Player::READY);
 
-	return 0;
+	return true;
 };
 
 int Game::removePlayer(Player *player){

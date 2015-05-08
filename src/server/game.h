@@ -20,11 +20,11 @@ public:
 	};
 
 	~Game(){
-    	games[id]=NULL;
-   	};
+		games[id]=NULL;
+	};
 
-   	int addPlayer(Player *player);
-   	int removePlayer(Player *player);
+	bool addPlayer(Player *player);
+	int removePlayer(Player *player);
 
 private:
 
