@@ -47,9 +47,7 @@ private:
 
 	void doSendCommand(std::string);
 public:
-
 	void sendCommand(std::string, std::string);
-	// Client(address serveraddr);
 	Client(boost::asio::io_service* io_service);
 	start(address);
 	~Client();

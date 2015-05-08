@@ -17,6 +17,8 @@ public:
 	string nickname;
 	Connection *connection;
 
+	int gameId = -1;
+
 	enum {
 		NONE,
 		STARTED,
@@ -26,7 +28,8 @@ public:
 		INVITING, 
 		CREATING, 
 		PLAYING,
-		DEAD
+		DEAD,
+		GODMODE
 	};
 
 	int state;
@@ -35,7 +38,8 @@ public:
 	~Player();
 
 	int setNickname(string nickname);
-	int acceptInvite(Game *game);
+	int acceptInvite();
+	int declineInvice();
 
 private:
 	boost::thread thread;
@@ -43,10 +47,10 @@ private:
 	static vector<Player *> players;
 
 	void work();
-	std::string command(std::string, std::string);
+	std::string handleUserRequest(std::string, std::string);
 
 	static std::string getPlayers(int state);
-	
+
 public:
 	static void wipeall();
 	// static int remove(Player * player);

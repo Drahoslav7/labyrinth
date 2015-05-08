@@ -58,8 +58,7 @@ void Client::handleRead(){
 }
 
 
-
-void Client::sendCommand(std::string command, std::string data){
+void Client::sendCommand(std::string command, std::string data=""){
 	sendedCmds.push_back(command);
 	io_service->post(boost::bind(&Client::doSendCommand, this, command+" "+data));
 }

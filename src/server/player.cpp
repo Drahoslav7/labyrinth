@@ -46,15 +46,15 @@ int Player::setNickname(string nickname){
 	return 0;
 };
 
-int Player::acceptInvite(Game *game){
-	if(game->addPlayer(this)){
-		return 1;
-	}
+// int Player::acceptInvite(Game *game){
+// 	if(game->addPlayer(this)){
+// 		return 1;
+// 	}
 
-	this->state = READY;
+// 	this->state = READY;
 
-	return 0;
-};
+// 	return 0;
+// };
 
 
 void Player::work(){
@@ -77,10 +77,9 @@ void Player::work(){
 		
 		split(req, ' ', &cmd, &data);
 
-		res = command(cmd, data);
-		if(res == "DIE")
+		res = handleUserRequest(cmd, data);
+		if(res == "DIE" && state != GODMODE)
 			ok = false;
-
 		try{
 			connection->send(&res);
 		} catch (boost::system::system_error & e) {
@@ -96,7 +95,7 @@ void Player::work(){
 }
 
 
-std::string Player::command(std::string cmd, std::string data){
+std::string Player::handleUserRequest(std::string cmd, std::string data){
 
 	std::string res = "DIE";
 
@@ -116,6 +115,10 @@ std::string Player::command(std::string cmd, std::string data){
 				} else {
 					res = "NOPE";
 				}
+			}
+			if(cmd == "GODMODE"){
+				state = GODMODE;
+				res = "OK";
 			}
 			break;
 
@@ -148,6 +151,20 @@ std::string Player::command(std::string cmd, std::string data){
 			if(cmd == "REJECT"){
 				state = WAITING;
 				res = "OK";
+			}
+			break;
+
+		case GODMODE:
+			if(cmd == "IAM"){ // nick
+				if(!setNickname(data)){
+					state = WAITING;
+					res = "OK";
+				} else {
+					res = "NOPE";
+				}
+			}
+			if(cmd == "WHOISTHERE"){
+				res = "HERE " + Player::getPlayers(WAITING);
 			}
 			break;
 
