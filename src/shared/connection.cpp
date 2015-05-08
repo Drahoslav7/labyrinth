@@ -25,8 +25,8 @@ void Connection::recv(std::string * target){
 }
 
 void Connection::send(std::string * message){
-	std::cout <<  "Send:" << *message << std::endl;
 	std::string msg = *message + "\n";
+	std::cout <<  "Send:" << msg << std::endl;
 	boost::asio::write(
 		socket,
 		boost::asio::buffer(msg),
