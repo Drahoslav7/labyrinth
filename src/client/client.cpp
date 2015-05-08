@@ -1,8 +1,5 @@
 #include "client.h"
 
-#define getNewCmd(data); getline(cin, data); if(data == "SUICIDE"){return 2;};
-
-
 Client::Client(boost::asio::io_service* io_service){
 	Client::io_service = io_service;
 }
@@ -14,17 +11,25 @@ Client::start(address serveraddr){
 
 	connection = new Connection(*io_service);
 
-	boost::asio::async_connect(connection->socket, endpoint_iterator,
-		boost::bind(&Client::handleConnect,this,
-		  boost::asio::placeholders::error
-		)
-	);
+	// boost::asio::async_connect(connection->socket, endpoint_iterator,
+	// 	boost::bind(&Client::handleConnect,this,
+	// 	  boost::asio::placeholders::error
+	// 	)
+	// );
+
+	boost::asio::connect(connection->socket, endpoint_iterator);
+	connection->recv_async(&readMsg, boost::bind(&Client::handleRead, this));
 
 	state = NONE;
+	running = true;
 };
 
 Client::~Client(){
 	delete connection;
+}
+
+bool Client::isRunning(){
+	return running;
 }
 
 void Client::handleConnect(const boost::system::error_code& error){
@@ -45,21 +50,26 @@ void Client::handleRead(){
 
 	std::cout << "msg:" << readMsg << endl;
 
-	// readMsg;
+	string rcvCmd, rcvData, msg, cmd;
+	split(readMsg, ' ', &rcvCmd, &rcvData);
+	if(rcvCmd != "OK" && rcvCmd != "NOPE"){
+		msg = doActionServer(rcvCmd, rcvData);
+	}else{
+		cmd = sendedCmds.front();
+		msg = doActionClient(cmd, rcvCmd, rcvData);
+		sendedCmds.pop_front();
+	}
 
-	string cmd = sendedCmds.front();
+	cout << msg << endl;
 
-
-
-	//sendedCmds.pop_front();
-	
-	connection->recv_async(&readMsg, boost::bind(&Client::handleRead, this));
-
+	if(isRunning()){
+		connection->recv_async(&readMsg, boost::bind(&Client::handleRead, this));
+	}
 }
 
 
 
-void Client::sendCommand(std::string command, std::string data){
+void Client::sendCommand(std::string command, std::string data=""){
 	sendedCmds.push_back(command);
 	io_service->post(boost::bind(&Client::doSendCommand, this, command+" "+data));
 }
@@ -74,51 +84,41 @@ std::string Client::sendMessage(string message){
 	return message;
 };
 
-int Client::doAction(){
-	string command;
+string Client::doActionClient(string cmd, string response, string data){
+	string msg = "";
 
 	switch(state){
 		case NONE:
-			if(sayHi()){
-				return 1;
-			}else{
+			if(cmd == "HI" && response == "OK"){
 				state = STARTED;
+				msg = "Zadejte svuj nick:";
 			}
 			break;
 		case STARTED:
-			getNewCmd(command);
-			if(command == "IAM"){
-				if(setNickname()){
-					return 1;
+			if(cmd == "IAM"){
+				if(response == "OK"){
+					if(state == GODMODE){
+						state = GODMODE;					
+					}else{
+						state = WAITING;
+					}
 				}else{
-					state = WAITING;
-					break;
+					msg = "Nick je spatny. Zadejte novy:";					
 				}
 			}
-			if(command == "GODMODE"){
+			if(cmd == "GODMODE" && response == "OK"){
+				msg = "A ted jsi buh";
 				state = GODMODE;
 				break;
 			}
-			if(command == "IAMp"){
-				sendMessage("IAM prdelka");
-				state = WAITING;
-				break;
-			}
-			cout << "Zadej spravny prikaz. Nabidka: IAM" << endl;
 			break;
-		case WAITING:
-			getNewCmd(command);
-			if(command == "RESTART"){
-				state = STARTED;
+		case WAITING:		
+			if(cmd == "WHOISTHERE" && response == "OK"){
+				msg = formatPlayers(data);
 				break;
 			}
-			if(command == "WHOISTHERE"){
-				if(showPlayers()){
-					return 1;
-				}
-				break;
-			}
-			if(command == "CREATE"){
+			
+			if(cmd == "CREATE" && response == "OK"){
 				state = INVITING;
 				break;
 			}
@@ -127,76 +127,79 @@ int Client::doAction(){
 		case INVITED:
 		case READY:
 		case INVITING:
-			getNewCmd(command);
-			if(command == "WHOISTHERE"){
-				if(showPlayers()){
-					return 1;
-				}
-				break;
-			}
 			break;
 		case CREATING:
 		case PLAYING:
 		case GODMODE:
-			getNewCmd(command);
-			string msg = sendMessage(command);
-			if(msg == "DIE"){
-				return 1;
-			}
-			cout << msg << endl;
 			break;
 	}
 
-	return 0;
+	return msg;
 }
 
-int Client::sayHi(){
-	string command = "HI";	
-	string msg = sendMessage(command);
-	
-	return (msg == "DIE") ? 1 : 0;
-}
+string Client::doActionServer(string recvCmd, string data){
+	string msg;
 
-int Client::setNickname(){
-	string data;
-	cout << "Zadejte nick: " << endl;
-	getline(cin, data);
-
-	string msg = sendMessage("IAM "+data);
-	
-	while(msg != "OK"){
-		if(msg == "DIE"){
-			return 1;
-		}
-		cout << "Zadejte novy nick: " << endl;
-		getline(cin, data);
-
-		msg = sendMessage("IAM "+data);
-	}
-
-	return 0;
-}
-
-int Client::showPlayers(){
-	string msg = sendMessage("WHOISTHERE");
-	if(msg == "DIE"){
-		return 1;
-	}
-
-	string first, body;
-	split(msg, ' ', &first, &body);
-	if(first == "HERE"){
-		cout << "Zacatek vypisu" << endl;
-		int pos = 1;
-		while(body != ""){
-			split(body, ' ', &first, &body);
-			cout << '\t' << pos << ". " << first << endl;
-			pos++;
-		}
-		cout << "Konec vypisu" << endl;
+	if(recvCmd == "DIE"){
+		running = false;
+		msg = "Server se nastval!";
 	}else{
-		return 1;
+		msg = "Server po mě něco chce";
 	}
 
-	return 0;
+	return msg;
 }
+
+string Client::formatPlayers(string data){
+	ostringstream oss;
+	string first, msg, position;
+	split(msg, ' ', &first, &data);
+	msg += "Zacatek vypisu\n";
+	int pos = 1;
+	while(data != ""){
+		split(data, ' ', &first, &data);
+		oss << pos;
+		msg = msg + "\t" + oss.str() + ". " + first + "\n";
+		pos++;
+	}
+	msg += "Konec vypisu";
+
+	return msg;
+}
+
+bool Client::validCommand(string cmd){
+
+	switch(state){
+		case STARTED:
+			if (cmd == "IAM"){
+				return true;
+			}
+			if (cmd == "GODMODE"){
+				return true;
+			}
+			break;
+		case WAITING:		
+			if(cmd == "WHOISTHERE"){
+				return true;
+			}
+			if(cmd == "CREATE"){
+				return true;
+			}
+		case INVITED:
+		case READY:
+		case INVITING:
+			break;
+		case CREATING:
+		case PLAYING:
+		case GODMODE:
+			if (cmd == "IAM"){
+				return true;
+			}
+			if(cmd == "WHOISTHERE"){
+				return true;
+			}
+			break;
+	}
+
+	return false;
+} 

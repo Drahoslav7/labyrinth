@@ -63,6 +63,8 @@ void Connection::recv_async(std::string * target,  boost::function<void()> handl
 void Connection::handle_recv(boost::function<void()> handler)
 {
 	target->assign(boost::asio::buffer_cast<const char*>(rbuffer.data()));
+	*target = target->substr(0, target->size()-1);
+	cout << "-->" << *target << "<--" << endl;
 	handler();
 }
 

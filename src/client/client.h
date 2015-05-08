@@ -2,10 +2,13 @@
 
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
+#include <sstream>
 #include <string>
 #include <deque>
 #include "../shared/connection.h"
 #include "../shared/tools.h"
+#include "../shared/debug.cpp"
+
 
 using namespace std;
 
@@ -39,13 +42,19 @@ private:
 	deque<std::string> sendedCmds;
 
 	string readMsg;
+	bool running;
 
 	int sayHi();
 	int setNickname();
 	int showPlayers();
 
+	void handleConnect(const boost::system::error_code& error);
+	void handleRead();
 
 	void doSendCommand(std::string);
+	string doActionClient(string, string, string);
+	string doActionServer(string, string);
+	string formatPlayers(string data);
 public:
 
 	void sendCommand(std::string, std::string);
@@ -54,11 +63,9 @@ public:
 	start(address);
 	~Client();
 
-	void handleConnect(const boost::system::error_code& error);
-	void handleRead();
-
+	bool isRunning();
 	void write(std::string);
-	string sendMessage(string message);
-	int doAction();
+	string sendMessage(string);
+	bool validCommand(string);
 
 };
