@@ -46,16 +46,6 @@ int Player::setNickname(string nickname){
 	return 0;
 };
 
-// int Player::acceptInvite(Game *game){
-// 	if(game->addPlayer(this)){
-// 		return 1;
-// 	}
-
-// 	this->state = READY;
-
-// 	return 0;
-// };
-
 
 void Player::work(){
 
@@ -71,7 +61,7 @@ void Player::work(){
 		} catch (boost::system::system_error & e) {
 			ok = false;
 		}
-	
+
 		string cmd;
 		string data;
 		
@@ -87,7 +77,6 @@ void Player::work(){
 		}
 
 	}
-
 
 	state = DEAD;
 
@@ -144,11 +133,12 @@ std::string Player::handleUserRequest(std::string cmd, std::string data){
 
 		case INVITED:
 			if(cmd == "ACCEPT"){
-				//acceptInvite()
+				game->addPlayer(this);
 				state = READY;
 				res = "OK";
 			}
-			if(cmd == "REJECT"){
+			if(cmd == "DECLINE"){
+				game = NULL;
 				state = WAITING;
 				res = "OK";
 			}

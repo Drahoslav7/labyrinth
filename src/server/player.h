@@ -17,7 +17,6 @@ public:
 	string nickname;
 	Connection *connection;
 
-	int gameId = -1;
 
 	enum {
 		NONE,
@@ -42,8 +41,10 @@ public:
 	int declineInvice();
 
 private:
-	boost::thread thread;
 	int id;
+	boost::thread thread;
+	Game *game = NULL;
+	
 	static vector<Player *> players;
 
 	void work();
