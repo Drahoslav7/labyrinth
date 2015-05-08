@@ -14,13 +14,58 @@ Client::start(address serveraddr){
 
 	connection = new Connection(*io_service);
 
-	boost::asio::connect(connection->socket, endpoint_iterator);
+	boost::asio::async_connect(connection->socket, endpoint_iterator,
+		boost::bind(&Client::handleConnect,this,
+		  boost::asio::placeholders::error
+		)
+	);
 
 	state = NONE;
 };
 
 Client::~Client(){
 	delete connection;
+}
+
+void Client::handleConnect(const boost::system::error_code& error){
+	// if (!error) {
+	// boost::asio::async_read(connection->socket,
+	// 	boost::asio::buffer(readMsg, chat_message::header_length),
+	// 	  boost::bind(&Client::handleRead, this,
+	// 	    boost::asio::placeholders::error
+	// 	  )
+	// 	);
+	// }
+	if (!error){
+		connection->recv_async(&readMsg, boost::bind(&Client::handleRead, this));
+	}
+}
+
+void Client::handleRead(){
+
+	std::cout << "msg:" << readMsg << endl;
+
+	// readMsg;
+
+	string cmd = sendedCmds.front();
+
+
+
+	//sendedCmds.pop_front();
+	
+	connection->recv_async(&readMsg, boost::bind(&Client::handleRead, this));
+
+}
+
+
+
+void Client::sendCommand(std::string command, std::string data){
+	sendedCmds.push_back(command);
+	io_service->post(boost::bind(&Client::doSendCommand, this, command+" "+data));
+}
+
+void Client::doSendCommand(std::string command){
+	connection->send(&command);
 }
 
 std::string Client::sendMessage(string message){

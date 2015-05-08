@@ -20,10 +20,10 @@ public:
 
 	void recv(std::string * target);
 	void send(std::string * message);
-	void recv_async(std::string * target, void(*handler)(std::string*) );
-	void send_async(std::string * message, void(*handler)() );
+	void recv_async(std::string * target, boost::function<void()> );
+	void send_async(std::string * message, boost::function<void()> );
 
 private:
-	void handle_recv(void (*func)(std::string*));
+	void handle_recv(boost::function<void()>);
 
 };

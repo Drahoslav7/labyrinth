@@ -26,17 +26,32 @@ int main(int argc, char const *argv[])
 	Client client(io_service.get());
 	client.start(serveraddr);
 
+	boost::thread t(boost::bind(&boost::asio::io_service::run, io_service));
 
-	while(1){
-		int ecode = client.doAction();
-		if(ecode == 1){
-			cout << "Server se nastval!" << endl;
-			break;
-		}else if(ecode == 2){	
-			cout << "Ukonceni aplikace!" << endl;
-			break;
-		}
+	string line;
+	string cmd;
+	string data;
+
+	while(getline(cin, line)){
+
+		split(line, ' ', &cmd, &data);
+
+		client.sendCommand(cmd, data);
 	}
+
+
+	t.join();
+
+	// while(1){
+	// 	int ecode = client.doAction();
+	// 	if(ecode == 1){
+	// 		cout << "Server se nastval!" << endl;
+	// 		break;
+	// 	}else if(ecode == 2){	
+	// 		cout << "Ukonceni aplikace!" << endl;
+	// 		break;
+	// 	}
+	// }
 
 	return 0;
 }
