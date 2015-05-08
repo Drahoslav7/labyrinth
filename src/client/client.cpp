@@ -1,6 +1,6 @@
 #include "client.h"
 
-#define getNewCmd(data); getline(cin, data); if(data == "KILL"){return 2;};
+#define getNewCmd(data); getline(cin, data); if(data == "SUICIDE"){return 2;};
 
 
 Client::Client(boost::asio::io_service* io_service){
@@ -54,30 +54,42 @@ int Client::doAction(){
 				state = GODMODE;
 				break;
 			}
+			if(command == "IAMp"){
+				sendMessage("IAM prdelka");
+				state = WAITING;
+				break;
+			}
 			cout << "Zadej spravny prikaz. Nabidka: IAM" << endl;
 			break;
 		case WAITING:
-			// getNewCmd(command);
-			// if(command == "RESTART"){
-			// 	state = STARTED;
-			// 	break;
-			// }
-			// if(command == "WHOISTHERE"){
-			// 	showPlayers();
-			// 	break;
-			// }
-			// if(command == "CREATE"){
-			// 	state = INVITING;
-			// 	break;
-			// }
-			// cout << "Zadej spravny prikaz. Nabidka: RESTART" << endl;
-			// break;
+			getNewCmd(command);
+			if(command == "RESTART"){
+				state = STARTED;
+				break;
+			}
+			if(command == "WHOISTHERE"){
+				if(showPlayers()){
+					return 1;
+				}
+				break;
+			}
+			if(command == "CREATE"){
+				state = INVITING;
+				break;
+			}
+			cout << "Zadej spravny prikaz. Nabidka: RESTART" << endl;
+			break;
 		case INVITED:
 		case READY:
 		case INVITING:
-			// if(command == "WHOISTHERE"){
-			// 	break;
-			// }
+			getNewCmd(command);
+			if(command == "WHOISTHERE"){
+				if(showPlayers()){
+					return 1;
+				}
+				break;
+			}
+			break;
 		case CREATING:
 		case PLAYING:
 		case GODMODE:
@@ -120,6 +132,26 @@ int Client::setNickname(){
 	return 0;
 }
 
-// int Client::showPlayers(){
+int Client::showPlayers(){
+	string msg = sendMessage("WHOISTHERE");
+	if(msg == "DIE"){
+		return 1;
+	}
 
-// }
+	string first, body;
+	split(msg, ' ', &first, &body);
+	if(first == "HERE"){
+		cout << "Zacatek vypisu" << endl;
+		int pos = 1;
+		while(body != ""){
+			split(body, ' ', &first, &body);
+			cout << '\t' << pos << ". " << first << endl;
+			pos++;
+		}
+		cout << "Konec vypisu" << endl;
+	}else{
+		return 1;
+	}
+
+	return 0;
+}

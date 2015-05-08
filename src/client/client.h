@@ -3,6 +3,7 @@
 #include <boost/asio.hpp>
 #include <string>
 #include "../shared/connection.h"
+#include "../shared/tools.h"
 
 using namespace std;
 
@@ -35,6 +36,7 @@ private:
 
 	int sayHi();
 	int setNickname();
+	int showPlayers();
 
 public:
 	// Client(address serveraddr);
