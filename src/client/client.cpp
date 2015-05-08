@@ -32,6 +32,10 @@ bool Client::isRunning(){
 	return running;
 }
 
+void Client::quit(){
+	running = false;
+}
+
 void Client::handleConnect(const boost::system::error_code& error){
 	// if (!error) {
 	// boost::asio::async_read(connection->socket,
@@ -96,11 +100,8 @@ string Client::doActionClient(string cmd, string response, string data){
 		case STARTED:
 			if(cmd == "IAM"){
 				if(response == "OK"){
-					if(state == GODMODE){
-						state = GODMODE;					
-					}else{
-						state = WAITING;
-					}
+					state = WAITING;				
+					msg = "Nick je v poradku. Pokracuj.";
 				}else{
 					msg = "Nick je spatny. Zadejte novy:";					
 				}
@@ -130,6 +131,21 @@ string Client::doActionClient(string cmd, string response, string data){
 		case CREATING:
 		case PLAYING:
 		case GODMODE:
+			if(cmd == "IAM"){
+				if(response == "OK"){
+					msg = "Nick je v poradku. Pokracuj.";
+				}else{
+					msg = "Nick je spatny. Zadejte novy:";					
+				}
+			}
+			if(cmd == "GODMODE" && response == "OK"){
+				msg = "Uz jednou buh jsi tak neser!";
+				break;
+			}
+			if(cmd == "WHOISTHERE" && response == "OK"){
+				msg = formatPlayers(data);
+				break;
+			}
 			break;
 	}
 
@@ -142,8 +158,10 @@ string Client::doActionServer(string recvCmd, string data){
 	if(recvCmd == "DIE"){
 		running = false;
 		msg = "Server se nastval!";
+	}else if(recvCmd == "POKE"){
+		msg = "Server te stouchnul!";
 	}else{
-		msg = "Server po mě něco chce";
+		msg = "SERVER --- WTF?!";
 	}
 
 	return msg;
@@ -152,13 +170,12 @@ string Client::doActionServer(string recvCmd, string data){
 string Client::formatPlayers(string data){
 	ostringstream oss;
 	string first, msg, position;
-	split(msg, ' ', &first, &data);
 	msg += "Zacatek vypisu\n";
 	int pos = 1;
 	while(data != ""){
 		split(data, ' ', &first, &data);
 		oss << pos;
-		msg = msg + "\t" + oss.str() + ". " + first + "\n";
+		msg += "\t" + oss.str() + ". " + first + "\n";
 		pos++;
 	}
 	msg += "Konec vypisu";
@@ -195,6 +212,9 @@ bool Client::validCommand(string cmd){
 				return true;
 			}
 			if(cmd == "WHOISTHERE"){
+				return true;
+			}
+			if(cmd == "GODMODE"){
 				return true;
 			}
 			break;

@@ -62,6 +62,7 @@ public:
 	~Client();
 
 	bool isRunning();
+	void quit();
 	void write(std::string);
 	string sendMessage(string);
 	bool validCommand(string);

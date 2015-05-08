@@ -37,8 +37,6 @@ int main(int argc, char const *argv[])
 	while(getline(cin, line) && client.isRunning()){
 		split(line, ' ', &cmd, &data);
 
-		PP;
-
 		if(cmd == "SUICIDE"){
 			break;
 		}
@@ -53,18 +51,8 @@ int main(int argc, char const *argv[])
 
 	cout << "Program se ukoncuje" << endl;
 
-	t.join();
-
-	// while(1){
-	// 	int ecode = client.doAction();
-	// 	if(ecode == 1){
-	// 		cout << "Server se nastval!" << endl;
-	// 		break;
-	// 	}else if(ecode == 2){	
-	// 		cout << "Ukonceni aplikace!" << endl;
-	// 		break;
-	// 	}
-	// }
-
+	client.quit();
+	//t.join(); <--- to tu nikdy nemelo byt
+	
 	return 0;
 }
