@@ -4,6 +4,8 @@
 // #include <QtGui/QApplication>
 // #include <QApplication>
 
+// ///////////////////////////
+
 using namespace std;
 
 int main(int argc, char const *argv[])
@@ -18,9 +20,13 @@ int main(int argc, char const *argv[])
 		serveraddr.port = argv[2];
 	}
 
-	Client client(serveraddr);
 
-	
+	boost::shared_ptr<boost::asio::io_service> io_service(new boost::asio::io_service());
+
+	Client client(io_service.get());
+	client.start(serveraddr);
+
+
 	while(1){
 		int ecode = client.doAction();
 		if(ecode == 1){
@@ -29,7 +35,7 @@ int main(int argc, char const *argv[])
 		}else if(ecode == 2){	
 			cout << "Ukonceni aplikace!" << endl;
 			break;
-		}	
+		}
 	}
 
 	return 0;

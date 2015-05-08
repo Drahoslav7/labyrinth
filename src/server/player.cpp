@@ -67,7 +67,7 @@ void Player::work(){
 	bool ok = true;
 	while(ok){
 		try{
-			connection->receive(&req);
+			connection->recv(&req);
 		} catch (boost::system::system_error & e) {
 			ok = false;
 		}

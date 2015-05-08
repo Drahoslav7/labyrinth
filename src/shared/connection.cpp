@@ -10,7 +10,7 @@ Connection::~Connection(){
 	socket.close();
 }
 
-void Connection::receive(std::string * target){
+void Connection::recv(std::string * target){
 	boost::asio::read_until(
 		socket,
 		rbuffer,
@@ -32,5 +32,37 @@ void Connection::send(std::string * message){
 		boost::asio::buffer(*message),
 		boost::asio::transfer_all()
 	);
+}
+
+
+// void foo(){
+// 	cout << "foo" << endl;
+// }
+
+void Connection::send_async(std::string * message, void(*handler)() )
+{
+	boost::asio::async_write(
+		socket,
+		boost::asio::buffer(*message),
+		boost::bind(handler)
+	);
+}
+
+
+void Connection::recv_async(std::string * target, void (*handler)(std::string*) )
+{
+	this->target = target;
+	boost::asio::async_read_until(
+		socket,
+		rbuffer,
+		'\n',
+		boost::bind(&Connection::handle_recv, this, handler)
+	);
+}
+
+void Connection::handle_recv(void (*func)(std::string*))
+{
+	target->assign(boost::asio::buffer_cast<const char*>(rbuffer.data()));
+	(*func)(target);
 }
 

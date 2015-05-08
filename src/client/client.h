@@ -30,14 +30,16 @@ public:
 	int state;
 
 private:
-	boost::asio::io_service io_service;
+	boost::asio::io_service * io_service;
 	Connection * connection;
 
 	int sayHi();
 	int setNickname();
 
 public:
-	Client(address serveraddr);
+	// Client(address serveraddr);
+	Client(boost::asio::io_service* io_service);
+	start(address);
 	~Client();
 	string sendMessage(string message);
 	int doAction();

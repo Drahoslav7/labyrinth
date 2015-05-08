@@ -2,12 +2,17 @@
 
 #define getNewCmd(data); getline(cin, data); if(data == "KILL"){return 2;};
 
-Client::Client(address serveraddr){	
-	boost::asio::ip::tcp::resolver resolver(io_service);
+
+Client::Client(boost::asio::io_service* io_service){
+	Client::io_service = io_service;
+}
+
+Client::start(address serveraddr){	
+	boost::asio::ip::tcp::resolver resolver(*io_service);
 	boost::asio::ip::tcp::resolver::query query(serveraddr.hostname, serveraddr.port);
 	boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
 
-	connection = new Connection(io_service);
+	connection = new Connection(*io_service);
 
 	boost::asio::connect(connection->socket, endpoint_iterator);
 
@@ -20,7 +25,7 @@ Client::~Client(){
 
 std::string Client::sendMessage(string message){
 	connection->send(&message);
-	connection->receive(&message);
+	connection->recv(&message);
 	return message;
 };
 

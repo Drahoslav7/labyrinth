@@ -3,6 +3,8 @@
 #include <iostream>
 #include <string>
 #include <boost/asio.hpp>
+#include <boost/bind.hpp>
+#include <boost/function.hpp>
 #include "debug.cpp"
 
 class Connection {
@@ -13,9 +15,15 @@ public:
 	std::string * target;
 
 public:
-	Connection(boost::asio::io_service & io_service);
+	Connection(boost::asio::io_service & bbbb);
 	~Connection();
 
-	void receive(std::string * target);
+	void recv(std::string * target);
 	void send(std::string * message);
+	void recv_async(std::string * target, void(*handler)(std::string*) );
+	void send_async(std::string * message, void(*handler)() );
+
+private:
+	void handle_recv(void (*func)(std::string*));
+
 };
