@@ -85,7 +85,11 @@ void Player::work(){
 		
 		split(req, ' ', &cmd, &data);
 
+
 		res = handleUserRequest(cmd, data);
+
+		std::cout << "gonnasend-->" << res << "<--" << endl;
+		
 		if(res == "DIE" && state != GODMODE)
 			ok = false;
 		try{
@@ -188,6 +192,10 @@ std::string Player::handleUserRequest(std::string cmd, std::string data){
 			if(cmd == "WHOISREADY"){
 				res = "OK " + Player::getPlayers(READY);
 			}
+			if(cmd == "KILL"){
+				Player::killPlayer(data);
+
+			}
 			break;
 
 		default:
@@ -201,6 +209,16 @@ std::string Player::handleUserRequest(std::string cmd, std::string data){
 
 
 ////// STATICKÉ
+
+void Player::killPlayer(std::string who){
+	std::string msg = "SHOOT";
+	for(auto &p : players){
+		if(p->nickname == who){
+			p->connection->send(&msg);
+			p->setState(DEAD);
+		}
+	}
+}
 
 std::string Player::getPlayers(int state){
  	std::string str = "";

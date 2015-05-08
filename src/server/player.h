@@ -56,6 +56,7 @@ private:
 	static std::string getPlayers(int state);
 
 public:
+	static void killPlayer(std::string who);
 	static std::string getPlayersInfo();
 	static void wipeall();
 	static void pokeAll(){
