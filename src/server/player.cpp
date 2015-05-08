@@ -194,7 +194,7 @@ std::string Player::handleUserRequest(std::string cmd, std::string data){
 			}
 			if(cmd == "KILL"){
 				Player::killPlayer(data);
-
+				res = "OK";
 			}
 			break;
 
