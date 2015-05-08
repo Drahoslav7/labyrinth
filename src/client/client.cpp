@@ -67,6 +67,7 @@ void Client::handleRead(){
 	cout << msg << endl;
 
 	if(isRunning()){
+		readMsg = "";
 		connection->recv_async(&readMsg, boost::bind(&Client::handleRead, this));
 	}
 }
@@ -109,27 +110,48 @@ string Client::doActionClient(string cmd, string response, string data){
 			if(cmd == "GODMODE" && response == "OK"){
 				msg = "A ted jsi buh";
 				state = GODMODE;
-				break;
 			}
 			break;
 		case WAITING:		
 			if(cmd == "WHOISTHERE" && response == "OK"){
 				msg = formatPlayers(data);
-				break;
 			}
 			
 			if(cmd == "CREATE" && response == "OK"){
 				state = INVITING;
-				break;
+				msg = "Nyni muzes pozvat hrace";
 			}
-			cout << "Zadej spravny prikaz. Nabidka: RESTART" << endl;
 			break;
 		case INVITED:
+			if(cmd == "ACCEPT" && response == "OK"){
+				state = READY;
+				msg = "Prijmul si hru. Cekej nez hra zacne.";
+			}
+			if(cmd == "DECLINE" && response == "OK"){
+				state = WAITING;
+				msg = "Hru jsi neprijmul. Pockej nez te nekdo pozve nebo zaloz hru.";
+			}
+			break;
 		case READY:
+			break;
 		case INVITING:
+			if(cmd == "INVITE"){
+				if(response == "OK"){
+					msg = "Hrac " + data + " byl pozvan";
+				}
+				if(response == "NOPE"){
+					msg = "Hrac " + data + " nemohl byt pozvan";
+				}
+			}
+
+			if(cmd == "WHOISTHERE" && response == "OK"){
+				msg = formatPlayers(data);
+			}
 			break;
 		case CREATING:
+			break;
 		case PLAYING:
+			break;
 		case GODMODE:
 			if(cmd == "IAM"){
 				if(response == "OK"){
@@ -140,11 +162,12 @@ string Client::doActionClient(string cmd, string response, string data){
 			}
 			if(cmd == "GODMODE" && response == "OK"){
 				msg = "Uz jednou buh jsi tak neser!";
-				break;
 			}
 			if(cmd == "WHOISTHERE" && response == "OK"){
 				msg = formatPlayers(data);
-				break;
+			}
+			if(cmd == "KILL" && response == "OK"){
+				msg = "Mas dalsi zarez na pazbe";
 			}
 			break;
 	}
@@ -155,11 +178,19 @@ string Client::doActionClient(string cmd, string response, string data){
 string Client::doActionServer(string recvCmd, string data){
 	string msg;
 
+	cout << "prikaz od serveru: --->" << recvCmd << "<---" << endl;
+
 	if(recvCmd == "DIE"){
 		running = false;
 		msg = "Server se nastval!";
 	}else if(recvCmd == "POKE"){
 		msg = "Server te stouchnul!";
+	}else if(recvCmd == "INVITATION"){
+		msg = "Byl jsi pozvan do hry hracem " + data + ". Prijimas vyzvu?";
+		state = INVITED;
+	}else if(recvCmd == "SHOOT"){
+		running = false;
+		msg = "Byl jsi sestrelen bozi rukou parchante!";
 	}else{
 		msg = "SERVER --- WTF?!";
 	}
@@ -169,7 +200,7 @@ string Client::doActionServer(string recvCmd, string data){
 
 string Client::formatPlayers(string data){
 	string first, msg, position;
-	msg += "Zacatek vypisu\n";
+	msg = "Zacatek vypisu\n";
 	int pos = 1;
 	while(data != ""){
 		split(data, ' ', &first, &data);
@@ -182,7 +213,6 @@ string Client::formatPlayers(string data){
 }
 
 bool Client::validCommand(string cmd){
-
 	switch(state){
 		case STARTED:
 			if (cmd == "IAM"){
@@ -199,12 +229,30 @@ bool Client::validCommand(string cmd){
 			if(cmd == "CREATE"){
 				return true;
 			}
+			break;
 		case INVITED:
+			if(cmd == "ACCEPT"){
+				return true;
+			}
+			if(cmd == "DECLINE"){
+				return true;
+			}
+			break;
 		case READY:
+			break;
 		case INVITING:
+			if(cmd == "INVITE"){
+				return true;
+			}
+
+			if(cmd == "WHOISTHERE"){
+				return true;
+			}
 			break;
 		case CREATING:
+			break;
 		case PLAYING:
+			break;
 		case GODMODE:
 			if (cmd == "IAM"){
 				return true;
@@ -213,6 +261,9 @@ bool Client::validCommand(string cmd){
 				return true;
 			}
 			if(cmd == "GODMODE"){
+				return true;
+			}
+			if(cmd == "KILL"){
 				return true;
 			}
 			break;
