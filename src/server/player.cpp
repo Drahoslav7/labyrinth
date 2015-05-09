@@ -193,6 +193,7 @@ std::string Player::handleUserRequest(std::string cmd, std::string data){
 				if(game->createGame(data)){
 					res = "OK";
 					state = READY;
+					game->sendInit();
 				} else {
 					res = "NOPE";
 				}
