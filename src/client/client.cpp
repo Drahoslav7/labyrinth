@@ -284,9 +284,7 @@ void Client::initScoreboard(string data){
 	while(data != ""){
 		split(data, ';', &player, &data);
 		line.color = player[0];
-		cout << player << endl;
 		player.erase(player.begin());
-		cout << player << endl;
 		line.nickname = player;
 		line.points = 0;
 		scoreboard.push_back(line);
@@ -296,7 +294,8 @@ void Client::initScoreboard(string data){
 string Client::formatScoreboard(){
 	string msg = "";
 	for(auto &line : scoreboard){
-		msg += line.color + " " + line.nickname + " " + itos(line.points) + "\n";		
+		msg += line.color;
+		msg += " " + line.nickname + " " + itos(line.points) + "\n";		
 	}
 
 	return msg;
