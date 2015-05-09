@@ -170,8 +170,24 @@ string Client::doActionClient(string cmd, string response, string data){
 			}
 			break;
 		case CREATING_NEW:
+			if(cmd == "NEW"){
+				if(response == "OK"){
+					state = READY;
+					msg = "Cekej nez hra zacne.";
+				}else{
+					msg = "Zadal jsi spatne rozmery hry.";
+				}
+			}
 			break;
 		case CREATING_LOAD:
+			if(cmd == "LOAD"){
+				if(response == "OK"){
+					state = READY;
+					msg = "Cekej nez hra zacne.";
+				}else{
+					msg = "Hra nejde nacist";
+				}
+			}
 			break;
 		case PLAYING:
 			break;
@@ -220,6 +236,12 @@ string Client::doActionServer(string recvCmd, string data){
 	if (recvCmd == "INVITATION"){
 		state = INVITED;
 		return msg = "Byl jsi pozvan do hry hracem " + data + ". Prijimas vyzvu?";
+	}
+
+	// READY or PLAYING
+	if (recvCmd == "GAMECANCELED"){
+		state = WAITING;
+		return msg = "Hra byla ukoncena. Pripoje se do jine nebo zaloz svoji.";
 	}
 
 	// CREATING
@@ -290,8 +312,14 @@ bool Client::validCommand(string cmd){
 			}
 			break;
 		case CREATING_NEW:
+			if(cmd == "NEW"){
+				return true;
+			}
 			break;
 		case CREATING_LOAD:
+			if(cmd == "LOAD"){
+				return true;
+			}
 			break;	
 		case PLAYING:
 			break;
