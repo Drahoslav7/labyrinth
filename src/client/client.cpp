@@ -94,8 +94,9 @@ void Client::initScoreboard(string data){
 	Scoreline line;
 	while(data != ""){
 		split(data, ';', &player, &data);
-		line.color = data[0];
-		line.nickname = data.substr(1, data.size()-1);
+		line.color = player[0];
+		player.erase(player.begin());
+		line.nickname = player;
 		line.points = 0;
 		scoreboard.push_back(line);
 	}
