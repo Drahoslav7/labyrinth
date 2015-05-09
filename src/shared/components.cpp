@@ -184,7 +184,7 @@ Board::Board(int size = 7){
 
 Board::Board(std::string format){
 
-	int pos = 1;
+	int pos = 0;
 	int size = (format[pos] - 'A' + 2) * 2 + 1;
 	pos++;
 

@@ -51,6 +51,21 @@ void Client::handleConnect(const boost::system::error_code& error){
 	}
 }
 
+void Client::sendCommand(std::string command, std::string data=""){
+	sendedCmds.push_back(command);
+	io_service->post(boost::bind(&Client::doSendCommand, this, command+" "+data));
+}
+
+void Client::doSendCommand(std::string command){
+	connection->send(&command);
+}
+
+std::string Client::sendMessage(string message){
+	connection->send(&message);
+	connection->recv(&message);
+	return message;
+};
+
 void Client::handleRead(){
 
 	std::cout << "msg:" << readMsg << endl;
@@ -73,34 +88,53 @@ void Client::handleRead(){
 	}
 }
 
+string Client::doActionServer(string recvCmd, string data){
+	string msg;
 
-void Client::sendCommand(std::string command, std::string data=""){
-	sendedCmds.push_back(command);
-	io_service->post(boost::bind(&Client::doSendCommand, this, command+" "+data));
-}
+	//cout << "prikaz od serveru: --->" << recvCmd << "<---" << endl;
 
-void Client::doSendCommand(std::string command){
-	connection->send(&command);
-}
-
-std::string Client::sendMessage(string message){
-	connection->send(&message);
-	connection->recv(&message);
-	return message;
-};
-
-void Client::initScoreboard(string data){
-	string player;
-	Scoreline line;
-	while(data != ""){
-		split(data, ';', &player, &data);
-		line.color = player[0];
-		player.erase(player.begin());
-		line.nickname = player;
-		line.points = 0;
-		scoreboard.push_back(line);
+	// all states
+	if (recvCmd == "DIE"){
+		running = false;
+		return "Server se nastval!";
 	}
+	if (recvCmd == "POKE"){
+		return "Server te stouchnul!";
+	}
+	if (recvCmd == "SHOOT"){
+		running = false;
+		return "Byl jsi sestrelen bozi rukou parchante!";
+	}
+
+	// WAITING
+	if (recvCmd == "INVITATION"){
+		state = INVITED;
+		return "Byl jsi pozvan do hry hracem " + data + ". Prijimas vyzvu?";
+	}
+
+	// READY or PLAYING
+	if (recvCmd == "GAMECANCELED"){
+		state = WAITING;
+		return "Hra byla ukoncena. Pripojte se do jine nebo zaloz svoji.";
+	}
+	if (recvCmd == "INIT"){
+		state = PLAYING;
+		string scboarddata, boardformat;
+		split(data, ' ', &scboarddata, &boardformat);
+		initScoreboard(scboarddata);
+		board = new Board(boardformat);
+		return "Hra zacala \n" + formatScoreboard() + board->toString();
+	}
+
+	// CREATING
+	if (recvCmd == "READYLIST"){
+		return "Seznam hracu ve vasi hre:\n" + formatPlayers(data);
+	}
+	
+	running = false;
+	return "SERVER --- WTF?!";
 }
+
 
 string Client::doActionClient(string cmd, string response, string data){
 	string msg = "";
@@ -227,53 +261,6 @@ string Client::doActionClient(string cmd, string response, string data){
 	return msg;
 }
 
-string Client::doActionServer(string recvCmd, string data){
-	string msg;
-
-	//cout << "prikaz od serveru: --->" << recvCmd << "<---" << endl;
-
-	// all states
-	if (recvCmd == "DIE"){
-		running = false;
-		return "Server se nastval!";
-	}
-	if (recvCmd == "POKE"){
-		return "Server te stouchnul!";
-	}
-	if (recvCmd == "SHOOT"){
-		running = false;
-		return "Byl jsi sestrelen bozi rukou parchante!";
-	}
-
-	// WAITING
-	if (recvCmd == "INVITATION"){
-		state = INVITED;
-		return "Byl jsi pozvan do hry hracem " + data + ". Prijimas vyzvu?";
-	}
-
-	// READY or PLAYING
-	if (recvCmd == "GAMECANCELED"){
-		state = WAITING;
-		return "Hra byla ukoncena. Pripoje se do jine nebo zaloz svoji.";
-	}
-	if (recvCmd == "INIT"){
-		state = PLAYING;
-		string scboarddata, boardformat;
-		split(data, ' ', &scboarddata, &boardformat);
-		initScoreboard(scboarddata);
-		board = new Board(boardformat);
-		return "Hra zacala \n" + formatScoreboard() + board->toString();
-	}
-
-	// CREATING
-	if (recvCmd == "READYLIST"){
-		return "Seznam hracu ve vasi hre:\n" + formatPlayers(data);
-	}
-	
-	running = false;
-	return "SERVER --- WTF?!";
-}
-
 string Client::formatPlayers(string data){
 	string first, msg, position;
 	msg = "Zacatek vypisu\n";
@@ -286,6 +273,21 @@ string Client::formatPlayers(string data){
 	msg += "Konec vypisu";
 
 	return msg;
+}
+
+void Client::initScoreboard(string data){
+	string player;
+	Scoreline line;
+	while(data != ""){
+		split(data, ';', &player, &data);
+		line.color = player[0];
+		cout << player << endl;
+		player.erase(player.begin());
+		cout << player << endl;
+		line.nickname = player;
+		line.points = 0;
+		scoreboard.push_back(line);
+	}
 }
 
 string Client::formatScoreboard(){
