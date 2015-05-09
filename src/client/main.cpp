@@ -52,7 +52,7 @@ int main(int argc, char const *argv[])
 	cout << "Program se ukoncuje" << endl;
 
 	client.quit();
-	t.join(); //<--- to tu nikdy nemelo byt
+	//t.join(); //<--- to tu nikdy nemelo byt
 	
 	return 0;
 }

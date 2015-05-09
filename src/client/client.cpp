@@ -124,9 +124,14 @@ string Client::doActionClient(string cmd, string response, string data){
 			}
 			break;
 		case INVITED:
-			if(cmd == "ACCEPT" && response == "OK"){
-				state = READY;
-				msg = "Prijmul si hru. Cekej nez hra zacne.";
+			if(cmd == "ACCEPT"){
+				if(response == "OK"){
+					state = READY;
+					msg = "Prijmul si hru. Cekej nez hra zacne.";
+				}else{
+					state = WAITING;
+					msg = "Hra je uz bohuzel plna. Pockej nez te nekdo pozve nebo zaloz hru.";
+				}
 			}
 			if(cmd == "DECLINE" && response == "OK"){
 				state = WAITING;
@@ -144,12 +149,29 @@ string Client::doActionClient(string cmd, string response, string data){
 					msg = "Hrac " + data + " nemohl byt pozvan";
 				}
 			}
-
 			if(cmd == "WHOISTHERE" && response == "OK"){
 				msg = formatPlayers(data);
 			}
+			if(cmd == "NEWGAME"){
+				if(response == "OK"){
+					state = CREATING_NEW;
+					msg = "Vyber nastaveni nove hry.";
+				}else{
+					msg = "Nemas dostatek hracu.";
+				}
+			}
+			if(cmd == "LOADGAME"){
+				if(response == "OK"){
+					state = CREATING_LOAD;
+					msg = "Vyber ulozenou hru.";
+				}else{
+					msg = "Nemas dostatek hracu.";
+				}
+			}
 			break;
-		case CREATING:
+		case CREATING_NEW:
+			break;
+		case CREATING_LOAD:
 			break;
 		case PLAYING:
 			break;
@@ -179,23 +201,35 @@ string Client::doActionClient(string cmd, string response, string data){
 string Client::doActionServer(string recvCmd, string data){
 	string msg;
 
-	cout << "prikaz od serveru: --->" << recvCmd << "<---" << endl;
+	//cout << "prikaz od serveru: --->" << recvCmd << "<---" << endl;
 
-	if(recvCmd == "DIE"){
+	// all states
+	if (recvCmd == "DIE"){
 		running = false;
-		msg = "Server se nastval!";
-	}else if(recvCmd == "POKE"){
-		msg = "Server te stouchnul!";
-	}else if(recvCmd == "INVITATION"){
-		msg = "Byl jsi pozvan do hry hracem " + data + ". Prijimas vyzvu?";
-		state = INVITED;
-	}else if(recvCmd == "SHOOT"){
+		return msg = "Server se nastval!";
+	}
+	if (recvCmd == "POKE"){
+		return msg = "Server te stouchnul!";
+	}
+	if (recvCmd == "SHOOT"){
 		running = false;
-		msg = "Byl jsi sestrelen bozi rukou parchante!";
-	}else{
-		msg = "SERVER --- WTF?!";
+		return msg = "Byl jsi sestrelen bozi rukou parchante!";
 	}
 
+	// WAITING
+	if (recvCmd == "INVITATION"){
+		state = INVITED;
+		return msg = "Byl jsi pozvan do hry hracem " + data + ". Prijimas vyzvu?";
+	}
+
+	// CREATING
+	if (recvCmd == "READYLIST"){
+		msg = "Seznam hracu ve vasi hre:\n";
+		return msg += formatPlayers(data);
+	}
+	
+	running = false;
+	msg = "SERVER --- WTF?!";
 	return msg;
 }
 
@@ -245,13 +279,20 @@ bool Client::validCommand(string cmd){
 			if(cmd == "INVITE"){
 				return true;
 			}
-
 			if(cmd == "WHOISTHERE"){
 				return true;
 			}
+			if(cmd == "NEWGAME"){
+				return true;
+			}
+			if(cmd == "LOADGAME"){
+				return true;
+			}
 			break;
-		case CREATING:
+		case CREATING_NEW:
 			break;
+		case CREATING_LOAD:
+			break;	
 		case PLAYING:
 			break;
 		case GODMODE:
