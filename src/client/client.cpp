@@ -432,7 +432,7 @@ string Client::formatScoreboard(){
 	string msg = "";
 	for(auto &line : scoreboard){
 		msg += line.color;
-		msg += " " + line.nickname + " " + itos(line.points) + "\n";		
+		msg += " " + line.nickname + " " + itos(line.points) + " ";		
 	}
 
 	return msg;
@@ -443,21 +443,32 @@ void Client::doRotate(){
 }
 
 void Client::doShift(string data){
+	char color = data[0];
+	data.erase(data.begin());
+	char foundcard = data[2];
+	data.erase(data.end());
 	board->shift(data);
+	addPoint(foundcard, color);
 }
 
 void Client::doMove(string data){
 	for(auto &figure : figures){
-		if(colortoc(figure->getColor()) == data[0]){
-			Coords dest(data[1]-'A', data[2]-'B');
+		char color = colortoc(figure->getColor());
+		if(color == data[0]){
+			Coords dest(data[1]-'A', data[2]-'A');
 			figure->pos = dest;
-			if(data[3] == '1'){
-				for(auto &line : scoreboard){
-					if(colortoc(figure->getColor()) == line.color){
-						line.points++;
-					}
-				}
-			}
+			addPoint(data[3], color);
 		}
 	}
+}
+
+void Client::addPoint(char foundcard, char color){
+	if(foundcard != '0'){
+		for(auto &line : scoreboard){
+			if(color == line.color){
+				line.points++;
+				line.card = foundcard;
+			}
+		}
+	}	
 }

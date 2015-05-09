@@ -22,6 +22,7 @@ struct Scoreline{
 	char color;
 	string nickname;
 	int points;
+	char card;
 };
 
 class Client {
@@ -76,6 +77,7 @@ private:
 	void doRotate();
 	void doShift(string);
 	void doMove(string);
+	void addPoint(char, char);
 
 public:
 	void sendCommand(std::string, std::string);
