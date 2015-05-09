@@ -119,7 +119,7 @@ private:
 
 	// pro ucely vykreslovani:
 	Shape shape;
-	int orientation;
+	unsigned int orientation;
 
 	
 public:

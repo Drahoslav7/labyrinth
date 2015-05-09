@@ -101,6 +101,7 @@ void Block::rotate(int rotation){
 			bottom = tmp;
 		}
 	}
+	std::cout << orientation << std::endl;
 }
 
 
@@ -211,7 +212,7 @@ Board::Board(std::string format){
 			}
 
 			board[i][j] = new Block(shape, format[pos+1] - '0');
-			board[i][j]->item = format[pos+2] - '0';
+			board[i][j]->item = format[pos+2] - 'a';
 
 			pos += 3;
 		}
@@ -478,8 +479,8 @@ std::string Board::toFormat(){
 					break;
 			}
 			str += shape;
-			str += '0' + board[i][j]->getRotation();
-			str += '0' + board[i][j]->getItem();
+			str += ('0' + board[i][j]->getRotation());
+			str += ('a' + board[i][j]->getItem());
 		}
 	}
 
