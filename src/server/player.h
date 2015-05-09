@@ -46,6 +46,7 @@ public:
 
 	int getState(){	return state; }
 	void setState(int state){ this->state = state; }
+	Game * getGame(){ return game; }
 
 	void tell(std::string msg);
 	Figure * figure;

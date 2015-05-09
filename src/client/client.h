@@ -44,12 +44,12 @@ public:
 	int state;
 
 private:
-	Board * board;
+	Board * board = NULL;
 
 	vector<Scoreline> scoreboard;
 
-	boost::asio::io_service * io_service;
-	Connection * connection;
+	boost::asio::io_service * io_service = NULL;
+	Connection * connection = NULL;
 
 	deque<std::string> sendedCmds;
 
@@ -73,7 +73,7 @@ private:
 public:
 	void sendCommand(std::string, std::string);
 	Client(boost::asio::io_service* io_service);
-	start(Address);
+	void start(Address);
 	~Client();
 
 	bool isRunning();

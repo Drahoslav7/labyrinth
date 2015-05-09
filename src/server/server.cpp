@@ -5,8 +5,8 @@ using namespace std;
 /////////////////////////////////
 ///
 
-boost::asio::io_service * Server::io_service;
-int Server::port;
+boost::asio::io_service * Server::io_service = NULL;
+int Server::port = 0;
 boost::asio::deadline_timer * Server::timer = NULL;
 
 
@@ -52,10 +52,6 @@ void Server::stop(){
 	acceptor.close();
 
 	games.clear();
-	// for(auto &player : waitingPlayers){
-	// 	delete player;
-	// }
-	// waitingPlayers.clear();
 	Player::wipeall();
 
 	delete listenningConnection;

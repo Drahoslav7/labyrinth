@@ -4,21 +4,24 @@ Client::Client(boost::asio::io_service* io_service){
 	Client::io_service = io_service;
 }
 
-Client::start(Address serveraddr){	
+void Client::start(Address serveraddr){	
+	boost::system::error_code ec;
 	boost::asio::ip::tcp::resolver resolver(*io_service);
 	boost::asio::ip::tcp::resolver::query query(serveraddr.hostname, serveraddr.port);
-	boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
-
+	boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query, ec);
+	if(ec){
+		running = false;
+		return;
+	}
 	connection = new Connection(*io_service);
 
-	// boost::asio::async_connect(connection->socket, endpoint_iterator,
-	// 	boost::bind(&Client::handleConnect,this,
-	// 	  boost::asio::placeholders::error
-	// 	)
-	// );
 	readMsg = "";
 
-	boost::asio::connect(connection->socket, endpoint_iterator);
+	boost::asio::connect(connection->socket, endpoint_iterator, ec);
+	if(ec){
+		running = false;
+		return;
+	}
 	connection->recv_async(&readMsg, boost::bind(&Client::handleRead, this));
 
 	state = NONE;
