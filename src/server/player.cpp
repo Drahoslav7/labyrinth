@@ -22,8 +22,7 @@ Player::Player(Connection *con){
 
 Player::~Player(){
 	thread.join();
-	string DIE = "DIE";
-	connection->send(&DIE);
+	tell("DIE");
 	// remove(this);
 	delete connection;
 };
@@ -58,7 +57,7 @@ bool Player::invitePlayer(string nickname){
 		if(p->nickname == nickname && p->state == WAITING){
 			p->game = this->game;
 			p->setState(INVITED);
-			p->connection->send(&msg);
+			p->tell(msg);
 			return true;
 		}
 	}
@@ -87,8 +86,6 @@ void Player::work(){
 
 
 		res = handleUserRequest(cmd, data);
-
-		std::cout << "gonnasend-->" << res << "<--" << endl;
 		
 		if(res == "DIE" && state != GODMODE)
 			ok = false;
@@ -102,7 +99,7 @@ void Player::work(){
 
 	state = DEAD;
 
-	PRD("player work2");
+	PRD("player work end");
 }
 
 
@@ -155,14 +152,27 @@ std::string Player::handleUserRequest(std::string cmd, std::string data){
 			if(cmd == "WHOISWAITING" || cmd == "WHOISTHERE"){
 				res = "OK " + Player::getPlayers(WAITING);
 			}
-			if(cmd == "WHOISREADY"){
-				res = "OK " + Player::getPlayers(READY);
+			// if(cmd == "WHOISREADY"){
+			// 	res = "OK " + Player::getPlayers(READY);
+			// }
+			if(cmd == "NEWGAME"){
+				if(game->isSomeoneReady()){
+					res = "OK";
+					state = CREATING_NEW; // ??
+				}
+				else {
+					res = "NOPE";
+				}
+
+
 			}
 			break;
 
 		case INVITED:
 			if(cmd == "ACCEPT"){
 				if(game->addPlayer(this)){
+					std::string msg = "READYLIST " + Player::getReadyPlayers(game);
+					game->getLeader()->tell(msg);
 					state = READY;
 					res = "OK";
 				} else {
@@ -207,17 +217,32 @@ std::string Player::handleUserRequest(std::string cmd, std::string data){
 }
 
 
+void Player::tell(std::string msg){
+	connection->send(&msg);
+}
+
 
 ////// STATICKÉ
 
 void Player::killPlayer(std::string who){
-	std::string msg = "SHOOT";
 	for(auto &p : players){
-		if(p->nickname == who){
-			p->connection->send(&msg);
+		if(p->nickname == who && p->getState() != DEAD){
+			p->tell("SHOOT");
 			p->setState(DEAD);
+			break;
 		}
 	}
+}
+
+std::string Player::getReadyPlayers(Game * game){
+	std::string str = "";
+	for(auto &p : players){
+		if(p->game == game && p->state == READY){
+			str += p->nickname;
+			str += ' ';
+		}
+	}
+	return str;
 }
 
 std::string Player::getPlayers(int state){
