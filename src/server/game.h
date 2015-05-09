@@ -10,7 +10,6 @@ using namespace std;
 
 class Game{
 public:
-	vector<Player *> players;
 
 	Game(Player *player){
 		id = games.size();
@@ -25,9 +24,12 @@ public:
 
 	bool addPlayer(Player *player);
 	int removePlayer(Player *player);
+	Player * getLeader();
+	bool isSomeoneReady();
 
 private:
 
+	vector<Player *> players;
 	int id;
 	static vector<Game *> games;
 };

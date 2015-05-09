@@ -28,7 +28,9 @@ public:
 		CREATING, 
 		PLAYING,
 		DEAD,
-		GODMODE
+		GODMODE,
+		CREATING_NEW,
+		CREATING_LOAD,
 	};
 
 
@@ -42,6 +44,9 @@ public:
 
 	int getState(){	return state; }
 	void setState(int state){ this->state = state; }
+
+	void tell(std::string msg);
+	
 private:
 	int state;
 	int id;
@@ -58,6 +63,7 @@ private:
 public:
 	static void killPlayer(std::string who);
 	static std::string getPlayersInfo();
+	static std::string getReadyPlayers(Game *);
 	static void wipeall();
 	static void pokeAll(){
 		sendToAll("POKE");

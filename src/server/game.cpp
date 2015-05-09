@@ -4,7 +4,7 @@ using namespace std;
 vector<Game *> Game::games = vector<Game *>();
 
 bool Game::addPlayer(Player *player){
-	if(players.size() == 4){
+	if(players.size() == 4 && players[0]->getState() != Player::INVITING){
 		return false;
 	}
 
@@ -29,3 +29,15 @@ int Game::removePlayer(Player *player){
 	return 1;
 };
 
+bool Game::isSomeoneReady(){
+	for(auto &p : players){
+		if(p->getState() == Player::READY && p != getLeader()){
+			return true;
+		}
+	}
+	return false;
+}
+
+Player * Game::getLeader(){
+	return players[0];
+}
