@@ -279,7 +279,7 @@ string Client::doActionClient(string cmd, string response, string data){
 			if(cmd == "MOVE"){
 				if(response == "OK"){
 					state = PLAYING;
-					msg = "Na tahu je další hráč";
+					msg = "Na tahu je dalsi hrac";
 				}else{
 					msg = "Tento tah je neproveditelny. Tahni znovu.";
 				}
