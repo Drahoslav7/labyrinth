@@ -49,6 +49,12 @@ inline char colortoc(Color color){
 	}
 }
 
+inline std::string colortos(Color color){
+	std::string strcolor = "";
+	strcolor += colortoc(color);
+	return strcolor;
+}
+
 
 enum class Shape {
 	I,

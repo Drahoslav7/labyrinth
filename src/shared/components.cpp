@@ -232,11 +232,13 @@ Board::~Board(){
 	delete spareBlock;
 }
 
+#define FF(n) (figurestack.size() > n ? ((figurestack[n]->pos.x == i && figurestack[n]->pos.y == j) ? colortos(figurestack[n]->getColor()) : "\35" ) : "\35") 
+
 std::string Board::toString(){
 	std::string str = "";
 	for (int i = 0; i < size; ++i){
 		for (int j = 0; j < size; ++j)
-				str += board[i][j]->isTop() ? "# #|" : "###|";
+				str += board[i][j]->isTop() ? FF(0)+" "+FF(1)+"|" : FF(0)+"#"+FF(1)+"|";
 		str += "\n";
 		for (int j = 0; j < size; ++j){
 			str += board[i][j]->isLeft() ? " " : "#";
@@ -245,16 +247,16 @@ std::string Board::toString(){
 		}
 		str += "\n";
 		for (int j = 0; j < size; ++j)
-				str += board[i][j]->isBottom() ? "# #|" : "###|";
+				str += board[i][j]->isBottom() ? FF(3)+" "+FF(2)+"|" : FF(3)+"#"+FF(2)+"|";
 		str += "\n";
 		for (int j = 0; j < size; ++j)
 				str += "---+";
 		str += "\n";
 	}
 	str += spareBlock->toString();
-	for (auto figure : figurestack){
-		str += "figure: " + std::to_string(figure->pos.x) + " " + std::to_string(figure->pos.y) + "\n";  
-	}
+	// for (auto figure : figurestack){
+	// 	str += "figure: " + std::to_string(figure->pos.x) + " " + std::to_string(figure->pos.y) + "\n";  
+	// }
 
 	return str;
 }

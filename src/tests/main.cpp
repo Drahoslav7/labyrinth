@@ -154,4 +154,13 @@ int main(int argc, char const *argv[]){
 	cout << word+word2 << endl;
 
 	#endif
+
+	#if 0
+
+	int word = -1;
+	int word2 = 5;
+
+	cout << word%word2 << endl;
+
+	#endif
 }

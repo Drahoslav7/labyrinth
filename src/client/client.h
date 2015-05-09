@@ -38,6 +38,7 @@ public:
 		CREATING_NEW,
 		CREATING_LOAD, 
 		PLAYING,
+		ONTURN,
 		GODMODE
 	};
 
@@ -47,6 +48,7 @@ private:
 	Board * board = NULL;
 
 	vector<Scoreline> scoreboard;
+	vector<Figure*  > figures;
 
 	boost::asio::io_service * io_service = NULL;
 	Connection * connection = NULL;
@@ -69,6 +71,11 @@ private:
 	string formatPlayers(string);
 	string formatScoreboard();
 	void initScoreboard(string);
+	void initFigures();
+
+	void doRotate();
+	void doShift(string);
+	void doMove(string);
 
 public:
 	void sendCommand(std::string, std::string);

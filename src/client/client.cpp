@@ -126,7 +126,26 @@ string Client::doActionServer(string recvCmd, string data){
 		split(data, ' ', &scboarddata, &boardformat);
 		initScoreboard(scboarddata);
 		board = new Board(boardformat);
+		initFigures();
 		return "Hra zacala \n" + formatScoreboard() + board->toString();
+	}
+	if (recvCmd == "YOURTURN"){
+		state = ONTURN;
+		return "Jsi na tahu.";
+	}
+
+		// commands for board change
+	if (recvCmd == "ROTATED"){
+		this->doRotate();
+		return formatScoreboard() + board->toString();
+	}
+	if (recvCmd == "SHIFTED"){
+		this->doShift(data);
+		return formatScoreboard() + board->toString();
+	}
+	if (recvCmd == "MOVED"){
+		this->doMove(data);
+		return formatScoreboard() + board->toString();
 	}
 
 	// CREATING
@@ -241,6 +260,30 @@ string Client::doActionClient(string cmd, string response, string data){
 			break;
 		case PLAYING:
 			break;
+		case ONTURN:
+			if(cmd == "ROTATE"){
+				if(response == "OK"){
+					msg = "Blok otočen";
+				}else{
+					msg = "Blok nemuze byt otocen protoze jsi uz shiftnul. Nyni pohni figurkou.";
+				}
+			}
+			if(cmd == "SHIFT"){
+				if(response == "OK"){
+					msg = "Shift byl proveden.";
+				}else{
+					msg = "Shift jsi uz jednou udelal. Nyni tahni figurkou.";
+				}
+			}
+			if(cmd == "MOVE"){
+				if(response == "OK"){
+					state = PLAYING;
+					msg = "Na tahu je další hráč";
+				}else{
+					msg = "Tento tah je neproveditelny. Tahni znovu.";
+				}
+			}
+			break;	
 		case GODMODE:
 			if(cmd == "IAM"){
 				if(response == "OK"){
@@ -263,44 +306,6 @@ string Client::doActionClient(string cmd, string response, string data){
 
 	return msg;
 }
-
-string Client::formatPlayers(string data){
-	string first, msg, position;
-	msg = "Zacatek vypisu\n";
-	int pos = 1;
-	while(data != ""){
-		split(data, ' ', &first, &data);
-		msg += "\t" + itos(pos) + ". " + first + "\n";
-		pos++;
-	}
-	msg += "Konec vypisu";
-
-	return msg;
-}
-
-void Client::initScoreboard(string data){
-	string player;
-	Scoreline line;
-	while(data != ""){
-		split(data, ';', &player, &data);
-		line.color = player[0];
-		player.erase(player.begin());
-		line.nickname = player;
-		line.points = 0;
-		scoreboard.push_back(line);
-	}
-}
-
-string Client::formatScoreboard(){
-	string msg = "";
-	for(auto &line : scoreboard){
-		msg += line.color;
-		msg += " " + line.nickname + " " + itos(line.points) + "\n";		
-	}
-
-	return msg;
-}
-
 
 bool Client::validCommand(string cmd){
 	switch(state){
@@ -356,6 +361,17 @@ bool Client::validCommand(string cmd){
 			break;	
 		case PLAYING:
 			break;
+		case ONTURN:
+			if(cmd == "ROTATE"){
+				return true;
+			}
+			if(cmd == "SHIFT"){
+				return true;
+			}
+			if(cmd == "MOVE"){
+				return true;
+			}
+			break;
 		case GODMODE:
 			if (cmd == "IAM"){
 				return true;
@@ -374,3 +390,74 @@ bool Client::validCommand(string cmd){
 
 	return false;
 } 
+
+string Client::formatPlayers(string data){
+	string first, msg, position;
+	msg = "Zacatek vypisu\n";
+	int pos = 1;
+	while(data != ""){
+		split(data, ' ', &first, &data);
+		msg += "\t" + itos(pos) + ". " + first + "\n";
+		pos++;
+	}
+	msg += "Konec vypisu";
+
+	return msg;
+}
+
+void Client::initFigures(){
+	int players = scoreboard.size();
+	Color color = Color::INVISIBLE;
+	for(int i = 0; i < players; i++){
+		Figure* figure = new Figure(++color);
+		board->placeFigure(figure);
+		figures.push_back(figure);
+	}
+}
+
+void Client::initScoreboard(string data){
+	string player;
+	Scoreline line;
+	while(data != ""){
+		split(data, ';', &player, &data);
+		line.color = player[0];
+		player.erase(player.begin());
+		line.nickname = player;
+		line.points = 0;
+		scoreboard.push_back(line);
+	}
+}
+
+string Client::formatScoreboard(){
+	string msg = "";
+	for(auto &line : scoreboard){
+		msg += line.color;
+		msg += " " + line.nickname + " " + itos(line.points) + "\n";		
+	}
+
+	return msg;
+}
+
+void Client::doRotate(){
+	board->rotate();
+}
+
+void Client::doShift(string data){
+	board->shift(data);
+}
+
+void Client::doMove(string data){
+	for(auto &figure : figures){
+		if(colortoc(figure->getColor()) == data[0]){
+			Coords dest(data[1]-'A', data[2]-'B');
+			figure->pos = dest;
+			if(data[3] == '1'){
+				for(auto &line : scoreboard){
+					if(colortoc(figure->getColor()) == line.color){
+						line.points++;
+					}
+				}
+			}
+		}
+	}
+}
