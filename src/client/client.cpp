@@ -450,10 +450,10 @@ void Client::doRotate(){
 void Client::doShift(string data){
 	char color = data[0];
 	char foundcard = data[3];
-	string coords = ""
+	string coords = "";
 	coords += data[1];
-	coords += data[2]
-	board->shift(data);
+	coords += data[2];
+	board->shift(coords);
 	addPoint(foundcard, color);
 }
 
