@@ -4,7 +4,7 @@ Client::Client(boost::asio::io_service* io_service){
 	Client::io_service = io_service;
 }
 
-Client::start(address serveraddr){	
+Client::start(Address serveraddr){	
 	boost::asio::ip::tcp::resolver resolver(*io_service);
 	boost::asio::ip::tcp::resolver::query query(serveraddr.hostname, serveraddr.port);
 	boost::asio::ip::tcp::resolver::iterator endpoint_iterator = resolver.resolve(query);
@@ -88,6 +88,18 @@ std::string Client::sendMessage(string message){
 	connection->recv(&message);
 	return message;
 };
+
+void Client::initScoreboard(string data){
+	string player;
+	Scoreline line;
+	while(data != ""){
+		split(data, ';', &player, &data);
+		line.color = data[0];
+		line.nickname = data.substr(1, data.size()-1);
+		line.points = 0;
+		scoreboard.push_back(line);
+	}
+}
 
 string Client::doActionClient(string cmd, string response, string data){
 	string msg = "";
@@ -222,37 +234,43 @@ string Client::doActionServer(string recvCmd, string data){
 	// all states
 	if (recvCmd == "DIE"){
 		running = false;
-		return msg = "Server se nastval!";
+		return "Server se nastval!";
 	}
 	if (recvCmd == "POKE"){
-		return msg = "Server te stouchnul!";
+		return "Server te stouchnul!";
 	}
 	if (recvCmd == "SHOOT"){
 		running = false;
-		return msg = "Byl jsi sestrelen bozi rukou parchante!";
+		return "Byl jsi sestrelen bozi rukou parchante!";
 	}
 
 	// WAITING
 	if (recvCmd == "INVITATION"){
 		state = INVITED;
-		return msg = "Byl jsi pozvan do hry hracem " + data + ". Prijimas vyzvu?";
+		return "Byl jsi pozvan do hry hracem " + data + ". Prijimas vyzvu?";
 	}
 
 	// READY or PLAYING
 	if (recvCmd == "GAMECANCELED"){
 		state = WAITING;
-		return msg = "Hra byla ukoncena. Pripoje se do jine nebo zaloz svoji.";
+		return "Hra byla ukoncena. Pripoje se do jine nebo zaloz svoji.";
+	}
+	if (recvCmd == "INIT"){
+		state = PLAYING;
+		string scboarddata, boardformat;
+		split(data, ' ', &scboarddata, &boardformat);
+		initScoreboard(scboarddata);
+		board = new Board(boardformat);
+		return "Hra zacala \n" + formatScoreboard() + board->toString();
 	}
 
 	// CREATING
 	if (recvCmd == "READYLIST"){
-		msg = "Seznam hracu ve vasi hre:\n";
-		return msg += formatPlayers(data);
+		return "Seznam hracu ve vasi hre:\n" + formatPlayers(data);
 	}
 	
 	running = false;
-	msg = "SERVER --- WTF?!";
-	return msg;
+	return "SERVER --- WTF?!";
 }
 
 string Client::formatPlayers(string data){
@@ -268,6 +286,16 @@ string Client::formatPlayers(string data){
 
 	return msg;
 }
+
+string Client::formatScoreboard(){
+	string msg = "";
+	for(auto &line : scoreboard){
+		msg += line.color + " " + line.nickname + " " + itos(line.points) + "\n";		
+	}
+
+	return msg;
+}
+
 
 bool Client::validCommand(string cmd){
 	switch(state){

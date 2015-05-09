@@ -10,7 +10,7 @@ using namespace std;
 
 int main(int argc, char const *argv[])
 {
-	address serveraddr;
+	Address serveraddr;
 	
 	if(argc != 3){
 		cerr << "Usage: client <host> <port>\n" << endl;

@@ -3,17 +3,25 @@
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
 #include <string>
+#include <vector>
 #include <deque>
 #include "../shared/connection.h"
+#include "../shared/components.h"
 #include "../shared/tools.h"
 #include "../shared/debug.cpp"
 
 
 using namespace std;
 
-struct address{
+struct Address{
 	string hostname;
 	string port;
+};
+
+struct Scoreline{
+	char color;
+	string nickname;
+	int points;
 };
 
 class Client {
@@ -36,6 +44,10 @@ public:
 	int state;
 
 private:
+	Board * board;
+
+	vector<Scoreline> scoreboard;
+
 	boost::asio::io_service * io_service;
 	Connection * connection;
 
@@ -54,11 +66,14 @@ private:
 	void doSendCommand(std::string);
 	string doActionClient(string, string, string);
 	string doActionServer(string, string);
-	string formatPlayers(string data);
+	string formatPlayers(string);
+	string formatScoreboard();
+	void initScoreboard(string);
+
 public:
 	void sendCommand(std::string, std::string);
 	Client(boost::asio::io_service* io_service);
-	start(address);
+	start(Address);
 	~Client();
 
 	bool isRunning();

@@ -181,6 +181,44 @@ Board::Board(int size = 7){
 
 }
 
+Board::Board(std::string format){
+
+	int pos = 1;
+	int size = (format[pos] - 'A' + 2) * 2 + 1;
+	pos++;
+
+	this->size = size;
+	spareBlock = new Block;
+	board = new Block** [size];
+
+	for(int i = 0; i < size; ++i){			
+		board[i] = new Block* [size];
+		for (int j = 0; j < size; ++j){	
+			Shape shape;
+			switch(format[pos]){
+				case 'I':
+					shape = Shape::I;
+					break;
+				case 'L':
+					shape = Shape::L;
+					break;
+				case 'T':
+					shape = Shape::T;
+					break;
+				default:
+					shape = Shape::O;
+					break;
+			}
+
+			board[i][j] = new Block(shape, format[pos+1] - '0');
+			board[i][j]->item = format[pos+2] - '0';
+
+			pos += 3;
+		}
+	}
+
+}
+
 // destrucotr
 Board::~Board(){
 	for (int i = 0; i < size; ++i){

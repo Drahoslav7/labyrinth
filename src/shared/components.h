@@ -159,6 +159,7 @@ class Board {
 
 public:
 	Board(int);
+	Board(std::string);
 	~Board();
 
 	std::string toString();
