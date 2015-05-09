@@ -417,3 +417,33 @@ bool Board::isConnected(Coords startPos, Coords endPos){
 
 	return false;
 }
+
+
+std::string Board::toFormat(){
+	std::string str = "";
+	str += (((size-1)/2-2) + 'A');
+	for(int i = 0; i < size; ++i){			
+		for (int j = 0; j < size; ++j){
+			char shape;
+			switch(board[i][j]->getShape()){
+				case Shape::T:
+					shape = 'T';
+					break;
+				case Shape::L:
+					shape = 'L';
+					break;
+				case Shape::I:
+					shape = 'I';
+					break;
+				default:
+					shape = 'O';
+					break;
+			}
+			str += shape;
+			str += '0' + board[i][j]->getRotation();
+			str += '0' + board[i][j]->getItem();
+		}
+	}
+
+	return str;
+}

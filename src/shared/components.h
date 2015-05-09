@@ -15,15 +15,17 @@ const int RIGHT = -1;
 
 enum class Color {
 	INVISIBLE,
-	BLACK,
-	WHITE,
-	GREY,
+	
 	RED,
 	GREEN,
 	BLUE,
-	ORANGE,
-	PURPLE,
 	YELLOW,
+
+	ORANGE,
+	BLACK,
+	WHITE,
+	GREY,
+	PURPLE,
 };
 
 
@@ -141,6 +143,15 @@ public:
 	bool isRight(){
 		return right;
 	}
+	Shape getShape(){
+		return shape;
+	}
+	int getRotation(){
+		return orientation;
+	}
+	Item getItem(){
+		return item;
+	}
 
 	std::string toString();
 
@@ -162,6 +173,8 @@ public:
 	~Board();
 
 	std::string toString();
+
+	std::string toFormat();
 
 	// push pop
 	bool shift(Direction, unsigned);

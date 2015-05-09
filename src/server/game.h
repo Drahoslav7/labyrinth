@@ -28,6 +28,7 @@ public:
 	bool isSomeoneReady();
 
 	bool createGame(std::string settings);
+	void sendInit();
 
 	void cancel();
 

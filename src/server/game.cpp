@@ -71,6 +71,41 @@ bool Game::createGame(std::string sets){
 	return true;
 }
 
+void Game::sendInit(){
+	std::string initCmd = "INIT ";
+	char color;
+	for(auto &p : players){
+		switch(p->figure->getColor()){
+			case Color::RED:
+				color = 'R';
+				break;
+			case Color::GREEN:
+				color = 'G';
+				break;
+			case Color::YELLOW:
+				color = 'Y';
+				break;
+			case Color::BLUE:
+				color = 'B';
+				break;
+			default:
+				color = '-';
+		} 
+		initCmd += color;
+		initCmd += p->nickname;
+		if(p != players.back()){
+			initCmd += ';';
+		}
+	}
+
+	initCmd += " " + board->toFormat();
+
+	for (auto &p : players){
+		p->tell(initCmd);
+	}
+
+};
+
 void Game::cancel(){
 	for(auto &p : players){
 		p->leaveGame();
