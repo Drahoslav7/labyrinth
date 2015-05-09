@@ -56,6 +56,7 @@ private:
 	int id;
 	boost::thread thread;
 	Game *game = NULL;
+	bool shifted; // indikace zda hrac uz shiftoval v tomto tahu
 
 
 	void work();

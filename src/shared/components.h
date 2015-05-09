@@ -5,6 +5,9 @@
 #include <vector>
 #include "debug.cpp"
 
+
+int randomInt(int max);
+
 typedef char Item;
 
 const Item NONE = 0;
@@ -177,8 +180,13 @@ public:
 
 	std::string toFormat();
 
-	// push pop
+
+	bool rotate(int n = 1){
+		spareBlock->rotate(n*LEFT);
+	}
+	
 	bool shift(Direction, unsigned);
+	bool shift(std::string);
 
 	bool isConnected(Coords, Coords); 
 

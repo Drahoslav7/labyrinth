@@ -106,6 +106,60 @@ void Game::sendInit(){
 
 };
 
+void Game::sendUpdate(std::string data){
+	for(auto &p : players){
+		p->tell(data);
+	}
+}
+
+void Game::nextTurn(){
+	int max = players.size();
+	if(onTurnIndex == -1){
+		onTurnIndex = randomInt(max);
+	}
+	else{
+		onTurnIndex += 1;
+		onTurnIndex %= max;		
+	}
+	players[onTurnIndex]->tell("YOURTURN");
+}
+
+
+bool Game::doRotate(){
+	board->rotate();
+	sendUpdate("ROTATEED");
+	return true;
+}
+
+bool Game::doShift(std::string data){
+	if(!board->shift(data)){
+		return false;
+	}
+	sendUpdate("SHIFTED " + data);
+	return true; 
+}
+
+bool Game::doMove(std::string data){
+	if(data.size() != 2){
+		return false;
+	}
+
+	Coords to(data[0] - 'A', data[1] - 'A');
+	Coords from = players[onTurnIndex]->figure->pos;
+
+	if(!board->isConnected(from, to)){
+		return false;
+	}
+
+	players[onTurnIndex]->figure->pos = to;
+
+	sendUpdate("MOVED " + data);
+	return true;
+}
+
+
+
+
 void Game::cancel(){
 	for(auto &p : players){
 		p->leaveGame();

@@ -305,6 +305,29 @@ bool Board::placeFigure(Figure * figure){
 
 };
 
+bool Board::shift(std::string data){
+	if(data.size() != 2){
+		return false;
+	}
+
+	int n = (data[1] - 'A')*2 + 1;
+	Direction dir;
+	switch(data[0]){
+		case '0':
+			dir = Direction::DOWN;
+			break;
+		case '1':
+			dir = Direction::LEFT;
+			break;
+		case '2':
+			dir = Direction::UP;
+			break;
+		case '3':
+			dir = Direction::RIGHT;
+			break;
+	}
+	return shift(dir, n);
+}
 
 bool Board::shift(Direction to, unsigned i){
 	Block * poppedBlock;
@@ -338,6 +361,27 @@ bool Board::shift(Direction to, unsigned i){
 			board[j][i] = board[j+1][i];
 		}
 		board[size-1][i] = spareBlock;
+	}
+
+	for(auto fig : figurestack){
+		if(fig->pos.x == i && to == Direction::DOWN ){
+			fig->pos.y++;
+			fig->pos.y %= size;
+		}
+		if(fig->pos.x == i && to == Direction::UP ){
+			fig->pos.y--;
+			fig->pos.y += size;
+			fig->pos.y %= size;
+		}
+		if(fig->pos.y == i && to == Direction::RIGHT ){
+			fig->pos.x++;
+			fig->pos.x %= size;
+		}
+		if(fig->pos.y == i && to == Direction::LEFT ){
+			fig->pos.x--;
+			fig->pos.x += size;
+			fig->pos.x %= size;
+		}
 	}
 
 	spareBlock = poppedBlock;

@@ -199,6 +199,7 @@ std::string Player::handleUserRequest(std::string cmd, std::string data){
 					res = "OK";
 					state = READY;
 					game->sendInit();
+					game->nextTurn();
 				} else {
 					res = "NOPE";
 				}
@@ -224,6 +225,50 @@ std::string Player::handleUserRequest(std::string cmd, std::string data){
 				res = "OK";
 			}
 			break;
+
+
+		case PLAYING:
+			if(!game->isOnTurn(this)){
+				res = "NOPE";
+				break;
+			}
+			if(cmd == "ROTATE"){
+				if(this->shifted){
+					res = "NOPE";
+					break;
+				} 
+				if(game->doRotate()){
+					res = "OK";
+				} else {
+					res = "NOPE";
+				}
+				break;
+			}
+			if(cmd == "SHIFT"){
+				if(this->shifted){
+					res = "NOPE";
+					break;
+				} 
+				if(game->doShift(data)){
+					this->shifted = true;
+					res = "OK";
+				} else {
+					res = "NOPE";
+				}
+				break;
+			}
+			if(cmd == "MOVE"){
+				if(game->doMove(data)){
+					this->shifted = false;
+					res = "OK";
+					game->nextTurn();
+				} else {
+					res = "NOPE";
+					break;
+				}
+			}
+			break;
+
 
 		case GODMODE:
 			if(cmd == "IAM"){ // nick
