@@ -34,12 +34,41 @@ enum class Color {
 
 inline Color operator++( Color& x ) { return x = (Color)(((int)(x) + 1)); }
 
+inline char colortoc(Color color){
+	switch(color){
+			case Color::RED:
+				return 'R';
+			case Color::GREEN:
+				return 'G';
+			case Color::YELLOW:
+				return 'Y';
+			case Color::BLUE:
+				return 'B';
+			default:
+				return '-';
+	}
+}
+
+
 enum class Shape {
 	I,
 	L,
 	T,
 	O, // uzavreny block, nepouziva se
 };
+
+inline char shapetoc(Shape shape){
+	switch(shape){
+		case Shape::T:
+			return 'T';
+		case Shape::L:
+			return 'L';
+		case Shape::I:
+			return 'I';
+		default:
+			return 'O';		
+	}
+}
 
 // pro shiftovani
 enum class Direction {

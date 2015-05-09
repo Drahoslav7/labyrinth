@@ -506,22 +506,7 @@ std::string Board::toFormat(){
 	str += (((size-1)/2-2) + 'A');
 	for(int i = 0; i < size; ++i){			
 		for (int j = 0; j < size; ++j){
-			char shape;
-			switch(board[i][j]->getShape()){
-				case Shape::T:
-					shape = 'T';
-					break;
-				case Shape::L:
-					shape = 'L';
-					break;
-				case Shape::I:
-					shape = 'I';
-					break;
-				default:
-					shape = 'O';
-					break;
-			}
-			str += shape;
+			str += shapetoc(board[i][j]->getShape());
 			str += ('0' + board[i][j]->getRotation());
 			str += ('a' + board[i][j]->getItem());
 		}

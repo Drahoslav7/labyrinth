@@ -73,25 +73,8 @@ bool Game::createGame(std::string sets){
 
 void Game::sendInit(){
 	std::string initCmd = "INIT ";
-	char color;
 	for(auto &p : players){
-		switch(p->figure->getColor()){
-			case Color::RED:
-				color = 'R';
-				break;
-			case Color::GREEN:
-				color = 'G';
-				break;
-			case Color::YELLOW:
-				color = 'Y';
-				break;
-			case Color::BLUE:
-				color = 'B';
-				break;
-			default:
-				color = '-';
-		} 
-		initCmd += color;
+		initCmd += colortoc(p->figure->getColor());
 		initCmd += p->nickname;
 		if(p != players.back()){
 			initCmd += ';';
@@ -100,9 +83,7 @@ void Game::sendInit(){
 
 	initCmd += " " + board->toFormat();
 
-	for (auto &p : players){
-		p->tell(initCmd);
-	}
+	sendUpdate(initCmd);
 
 };
 
@@ -153,7 +134,9 @@ bool Game::doMove(std::string data){
 
 	players[onTurnIndex]->figure->pos = to;
 
-	sendUpdate("MOVED " + data);
+	std::string color = "";
+	color += colortoc(players[onTurnIndex]->figure->getColor());
+	sendUpdate("MOVED " + color + data);
 	return true;
 }
 
