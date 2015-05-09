@@ -30,3 +30,9 @@ std::string itos(int i){
 // 	std::string s = ss.str();
 // 	return s;
 // }
+
+// std::string strbuftos(boost::asio::streambuf& streambuf)
+// {
+//  return {buffers_begin(streambuf.data()), 
+//          buffers_end(streambuf.data())};
+// }

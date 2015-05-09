@@ -16,6 +16,7 @@ Client::start(address serveraddr){
 	// 	  boost::asio::placeholders::error
 	// 	)
 	// );
+	readMsg = "";
 
 	boost::asio::connect(connection->socket, endpoint_iterator);
 	connection->recv_async(&readMsg, boost::bind(&Client::handleRead, this));

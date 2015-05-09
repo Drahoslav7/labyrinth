@@ -1,3 +1,5 @@
+#define BOOST_ASIO_ENABLE_BUFFER_DEBUGGING 1
+
 #pragma once
 
 #include <iostream>
@@ -5,6 +7,7 @@
 #include <boost/asio.hpp>
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
+#include "tools.h"
 #include "debug.cpp"
 
 class Connection {

@@ -64,10 +64,15 @@ void Connection::recv_async(std::string * target,  boost::function<void()> handl
 void Connection::handle_recv(boost::function<void()> handler)
 {
 	// target->assign(boost::asio::buffer_cast<const char*>(rbuffer.data()));
-	*target = boost::asio::buffer_cast<const char*>(rbuffer.data());
+	// std:string msg(boost::asio::buffer_cast<const char*>(rbuffer.data()));
+	// *target = strbuftos(rbuffer);
+	// cout << "recv-->" << *target << "<--" << endl;
+
+	std::istream is(&rbuffer);
+	std::getline(is, *target, '\n');
 	// *target = strbuftos(&rbuffer);
-	rbuffer.consume(rbuffer.size());
-	*target = target->substr(0, target->size()-1);
+	// rbuffer.consume(rbuffer.size());
+	// *target = target->substr(0, target->size()-1);
 	// cout << "-->" << *target << "<--" << endl;
 	handler();
 }
