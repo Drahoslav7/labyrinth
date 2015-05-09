@@ -101,7 +101,6 @@ void Block::rotate(int rotation){
 			bottom = tmp;
 		}
 	}
-	std::cout << orientation << std::endl;
 }
 
 
