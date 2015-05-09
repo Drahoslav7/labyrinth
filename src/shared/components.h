@@ -119,6 +119,12 @@ public:
 			cards.push_back(i);
 	}
 
+	Item draw(){
+		Item item = cards.back();
+		cards.pop_back();
+		return item;
+	}
+
 	std::vector<Item> * get(){
 		return &cards;
 	}

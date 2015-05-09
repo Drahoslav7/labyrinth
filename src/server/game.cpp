@@ -126,7 +126,22 @@ bool Game::doShift(std::string data){
 	if(!board->shift(data)){
 		return false;
 	}
-	sendUpdate("SHIFTED " + data);
+
+	char fig = '-';
+	char c = '0';
+	for(auto &p : players){
+		if(board->pickUpItem(p->figure->pos, p->card)){
+			p->card = pack->draw();
+			c = (p->card + 'a' - 1);
+			fig = colortoc(p->figure->getColor());
+		}
+	}
+
+	std::string msg = "SHIFTED ";
+	msg += fig;
+	msg += data;
+	msg += c;
+	sendUpdate(msg);
 	return true; 
 }
 
@@ -148,8 +163,7 @@ bool Game::doMove(std::string data){
 	// sebrat a liznout novou;
 	char c = '0';
 	if(board->pickUpItem(dest, me->card)){
-		me->card = pack->get()->back();
-		pack->get()->pop_back();
+		me->card = pack->draw();
 		c = (me->card + 'a' - 1);
 	}
 

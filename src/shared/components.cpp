@@ -394,23 +394,23 @@ bool Board::shift(Direction to, unsigned i){
 	}
 
 	for(auto fig : figurestack){
-		if(fig->pos.x == i && to == Direction::DOWN ){
-			fig->pos.y++;
-			fig->pos.y %= size;
-		}
-		if(fig->pos.x == i && to == Direction::UP ){
-			fig->pos.y--;
-			fig->pos.y += size;
-			fig->pos.y %= size;
-		}
-		if(fig->pos.y == i && to == Direction::RIGHT ){
+		if(fig->pos.y == i && to == Direction::DOWN ){
 			fig->pos.x++;
 			fig->pos.x %= size;
 		}
-		if(fig->pos.y == i && to == Direction::LEFT ){
+		if(fig->pos.y == i && to == Direction::UP ){
 			fig->pos.x--;
 			fig->pos.x += size;
 			fig->pos.x %= size;
+		}
+		if(fig->pos.x == i && to == Direction::RIGHT ){
+			fig->pos.y++;
+			fig->pos.y %= size;
+		}
+		if(fig->pos.x == i && to == Direction::LEFT ){
+			fig->pos.y--;
+			fig->pos.y += size;
+			fig->pos.y %= size;
 		}
 	}
 
