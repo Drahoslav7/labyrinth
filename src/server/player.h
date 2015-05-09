@@ -49,14 +49,18 @@ public:
 	Game * getGame(){ return game; }
 
 	void tell(std::string msg);
+
+
 	Figure * figure;
+	Item card = NONE;
+	int score = 0;
 
 private:
 	int state;
 	int id;
 	boost::thread thread;
 	Game *game = NULL;
-	bool shifted; // indikace zda hrac uz shiftoval v tomto tahu
+	bool shifted = false; // indikace zda hrac uz shiftoval v tomto tahu
 
 
 	void work();

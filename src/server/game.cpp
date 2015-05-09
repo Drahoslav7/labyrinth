@@ -65,8 +65,14 @@ bool Game::createGame(std::string sets){
 
 	Color color = Color::INVISIBLE;
 	for(auto &p : players ){
+		// rozdat figurku
 		p->figure = new Figure(++color);
 		board->placeFigure(p->figure);
+		// liznout
+		p->card = pack->get()->back();
+		pack->get()->pop_back();
+		// 
+		p->score = 0;
 	}
 	return true;
 }
@@ -75,6 +81,7 @@ void Game::sendInit(){
 	std::string initCmd = "INIT ";
 	for(auto &p : players){
 		initCmd += colortoc(p->figure->getColor());
+		initCmd += (p->card + 'a' - 1);
 		initCmd += p->nickname;
 		if(p != players.back()){
 			initCmd += ';';
@@ -91,6 +98,9 @@ void Game::sendUpdate(std::string data){
 	for(auto &p : players){
 		p->tell(data);
 	}
+
+	std::cout << board->toString() << endl;
+
 }
 
 void Game::nextTurn(){
@@ -108,7 +118,7 @@ void Game::nextTurn(){
 
 bool Game::doRotate(){
 	board->rotate();
-	sendUpdate("ROTATEED");
+	sendUpdate("ROTATED");
 	return true;
 }
 
@@ -125,21 +135,31 @@ bool Game::doMove(std::string data){
 		return false;
 	}
 
-	Coords to(data[0] - 'A', data[1] - 'A');
-	Coords from = players[onTurnIndex]->figure->pos;
+	Player * me = players[onTurnIndex];
 
-	if(!board->isConnected(from, to)){
+	Coords dest(data[0] - 'A', data[1] - 'A');
+	Coords orig = me->figure->pos;
+
+	if(!board->isConnected(orig, dest)){
 		return false;
 	}
 
-	players[onTurnIndex]->figure->pos = to;
+	me->figure->pos = dest;
+	// sebrat a liznout novou;
+	char c = '0';
+	if(board->pickUpItem(dest, me->card)){
+		me->card = pack->get()->back();
+		pack->get()->pop_back();
+		c = (me->card + 'a' - 1);
+	}
 
-	std::string color = "";
-	color += colortoc(players[onTurnIndex]->figure->getColor());
-	sendUpdate("MOVED " + color + data);
+	std::string msg = "MOVED ";
+	msg += colortoc(me->figure->getColor());
+	msg += data;
+	msg += c;
+	sendUpdate(msg);
 	return true;
 }
-
 
 
 

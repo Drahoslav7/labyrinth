@@ -9,6 +9,7 @@
 int randomInt(int max);
 
 typedef char Item;
+// typedef char Card;
 
 const Item NONE = 0;
 const Item XX = 4;
@@ -190,6 +191,9 @@ public:
 	Item getItem(){
 		return item;
 	}
+	void setItem(Item item){
+		this->item = item;
+	}
 
 	std::string toString();
 
@@ -215,7 +219,6 @@ public:
 
 	std::string toFormat();
 
-
 	bool rotate(int n = 1){
 		spareBlock->rotate(n*LEFT);
 	}
@@ -229,6 +232,8 @@ public:
 	bool placeItems(std::vector<Item> *);
 	// umisti figurku na hraci pole
 	bool placeFigure(Figure *);
+
+	bool pickUpItem(Coords, Item);
 
 };
 

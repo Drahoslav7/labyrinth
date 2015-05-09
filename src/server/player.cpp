@@ -227,7 +227,7 @@ std::string Player::handleUserRequest(std::string cmd, std::string data){
 			break;
 
 
-		case PLAYING:
+		case READY:
 			if(!game->isOnTurn(this)){
 				res = "NOPE";
 				break;

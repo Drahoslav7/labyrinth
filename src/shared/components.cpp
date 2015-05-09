@@ -232,7 +232,8 @@ Board::~Board(){
 	delete spareBlock;
 }
 
-#define FF(n) (figurestack.size() > n ? ((figurestack[n]->pos.x == i && figurestack[n]->pos.y == j) ? colortos(figurestack[n]->getColor()) : "\35" ) : "\35") 
+#define HASH "#"
+#define FF(n) (figurestack.size() > n ? ((figurestack[n]->pos.x == i && figurestack[n]->pos.y == j) ? colortos(figurestack[n]->getColor()) : HASH ) : HASH) 
 
 std::string Board::toString(){
 	std::string str = "";
@@ -242,7 +243,7 @@ std::string Board::toString(){
 		str += "\n";
 		for (int j = 0; j < size; ++j){
 			str += board[i][j]->isLeft() ? " " : "#";
-			str += board[i][j]->item?(board[i][j]->item + '@'):' ';
+			str += board[i][j]->item?(board[i][j]->item + '`'):' ';
 			str += board[i][j]->isRight() ? " |" : "#|";
 		}
 		str += "\n";
@@ -259,6 +260,16 @@ std::string Board::toString(){
 	// }
 
 	return str;
+}
+
+
+bool Board::pickUpItem(Coords pos, Item card){
+	if(board[pos.x][pos.y]->getItem() == card){
+		board[pos.x][pos.y]->setItem(NONE);
+		return true;
+	} else {
+		return false;
+	}
 }
 
 
@@ -513,6 +524,9 @@ std::string Board::toFormat(){
 			str += ('a' + board[i][j]->getItem());
 		}
 	}
+	str += shapetoc(spareBlock->getShape());
+	str += ('0' + spareBlock->getRotation());
+	str += ('a' + spareBlock->getItem());
 
 	return str;
 }
