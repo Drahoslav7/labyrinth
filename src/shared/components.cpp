@@ -255,8 +255,9 @@ std::string Board::toString(){
 	str += "+";
 	for (int j = 0; j < size; ++j)
 		str += "---+";
-	str += "\n|";
+	str += "\n";
 	for (int i = 0; i < size; ++i){
+		str += "|";
 		for (int j = 0; j < size; ++j)
 				str += board[i][j]->isTop() ? FF(0)+" "+FF(1)+"|" : FF(0)+"#"+FF(1)+"|";
 		str += "\n|";
@@ -274,10 +275,7 @@ std::string Board::toString(){
 		str += "\n";
 	}
 	str += spareBlock->toString();
-	// for (auto figure : figurestack){
-	// 	str += "figure: " + std::to_string(figure->pos.x) + " " + std::to_string(figure->pos.y) + "\n";  
-	// }
-
+	
 	return str;
 }
 

@@ -127,6 +127,7 @@ string Client::doActionServer(string recvCmd, string data){
 		initScoreboard(scboarddata);
 		board = new Board(boardformat);
 		initFigures();
+		cout << "zadek" << endl;
 		return "Hra zacala \n" + formatScoreboard() + board->toString();
 	}
 	if (recvCmd == "YOURTURN"){
@@ -422,6 +423,8 @@ void Client::initScoreboard(string data){
 		split(data, ';', &player, &data);
 		line.color = player[0];
 		player.erase(player.begin());
+		line.card = player[0];
+		player.erase(player.begin());
 		line.nickname = player;
 		line.points = 0;
 		scoreboard.push_back(line);
@@ -432,7 +435,9 @@ string Client::formatScoreboard(){
 	string msg = "";
 	for(auto &line : scoreboard){
 		msg += line.color;
-		msg += " " + line.nickname + " " + itos(line.points) + " ";		
+		msg += " " + line.nickname + " " + itos(line.points) + " ";
+		msg += line.card;
+		msg += "\n";		
 	}
 
 	return msg;
@@ -444,9 +449,10 @@ void Client::doRotate(){
 
 void Client::doShift(string data){
 	char color = data[0];
-	data.erase(data.begin());
-	char foundcard = data[2];
-	data.erase(data.end());
+	char foundcard = data[3];
+	string coords = ""
+	coords += data[1];
+	coords += data[2]
 	board->shift(data);
 	addPoint(foundcard, color);
 }
