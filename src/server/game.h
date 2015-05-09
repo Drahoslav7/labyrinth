@@ -27,9 +27,17 @@ public:
 	Player * getLeader();
 	bool isSomeoneReady();
 
+	bool createGame(std::string settings);
+
+	void cancel();
+
 private:
 
 	vector<Player *> players;
 	int id;
+	Board * board;
+	Pack * pack;
+
+
 	static vector<Game *> games;
 };

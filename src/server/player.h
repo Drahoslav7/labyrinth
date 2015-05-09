@@ -7,6 +7,7 @@ class Player;
 #include "server.h"
 #include "../shared/connection.h"
 #include "../shared/tools.h"
+#include "../shared/components.h"
 #include "server.h"
 #include "game.h"
 
@@ -38,26 +39,28 @@ public:
 	~Player();
 
 	bool setNickname(string nickname);
+	bool invitePlayer(string nickname);
 	int acceptInvite();
 	int declineInvice();
-	bool invitePlayer(string nickname);
+	void leaveGame();
 
 	int getState(){	return state; }
 	void setState(int state){ this->state = state; }
 
 	void tell(std::string msg);
-	
+	Figure * figure;
+
 private:
 	int state;
 	int id;
 	boost::thread thread;
 	Game *game = NULL;
 
-	static vector<Player *> players;
 
 	void work();
 	std::string handleUserRequest(std::string, std::string);
 
+	static vector<Player *> players;
 	static std::string getPlayers(int state);
 
 public:

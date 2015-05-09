@@ -41,3 +41,39 @@ bool Game::isSomeoneReady(){
 Player * Game::getLeader(){
 	return players[0];
 }
+
+
+bool Game::createGame(std::string sets){
+	if(sets.size() != 2){
+		return false;
+	}
+	if(!(sets[0] >= 'A' && sets[0] <= 'E')){
+		return false;
+	}
+	if(sets[1] != '0' && sets[1] != '1'){
+		return false;
+	}
+
+	int boardSize = (sets[0] - 'A' + 2)*2 + 1;
+	int packSize = (sets[1] - '0') * 12 + 12;
+
+	board = new Board(boardSize);
+
+	pack = new Pack(packSize);
+
+	board->placeItems(pack->get());
+
+	Color color = Color::INVISIBLE;
+	for(auto &p : players ){
+		p->figure = new Figure(++color);
+		board->placeFigure(p->figure);
+	}
+	return true;
+}
+
+void Game::cancel(){
+	for(auto &p : players){
+		p->leaveGame();
+	}
+	delete this;
+}

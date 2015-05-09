@@ -15,6 +15,9 @@ Player::Player(Connection *con){
 	id = players.size();
 	players.push_back(this);
 
+	game = NULL;
+	figure = NULL;
+
 	thread = boost::thread(&Player::work, this);
 	PRD("Player thread");
 };
@@ -64,6 +67,18 @@ bool Player::invitePlayer(string nickname){
 	return false;
 };
 
+void Player::leaveGame(){
+	this->state = WAITING;
+	delete this->figure;
+	this->game = NULL;
+	try{
+		this->tell("GAMECANCELED");
+	} catch (boost::system::system_error & e) {
+		
+	}
+}
+
+
 void Player::work(){
 
 	std::string req;
@@ -97,6 +112,9 @@ void Player::work(){
 
 	}
 
+	if(game && game->getLeader() == this){
+		game->cancel();
+	}
 	state = DEAD;
 
 	PRD("player work end");
@@ -163,9 +181,23 @@ std::string Player::handleUserRequest(std::string cmd, std::string data){
 				else {
 					res = "NOPE";
 				}
-
-
 			}
+			if(cmd == "LOADGAME"){
+				// TODO !
+				res = "NOPE";
+			}
+			break;
+
+		case CREATING_NEW:
+			if(cmd == "NEW"){
+				if(game->createGame(data)){
+					res = "OK";
+					state = READY;
+				} else {
+					res = "NOPE";
+				}
+			}
+
 			break;
 
 		case INVITED:

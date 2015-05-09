@@ -13,7 +13,6 @@ const Item XX = 4;
 const int LEFT = +1;
 const int RIGHT = -1;
 
-
 enum class Color {
 	INVISIBLE,
 	BLACK,
@@ -26,6 +25,9 @@ enum class Color {
 	PURPLE,
 	YELLOW,
 };
+
+
+inline Color operator++( Color& x ) { return x = (Color)(((int)(x) + 1)); }
 
 enum class Shape {
 	I,
