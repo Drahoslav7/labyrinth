@@ -188,13 +188,12 @@ Board::Board(std::string format){
 	pos++;
 
 	this->size = size;
-	spareBlock = new Block;
 	board = new Block** [size];
+	Shape shape;
 
 	for(int i = 0; i < size; ++i){			
 		board[i] = new Block* [size];
 		for (int j = 0; j < size; ++j){	
-			Shape shape;
 			switch(format[pos]){
 				case 'I':
 					shape = Shape::I;
@@ -217,6 +216,22 @@ Board::Board(std::string format){
 		}
 	}
 
+	switch(format[pos]){
+		case 'I':
+			shape = Shape::I;
+			break;
+		case 'L':
+			shape = Shape::L;
+			break;
+		case 'T':
+			shape = Shape::T;
+			break;
+		default:
+			shape = Shape::O;
+			break;
+	}
+	spareBlock = new Block(shape, format[pos+1] - '0');
+	spareBlock->item = format[pos+2] - 'a'; 
 }
 
 // destrucotr
@@ -236,21 +251,25 @@ Board::~Board(){
 
 std::string Board::toString(){
 	std::string str = "";
+	str += "+";
+	for (int j = 0; j < size; ++j)
+		str += "---+";
+	str += "\n|";
 	for (int i = 0; i < size; ++i){
 		for (int j = 0; j < size; ++j)
 				str += board[i][j]->isTop() ? FF(0)+" "+FF(1)+"|" : FF(0)+"#"+FF(1)+"|";
-		str += "\n";
+		str += "\n|";
 		for (int j = 0; j < size; ++j){
 			str += board[i][j]->isLeft() ? " " : "#";
 			str += board[i][j]->item?(board[i][j]->item + '@'):' ';
 			str += board[i][j]->isRight() ? " |" : "#|";
 		}
-		str += "\n";
+		str += "\n|";
 		for (int j = 0; j < size; ++j)
-				str += board[i][j]->isBottom() ? FF(3)+" "+FF(2)+"|" : FF(3)+"#"+FF(2)+"|";
-		str += "\n";
+			str += board[i][j]->isBottom() ? FF(3)+" "+FF(2)+"|" : FF(3)+"#"+FF(2)+"|";
+		str += "\n+";
 		for (int j = 0; j < size; ++j)
-				str += "---+";
+			str += "---+";
 		str += "\n";
 	}
 	str += spareBlock->toString();
