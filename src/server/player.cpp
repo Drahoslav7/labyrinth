@@ -113,6 +113,9 @@ void Player::work(){
 	}
 
 	if(game && game->getLeader() == this){
+		for(auto &p : players){
+			p->leaveGame();
+		}
 		game->cancel();
 	}
 	state = DEAD;
@@ -203,7 +206,7 @@ std::string Player::handleUserRequest(std::string cmd, std::string data){
 
 		case INVITED:
 			if(cmd == "ACCEPT"){
-				if(game->addPlayer(this)){
+				if(game && game->addPlayer(this)){
 					std::string msg = "READYLIST " + Player::getReadyPlayers(game);
 					game->getLeader()->tell(msg);
 					state = READY;
