@@ -114,7 +114,9 @@ void Player::work(){
 
 	if(game && game->getLeader() == this){
 		for(auto &p : players){
-			p->leaveGame();
+			if(p != this && p->getGame() == game){
+				p->leaveGame();
+			}
 		}
 		game->cancel();
 	}

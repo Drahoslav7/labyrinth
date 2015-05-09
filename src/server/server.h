@@ -25,7 +25,7 @@ public:
 	std::vector<Game *> games;
 
 private:
-	Connection * listenningConnection;
+	Connection * listenningConnection = NULL;
 	boost::asio::ip::tcp::acceptor acceptor;
 	// std::vector<Player *> waitingPlayers;
 

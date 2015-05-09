@@ -37,11 +37,3 @@ int main(int argc, char const *argv[])
 	return 0;
 }
 
-
-// format save souboru
-// 
-// T0 -- 
-// L3 I1 T0 I0 T0 L2 L2
-// I0 L2 L1 T3 I1 I0 T0
-// T1 I0 T0 L2 T1 L1 T3
-// 

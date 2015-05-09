@@ -25,6 +25,10 @@ int main(int argc, char const *argv[])
 
 	Client client(io_service.get());
 	client.start(serveraddr);
+	if(!client.isRunning()){
+		std::cout << "nelze pripojit" << endl;
+		return 1;
+	}
 
 	boost::thread t(boost::bind(&boost::asio::io_service::run, io_service));
 
