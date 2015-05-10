@@ -25,7 +25,7 @@ SFILES = server/server.o server/player.o server/game.o
 labyrinth: labyrinth2015-server labyrinth2015-cli labyrinth2015
 
 labyrinth2015: client/main.o $(CFILES) $(FILES)
-	# NOT IMPLEMENTED
+	# GUI NOT IMPLEMENTED
 	# g++ $(FLAGS) -o $@ $^ $(LFLAGS) 
 
 labyrinth2015-cli: client/main.o $(CFILES) $(FILES)

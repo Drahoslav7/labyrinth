@@ -236,7 +236,7 @@ Board::Board(std::string format){
 			}
 
 			board[i][j] = new Block(shape, format[pos+1] - '0');
-			board[i][j]->item = format[pos+2] - 'a';
+			board[i][j]->setItem(format[pos+2] - 'a');
 
 			pos += 3;
 		}
@@ -257,7 +257,7 @@ Board::Board(std::string format){
 			break;
 	}
 	spareBlock = new Block(shape, format[pos+1] - '0');
-	spareBlock->item = format[pos+2] - 'a'; 
+	spareBlock->setItem(format[pos+2] - 'a'); 
 }
 
 // destrucotr
@@ -316,7 +316,7 @@ std::string Board::toString(){
 
 		for (int j = 0; j < size; ++j){
 			str += board[i][j]->isLeft() ? " " : "#";
-			str += board[i][j]->item?(board[i][j]->item + '`'):' ';
+			str += board[i][j]->getItem()?(board[i][j]->getItem() + '`'):' ';
 			str += board[i][j]->isRight() ? " |" : "#|";
 		}
 		if(i%2 == 1){ // sipecka napravo 
@@ -392,8 +392,8 @@ bool Board::placeItems(std::vector<Item> * items){
 		do {
 			pos.x = randomInt(size);
 			pos.y = randomInt(size);
-		} while(board[pos.x][pos.y]->item != NONE);
-		board[pos.x][pos.y]->item = item;
+		} while(board[pos.x][pos.y]->getItem() != NONE);
+		board[pos.x][pos.y]->setItem(item);
 	}
 	return true;
 }

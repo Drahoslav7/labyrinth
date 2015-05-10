@@ -16,8 +16,6 @@
 
 using namespace std;
 
-/////////////////////////////////
-///
 
 boost::asio::io_service * Server::io_service = NULL;
 int Server::port = 0;
@@ -25,8 +23,7 @@ boost::asio::deadline_timer * Server::timer = NULL;
 
 
 Server::Server(boost::asio::io_service & io_service):
-	acceptor(io_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port))
-{
+	acceptor(io_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)){
 
 }
 

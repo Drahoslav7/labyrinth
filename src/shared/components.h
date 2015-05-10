@@ -24,11 +24,13 @@ typedef char Item;
 // typedef char Card;
 
 const Item NONE = 0;
-const Item XX = 4;
 
 const int LEFT = +1;
 const int RIGHT = -1;
 
+/**
+ * Barva figurky
+ */
 enum class Color {
 	INVISIBLE,
 	
@@ -84,6 +86,9 @@ inline std::string colortos(Color color){
 }
 
 
+/**
+ * Tvar políčka
+ */
 enum class Shape {
 	I,
 	L,
@@ -115,6 +120,7 @@ enum class Direction {
 
 //souradnice policka bludiste
 class Coords{
+
 public:
 	Coords(){
 		this->x = 0;
@@ -134,19 +140,25 @@ public:
 };
 
 class Pack {
+
 	std::vector<Item> cards;
 	int originalSize = 0;
 public:
-	// vychozi
+
 	Pack() : Pack(12) {};
 
-	// custom
+	/**
+	 * Zkkonstruuje balíček seřazený o dané velikosti
+	 */
 	Pack(unsigned int count){
 		for (Item i = 1; i <= count; ++i)
 			cards.push_back(i);
 		originalSize = count;
 	}
 
+	/**
+	 * Zkonstruje balíček z řetězce získaného ze zouboru uložené hry
+	 */
 	Pack(std::string str, int origs){
 		for(auto &i : str){
 			cards.push_back(i - 'a' + 1);
@@ -154,6 +166,10 @@ public:
 		this->originalSize = origs;
 	}
 
+	/**
+	 * Provede sejmutí karty z vrchu balíčku
+	 * @return karta
+	 */
 	Item draw(){
 		Item item = cards.back();
 		cards.pop_back();
@@ -164,6 +180,9 @@ public:
 		return &cards;
 	}
 
+	/**
+	 * Náhodně zamíchá balíček
+	 */
 	void shuffle();
 
 	int getOrigSize(){
@@ -195,6 +214,7 @@ public:
 
 // policko bludiste
 class Block {
+
 private:
 	bool top;
 	bool right;
@@ -205,9 +225,9 @@ private:
 	Shape shape;
 	unsigned int orientation;
 
+	Item item;
 	
 public:
-	Item item;
 	// constructory
 	Block();
 	Block(Shape, int = 0);
@@ -240,6 +260,10 @@ public:
 		this->item = item;
 	}
 
+	/**
+	 * Vrátí reprezentaci bloku v textové podobě
+	 * @return řetězec
+	 */
 	std::string toString();
 
 };
@@ -247,6 +271,7 @@ public:
 // hraci deska
 class Board {
 
+private:
 	int size;
 	Block*** board;
 	Block* spareBlock;
@@ -260,25 +285,71 @@ public:
 	Board(std::string);
 	~Board();
 
+	/**
+	 * Vrátí textovou reprezentaci herní plochy
+	 * pro učel vytištění na obrazovku
+	 * @return řetězec
+	 */
 	std::string toString();
 
+	/**
+	 * Vrací textovou reprezentaci herní plochy
+	 * do formátu pro použití v ukládaném souboru
+	 * @return řetězec
+	 */
 	std::string toFormat();
 
-	bool rotate(int n = 1){
-		spareBlock->rotate(n*LEFT);
+	/**
+	 * Provede rotaci volného bloku desky
+	 * @param n počet čtvrtotoček doprava
+	 */
+	void rotate(int n = 1){
+		spareBlock->rotate(n*RIGHT);
 	}
 	
+	/**
+	 * provede vsunutí volného bloku do herní desky
+	 * @param  Direction směr vsunutí
+	 * @param  unsigned  index sloupce nebo řady
+	 * @return           true pokud se akce provedla
+	 */
 	bool shift(Direction, unsigned);
 	bool shift(std::string);
 
+	/**
+	 * Testuje zda jsou dva bloky propojené
+	 * @param  Coords souřeadnice počátečního bloku
+	 * @param  Coords souřadnice cílového bloku
+	 * @return        true pokud lze projít z počítečního do cílového
+	 */
 	bool isConnected(Coords, Coords); 
 
-	// umistit itemy
+	/**
+	 * Náhodně rozmístí pžedměty do hrací desky	
+	 * @param  std::vector<Item> * ukazatel na vektor předmětů
+	 * @return        true pokud se provede korektně
+	 */
 	bool placeItems(std::vector<Item> *);
-	// umisti figurku na hraci pole
+
+	/**
+	 * Umístí figurku do hrací desky v pevně daném pořadí
+	 * @param  Figure *  ukazatel na vkládanou figurku
+	 * @return        false pokud už jsou na desce 4 figurky
+	 */
 	bool placeFigure(Figure *);
 
+	/**
+	 * Odstraní z políčka na daných souřadnicích daný předmět, pokud tam je
+	 * @param  Coords souřadnice políčka
+	 * @param  Item   předmět
+	 * @return        false pokud na daném místě není item
+	 */
 	bool pickUpItem(Coords, Item);
+	/**
+	 * Odstraní předmět z herní plochy, pokud na ní je
+	 * @param  Item předmět
+	 * @return      false pokud na herí desce předmět není
+	 */
 	bool pickUpItem(Item);
 
 };
