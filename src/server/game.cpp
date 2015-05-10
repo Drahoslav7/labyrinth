@@ -104,24 +104,32 @@ std::string Game::getGameList(){
 	return gamelist;
 }
 
+
 bool Game::loadGame(std::string filename){ // akce LOAD
-	filename += "saves/" + itos(this->players.size()) + filename + ".lab.txt";
+	filename = "saves/" + itos(this->players.size()) + filename + ".lab.txt";
 	// nacist
+	std::cout << "filetoload:" << filename << endl;
+	
 	fstream file;
-	file.open(filename.c_str(), ios::in);
+	file.open(filename.c_str());
 	if(!file.is_open()){
 		return false;
 	}
+	PP;
 	std::string content((std::istreambuf_iterator<char>(file)),
 		std::istreambuf_iterator<char>());
+	PP;
 
+	cout << "content:" << content << endl;
 	std::string boardFormat;
 	std::string usersInfo;
 	std::string packString;
 	split(content, ' ', &usersInfo, &boardFormat);
 	split(boardFormat, ' ', &boardFormat, &packString);
+	PP;
 
 	board = new Board(boardFormat); // umisti i itemy
+	PP;
 
 
 	int origPackSize = packString.size();
@@ -139,9 +147,14 @@ bool Game::loadGame(std::string filename){ // akce LOAD
  
 		cnt += 5;
 	}
+	PP;
 
 	pack = new Pack(packString, origPackSize);
+	PP;
 
+	std::cout << "fileloaded:" << filename << endl;
+
+	return true;
 }
 
 
