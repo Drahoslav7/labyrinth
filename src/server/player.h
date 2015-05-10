@@ -16,12 +16,19 @@ class Player;
 #include <vector>
 #include <string>
 #include <boost/thread.hpp>
+#include <thread>
 #include "server.h"
 #include "../shared/connection.h"
 #include "../shared/tools.h"
 #include "../shared/components.h"
 #include "server.h"
 #include "game.h"
+
+#ifdef WIN32
+	#define thread boost::thread
+#else
+	#define thread std::thread
+#endif
 
 using namespace std;
 
@@ -72,7 +79,7 @@ public:
 private:
 	int state;
 	int id;
-	boost::thread thread;
+	thread th;
 	Game *game = NULL;
 	bool shifted = false; // indikace zda hrac uz shiftoval v tomto tahu
 

@@ -22,7 +22,10 @@ dd:
 test:
 	make test -C src/
 
-doc:
+doc: doxygen
+
+doxygen: 
+	# todo
 
 pack: clean
 	# tar -cvzf xbedna55-xkunca07.zip *
