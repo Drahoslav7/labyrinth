@@ -201,6 +201,7 @@ std::string Player::handleUserRequest(std::string cmd, std::string data){
 				std::string gamelist = game->getGameList();
 				if(gamelist.size()){
 					res = "OK " + gamelist;
+					state = CREATING_LOAD;
 				} else {
 					res = "NOPE";
 				}
