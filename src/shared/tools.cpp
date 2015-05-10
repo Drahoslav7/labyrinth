@@ -1,3 +1,16 @@
+/**
+ * Projekt ICP 
+ * Labyrint
+ * 
+ * Drahoslav Bednář - xbedna55
+ * Jiří Kunčák -xkunca55
+ * 
+ * 2014/2015
+ *
+ * modul: tools
+ * 	obsahuje obecné pomocné funkce nesouvisející přímo s labyrintem
+ */
+
 #include "tools.h"
 
 void split(std::string what, char delim, std::string * left, std::string *right){
@@ -108,3 +121,4 @@ void printColored(std::string text){
 //  return {buffers_begin(streambuf.data()), 
 //          buffers_end(streambuf.data())};
 // }
+

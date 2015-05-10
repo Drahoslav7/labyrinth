@@ -1,3 +1,17 @@
+/**
+ * Projekt ICP 
+ * Labyrint
+ * 
+ * Drahoslav Bednář - xbedna55
+ * Jiří Kunčák -xkunca55
+ * 
+ * 2014/2015
+ *
+ * modul: server
+ * třída: Server
+ *  singleton serveru, řeší inicializaci a tcp spojení
+ */
+
 #include "server.h"
 
 using namespace std;

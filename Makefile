@@ -1,3 +1,12 @@
+# Projekt ICP 
+# Labyrint
+# 
+# Drahoslav Bednář - xbedna55
+# Jiří Kunčák -xkunca55
+# 
+# 2014/2015
+#
+#
 all:
 	make -C src/
 
@@ -15,7 +24,11 @@ test:
 
 doc:
 
-pack:
+pack: clean
+	# tar -cvzf xbedna55-xkunca07.zip *
+	-7z a xbedna55-xkunca07.zip -r *
+	-zip -r xbedna55-xkunca07.zip *
 
 clean:
+	-rm *.zip
 	make clean -C src/

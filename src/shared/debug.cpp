@@ -1,3 +1,16 @@
+/**
+ * Projekt ICP 
+ * Labyrint
+ * 
+ * Drahoslav Bednář - xbedna55
+ * Jiří Kunčák -xkunca55
+ * 
+ * 2014/2015
+ *
+ * modul: debug
+ * 	pomocný modul pro testovací výpisy
+ */
+
 #ifdef DEBUG
 	#include <iostream>
 	#define PRD(X) std::cout << X << std::endl

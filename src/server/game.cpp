@@ -1,10 +1,25 @@
+/**
+ * Projekt ICP 
+ * Labyrint
+ * 
+ * Drahoslav Bednář - xbedna55
+ * Jiří Kunčák -xkunca55
+ * 
+ * 2014/2015
+ *
+ * modul: game
+ * třída: Game
+ *  reprezentuje jednu hru (zastřešení 2-4 hráčů)
+ * 	
+ */
+
 #include "game.h"
 
 using namespace std;
 vector<Game *> Game::games = vector<Game *>();
 
 bool Game::addPlayer(Player *player){
-	if(players.size() == 4 && players[0]->getState() != Player::INVITING){
+	if(players.size() == 4 || (players[0]->getState() != Player::INVITING)){
 		return false;
 	}
 
@@ -78,6 +93,8 @@ bool Game::save(std::string filename){
 	file.open(filename.c_str(), ios::out);
 	file << content;
 	file.close();
+
+	this->sendUpdate("SAVED");
 	return true;
 }
 

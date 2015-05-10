@@ -1,3 +1,15 @@
+/**
+ * Projekt ICP 
+ * Labyrint
+ * 
+ * Drahoslav Bednář - xbedna55
+ * Jiří Kunčák -xkunca55
+ * 
+ * 2014/2015
+ *
+ * 
+ */
+
 #pragma once
 
 #include <string>

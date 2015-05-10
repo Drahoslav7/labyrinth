@@ -1,3 +1,18 @@
+/**
+ * Projekt ICP 
+ * Labyrint
+ * 
+ * Drahoslav Bednář - xbedna55
+ * Jiří Kunčák -xkunca55
+ * 
+ * 2014/2015
+ *
+ * modul: connection
+ * 	společné pro klienta i server
+ * Třída:
+ * řeší odesílání a čtení zpráv z/do socketu
+ */
+
 #include "connection.h"
 
 using namespace std;
@@ -19,13 +34,12 @@ void Connection::recv(std::string * target){
 
 	std::istream readStream(&rbuffer);
 	std::getline(readStream, *target);
-	// target->erase(target->end()-1, target->end());
 	rbuffer.consume(rbuffer.size());
-	std::cout << "Recv:" << *target << std::endl;
+	// std::cout << "Recv:" << *target << std::endl;
 }
 
 void Connection::send(std::string * message){
-	std::cout <<  "Send:" << * message << std::endl;
+	// std::cout <<  "Send:" << * message << std::endl;
 	std::string msg = *message + "\n";
 	boost::asio::write(
 		socket,
@@ -34,10 +48,6 @@ void Connection::send(std::string * message){
 	);
 }
 
-
-// void foo(){
-// 	cout << "foo" << endl;
-// }
 
 void Connection::send_async(std::string * message, boost::function<void()> handler )
 {
@@ -66,7 +76,6 @@ void Connection::handle_recv(boost::function<void()> handler)
 
 	std::istream is(&rbuffer);
 	std::getline(is, *target, '\n');
-	// cout << "-->" << *target << "<--" << endl;
 	handler();
 }
 

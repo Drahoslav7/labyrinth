@@ -1,3 +1,17 @@
+/**
+ * Projekt ICP 
+ * Labyrint
+ * 
+ * Drahoslav Bednář - xbedna55
+ * Jiří Kunčák -xkunca55
+ * 
+ * 2014/2015
+ *
+ * modul: client
+ * třída: Client
+ * 	řeší zpracování vstupu od uživatele a komunikaci ze serverem
+ */
+
 #include "client.h"
 
 Client::Client(boost::asio::io_service* io_service){
