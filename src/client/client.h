@@ -70,9 +70,10 @@ private:
 	string doActionClient(string, string, string);
 	string doActionServer(string, string);
 	string formatPlayers(string);
+	string formatSavedGames(string);
 	string formatScoreboard();
 	void initScoreboard(string);
-	void initFigures();
+	void initFigure(char, char, char);
 
 	void doRotate();
 	void doShift(string);
@@ -90,5 +91,6 @@ public:
 	void write(std::string);
 	string sendMessage(string);
 	bool validCommand(string);
+	string printCommands();
 
 };

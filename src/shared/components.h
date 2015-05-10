@@ -50,6 +50,21 @@ inline char colortoc(Color color){
 	}
 }
 
+inline Color ctocolor(char color){
+	switch(color){
+			case 'R':
+				return Color::RED;
+			case 'G':
+				return Color::GREEN;
+			case 'Y':
+				return Color::YELLOW;
+			case 'B':
+				return Color::BLUE;
+			default:
+				return Color::INVISIBLE;
+	}
+}
+
 inline std::string colortos(Color color){
 	std::string strcolor = "";
 	strcolor += colortoc(color);

@@ -44,6 +44,12 @@ int main(int argc, char const *argv[])
 		if(cmd == "SUICIDE"){
 			break;
 		}
+		if(cmd == "HELP"){
+			string commands;
+			commands = client.printCommands();
+			cout << commands << endl;
+			continue;
+		}
 
 		if(client.validCommand(cmd)){
 			client.sendCommand(cmd, data);

@@ -117,6 +117,9 @@ string Client::doActionServer(string recvCmd, string data){
 
 	// READY or PLAYING
 	if (recvCmd == "GAMECANCELED"){
+		figures.clear();
+		scoreboard.clear();
+		delete board;
 		state = WAITING;
 		return "Hra byla ukoncena. Pripojte se do jine nebo zaloz svoji.";
 	}
@@ -124,9 +127,8 @@ string Client::doActionServer(string recvCmd, string data){
 		state = PLAYING;
 		string scboarddata, boardformat;
 		split(data, ' ', &scboarddata, &boardformat);
-		initScoreboard(scboarddata);
 		board = new Board(boardformat);
-		initFigures();
+		initScoreboard(scboarddata);
 		cout << "zadek" << endl;
 		return "Hra zacala \n" + formatScoreboard() + board->toString();
 	}
@@ -241,8 +243,9 @@ string Client::doActionClient(string cmd, string response, string data){
 				if(response == "OK"){
 					state = CREATING_LOAD;
 					msg = "Vyber ulozenou hru.";
+					msg += formatSavedGames(data);
 				}else{
-					msg = "Nemas dostatek hracu.";
+					msg = "Pro tento pocet hracu neni vhodna ulozena hra.";
 				}
 			}
 			break;
@@ -423,29 +426,16 @@ string Client::formatPlayers(string data){
 	return msg;
 }
 
-void Client::initFigures(){
-	int players = scoreboard.size();
-	Color color = Color::INVISIBLE;
-	for(int i = 0; i < players; i++){
-		Figure* figure = new Figure(++color);
-		board->placeFigure(figure);
-		figures.push_back(figure);
-	}
-}
-
-void Client::initScoreboard(string data){
-	string player;
-	Scoreline line;
+string Client::formatSavedGames(string data){
+	string first, msg, position;
+	msg = "Ulozene hry: \n";
 	while(data != ""){
-		split(data, ';', &player, &data);
-		line.color = player[0];
-		player.erase(player.begin());
-		line.card = player[0];
-		player.erase(player.begin());
-		line.nickname = player;
-		line.points = 0;
-		scoreboard.push_back(line);
+		split(data, ' ', &first, &data);
+		msg += "\t" + first + "\n";
 	}
+	msg += "-----";
+
+	return msg;
 }
 
 string Client::formatScoreboard(){
@@ -456,8 +446,34 @@ string Client::formatScoreboard(){
 		msg += line.card;
 		msg += "\n";		
 	}
-
 	return msg;
+}
+
+void Client::initFigure(char x, char y, char color){
+	Color newcolor = ctocolor(color);
+	Figure* figure = new Figure(newcolor);
+	board->placeFigure(figure);
+	figure->pos.x = x - 'A';
+	figure->pos.y = y - 'A';
+	figures.push_back(figure);
+}
+
+void Client::initScoreboard(string data){
+	string player;
+	Scoreline line;
+	while(data != ""){
+		split(data, ';', &player, &data);
+		line.color = player[0];
+		player.erase(player.begin());
+		initFigure(player[0], player[1], line.color);		
+		player.erase(player.begin());
+		player.erase(player.begin());
+		line.card = player[0];
+		player.erase(player.begin());
+		line.nickname = player;
+		line.points = 0;
+		scoreboard.push_back(line);
+	}
 }
 
 void Client::doRotate(){
@@ -490,7 +506,7 @@ void Client::addPoint(char foundcard, char color){
 		for(auto &line : scoreboard){
 			if(color == line.color){
 				Item card;
-				card = foundcard - 'a' + 1;
+				card = line.card - 'a' + 1;
 				board->pickUpItem(card);
 				line.points++;
 				line.card = foundcard;
@@ -498,3 +514,52 @@ void Client::addPoint(char foundcard, char color){
 		}
 	}	
 }
+
+string Client::printCommands(){
+	string msg = "Pouzitelne prikazy jsou:\n";
+
+	switch(state){
+		case STARTED:
+			msg += "IAM [nickname]\n";
+			msg += "GODMODE";
+			break;
+		case WAITING:
+			msg += "WHOISTHERE\n";
+			msg += "CREATE";
+			break;
+		case INVITED:
+			msg += "ACCEPT\n";
+			msg += "DECLINE";
+			break;
+		case READY:
+			break;
+		case INVITING:
+			msg += "INVITE [nickname hrace]\n";
+			msg += "WHOISTHERE\n";
+			msg += "NEWGAME\n";
+			msg += "LOADGAME";
+			break;
+		case CREATING_NEW:
+			msg += "NEW [A-E pro vyber velikosti pole][0/1 pro pocet karet 12/24]";
+			break;
+		case CREATING_LOAD:
+			msg += "LOAD [nazev hry]";
+			break;	
+		case PLAYING:
+			break;
+		case ONTURN:
+			msg += "ROTATE\n";
+			msg += "SHIFT [0-3 pro vyber strany - 0 nahore, 1 vpravo, ...][A-F pro vyber licheho radku/sloupce - A nahore/vlevo]\n";
+			msg += "MOVE [A-F - souradnice radku (A - vrchni)][A-F - souradnice sloupce (A - levy)]\n";
+			msg += "SAVE [nazev hry]";
+			break;
+		case GODMODE:
+			msg += "IAM [nick]\n";
+			msg += "WHOISTHERE\n";
+			msg += "GODMODE\n";
+			msg += "KILL [nick]";
+			break;
+	}
+
+	return msg;
+} 
