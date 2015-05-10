@@ -1,3 +1,16 @@
+/**
+ * Projekt ICP 
+ * Labyrint
+ * 
+ * Drahoslav Bednář - xbedna55
+ * Jiří Kunčák -xkunca55
+ * 
+ * 2014/2015
+ *
+ * modul: test
+ * 	modul pro rychlé testování funkčnosti jednotvlivých modulů
+ */
+
 #include <iostream>
 #include "../shared/err.h"
 #include "../shared/components.h"

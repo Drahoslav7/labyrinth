@@ -1,11 +1,31 @@
+/**
+ * Projekt ICP 
+ * Labyrint
+ * 
+ * Drahoslav Bednář - xbedna55
+ * Jiří Kunčák -xkunca55
+ * 
+ * 2014/2015
+ *
+ * modul: components
+ * 	společné pro klienta i server, reprezentuje jednotlivé komponenty hry
+ *
+ * Třídy a typy:
+ * 	Figure
+ * 		- figurka hráče s polohou a barvou
+ * 	Board
+ * 		- herní plochy bludiště obsahuje políčka a figurky
+ * 	Block
+ * 	 	- jedno políčko bludiště obsahhuje Item
+ * 	Item
+ * 		- představuje předmět nebo kartu
+ * 	
+ */
+
 #include <ctime>
 #include <boost/random.hpp>
 #include "components.h"
-// #include <iostream>
 
-
-/////////////////////////////////////////////////////////////////////////
-/// ostatni
 
 std::time_t now = std::time(0);
 boost::random::mt19937 gen{static_cast<std::uint32_t>(now)};

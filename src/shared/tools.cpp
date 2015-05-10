@@ -1,3 +1,16 @@
+/**
+ * Projekt ICP 
+ * Labyrint
+ * 
+ * Drahoslav Bednář - xbedna55
+ * Jiří Kunčák -xkunca55
+ * 
+ * 2014/2015
+ *
+ * modul: tools
+ * 	obsahuje obecné pomocné funkce nesouvisející přímo s labyrintem
+ */
+
 #include "tools.h"
 
 void split(std::string what, char delim, std::string * left, std::string *right){
@@ -23,16 +36,3 @@ std::string itos(int i){
 	str = oss.str();
 	return str;
 }
-
-// std::string strbuftos(boost::asio::streambuf * strbuf){
-// 	std::ostringstream ss;
-// 	ss << *strbuf;
-// 	std::string s = ss.str();
-// 	return s;
-// }
-
-// std::string strbuftos(boost::asio::streambuf& streambuf)
-// {
-//  return {buffers_begin(streambuf.data()), 
-//          buffers_end(streambuf.data())};
-// }

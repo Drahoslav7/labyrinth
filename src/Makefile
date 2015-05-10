@@ -1,3 +1,12 @@
+# Projekt ICP 
+# Labyrint
+# 
+# Drahoslav Bednář - xbedna55
+# Jiří Kunčák -xkunca55
+# 
+# 2014/2015
+#
+
 FLAGS = -std=c++11
 
 LFLAGS = -l boost_system -l boost_thread -l Qt5Core -l Qt5Gui
@@ -11,7 +20,7 @@ SFILES = server/server.o server/player.o server/game.o
 
 labyrinth: labyrinth2015-server labyrinth2015
 
-labyrinth2015: client/main.o $(CFILES) $(FILES)
+labyrinth2015-cli: client/main.o $(CFILES) $(FILES)
 	g++ $(FLAGS) -o $@ $^ $(LFLAGS) 
 
 labyrinth2015-server: server/main.o $(SFILES) $(FILES)
@@ -40,8 +49,5 @@ test: tests/main.o $(SFILES) $(FILES) $(CFILES)
 
 clean:
 	-rm labyrinth2015.exe labyrinth2015-server.exe labyrinth2015 labyrinth2015-server test test.exe server/*.o client/*.o shared/*.o tests/*.o
-
-pack:
-	#todo
 
 .PHONY: setdebug labyrinth run

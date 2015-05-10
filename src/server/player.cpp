@@ -1,3 +1,17 @@
+/**
+ * Projekt ICP 
+ * Labyrint
+ * 
+ * Drahoslav Bednář - xbedna55
+ * Jiří Kunčák -xkunca55
+ * 
+ * 2014/2015
+ *
+ * třída: Player 
+ * 	reprezentuje jednoho připojeného klienta
+ * 	řeší obsluhu příkazů od klientů
+ */
+
 #include "player.h"
 
 using namespace std;
@@ -82,7 +96,7 @@ void Player::endGame(std::string winner, bool isLast = false){
 	delete this->figure;
 	// if(isLast)
 	// 	delete game;
-	game = NULL;
+	// game = NULL;
 	this->tell("ENDGAME " + winner);
 }
 
@@ -289,10 +303,12 @@ std::string Player::handleUserRequest(std::string cmd, std::string data){
 			}
 			if(cmd == "MOVE"){
 				if(game->doMove(data)){
-					game->isWin();
-					this->shifted = false;
-					res = "OK";
-					game->nextTurn();
+					if(!game->isWin()){
+						game->nextTurn();
+						this->shifted = false;
+					} else {
+						res = "OK";
+					}
 				} else {
 					res = "NOPE";
 					break;

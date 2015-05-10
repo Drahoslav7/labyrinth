@@ -1,3 +1,16 @@
+/**
+ * Projekt ICP 
+ * Labyrint
+ * 
+ * Drahoslav Bednář - xbedna55
+ * Jiří Kunčák -xkunca55
+ * 
+ * 2014/2015
+ *
+ * modul: main
+ * vstupní bod konzolové verze klientského programu
+ */
+
 #include <iostream>
 #include "client.h"
 
