@@ -289,6 +289,19 @@ bool Board::pickUpItem(Coords pos, Item card){
 	}
 }
 
+bool Board::pickUpItem(Item card){
+	for(int i = 0; i < size; ++i){			
+		for (int j = 0; j < size; ++j){
+			if(board[i][j]->getItem() == card){
+				board[i][j]->setItem(NONE);
+				return true;
+			}	
+		}
+	}
+
+	return false;
+}
+
 
 // rozmistit predmety po hracim poli
 bool Board::placeItems(std::vector<Item> * items){

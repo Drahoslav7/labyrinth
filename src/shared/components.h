@@ -240,6 +240,7 @@ public:
 	bool placeFigure(Figure *);
 
 	bool pickUpItem(Coords, Item);
+	bool pickUpItem(Item);
 
 };
 

@@ -148,6 +148,13 @@ string Client::doActionServer(string recvCmd, string data){
 		this->doMove(data);
 		return formatScoreboard() + board->toString();
 	}
+	if (recvCmd == "ENDGAME"){
+		state == WAITING;
+		figures.clear();
+		scoreboard.clear();
+		delete board;
+		return "Konec hry. Vyhral hrac --->" + data + "<--- HOORAY!";
+	}
 
 	// CREATING
 	if (recvCmd == "READYLIST"){
@@ -284,6 +291,13 @@ string Client::doActionClient(string cmd, string response, string data){
 					msg = "Tento tah je neproveditelny. Tahni znovu.";
 				}
 			}
+			if(cmd == "SAVE"){
+				if(response == "OK"){
+					// nic - info o tom, ze hra byla ulozena se zpracovava v action od serveru
+				}else{
+					msg = "Hra nemuze byt ulozena pod timto nazvem";
+				}
+			}
 			break;	
 		case GODMODE:
 			if(cmd == "IAM"){
@@ -370,6 +384,9 @@ bool Client::validCommand(string cmd){
 				return true;
 			}
 			if(cmd == "MOVE"){
+				return true;
+			}
+			if(cmd == "SAVE"){
 				return true;
 			}
 			break;
@@ -472,6 +489,9 @@ void Client::addPoint(char foundcard, char color){
 	if(foundcard != '0'){
 		for(auto &line : scoreboard){
 			if(color == line.color){
+				Item card;
+				card = foundcard - 'a' + 1;
+				board->pickUpItem(card);
 				line.points++;
 				line.card = foundcard;
 			}
