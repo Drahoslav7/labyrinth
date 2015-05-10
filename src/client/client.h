@@ -14,6 +14,7 @@
 
 #include <boost/asio.hpp>
 #include <boost/thread.hpp>
+#include <thread>
 #include <string>
 #include <vector>
 #include <deque>
@@ -22,6 +23,11 @@
 #include "../shared/tools.h"
 #include "../shared/debug.cpp"
 
+#ifdef WIN32
+	#define thread boost::thread
+#else
+	#define thread std::thread
+#endif
 
 using namespace std;
 

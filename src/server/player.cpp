@@ -18,9 +18,6 @@ using namespace std;
 
 vector<Player *> Player::players = vector<Player *>();
 
-// Player::STATES[] = {
-// 	Player::NONE : "NONE",
-// }
 
 Player::Player(Connection *con){
 	connection = con;
@@ -32,7 +29,7 @@ Player::Player(Connection *con){
 	game = NULL;
 	figure = NULL;
 
-	thread = boost::thread(&Player::work, this);
+	th = thread(&Player::work, this);
 	PRD("Player thread");
 };
 
@@ -43,7 +40,7 @@ Player::~Player(){
 	// 	tell("DIE"); 
 	// 	PRD("DIE~");
 	// }
-	thread.join();
+	th.join();
 	delete connection;
 };
 

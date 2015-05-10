@@ -42,9 +42,8 @@ int main(int argc, char const *argv[])
 		std::cout << "nelze pripojit" << endl;
 		return 1;
 	}
-
-	boost::thread t(boost::bind(&boost::asio::io_service::run, io_service));
-
+	
+	thread t(boost::bind(&boost::asio::io_service::run, io_service));
 	string line;
 	string cmd = "HI";
 	string data = "";
