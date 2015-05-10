@@ -459,7 +459,7 @@ void Client::initFigure(char x, char y, char color){
 }
 
 void Client::initScoreboard(string data){
-	string player;
+	string player, score;
 	Scoreline line;
 	while(data != ""){
 		split(data, ';', &player, &data);
@@ -468,10 +468,12 @@ void Client::initScoreboard(string data){
 		initFigure(player[0], player[1], line.color);		
 		player.erase(player.begin());
 		player.erase(player.begin());
+		score = player[0];
+		player.erase(player.begin());		
 		line.card = player[0];
 		player.erase(player.begin());
 		line.nickname = player;
-		line.points = 0;
+		line.points = score + '0';
 		scoreboard.push_back(line);
 	}
 }
