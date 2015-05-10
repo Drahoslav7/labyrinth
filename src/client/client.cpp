@@ -55,14 +55,6 @@ void Client::quit(){
 }
 
 void Client::handleConnect(const boost::system::error_code& error){
-	// if (!error) {
-	// boost::asio::async_read(connection->socket,
-	// 	boost::asio::buffer(readMsg, chat_message::header_length),
-	// 	  boost::bind(&Client::handleRead, this,
-	// 	    boost::asio::placeholders::error
-	// 	  )
-	// 	);
-	// }
 	if (!error){
 		connection->recv_async(&readMsg, boost::bind(&Client::handleRead, this));
 	}
@@ -76,12 +68,6 @@ void Client::sendCommand(std::string command, std::string data=""){
 void Client::doSendCommand(std::string command){
 	connection->send(&command);
 }
-
-std::string Client::sendMessage(string message){
-	connection->send(&message);
-	connection->recv(&message);
-	return message;
-};
 
 void Client::handleRead(){
 	if(!isRunning()){
@@ -190,7 +176,7 @@ string Client::doActionServer(string recvCmd, string data){
 	}
 	
 	running = false;
-	return "SERVER --- WTF?!";
+	return "Server se zblaznil.";
 }
 
 
@@ -466,17 +452,6 @@ string Client::formatSavedGames(string data){
 	return msg;
 }
 
-string Client::formatScoreboard(){
-	string msg = "";
-	for(auto &line : scoreboard){
-		msg += line.color;
-		msg += " " + line.nickname + " " + itos(line.points) + " ";
-		msg += line.card;
-		msg += "\n";		
-	}
-	return msg;
-}
-
 void Client::printGamedesk(){
 	string color;
 	cout << "SCOREBOARD" << endl;
@@ -567,8 +542,7 @@ string Client::printCommands(){
 
 	switch(state){
 		case STARTED:
-			msg += "IAM [nickname]\n";
-			msg += "GODMODE";
+			msg += "IAM [nickname]";
 			break;
 		case WAITING:
 			msg += "WHOISTHERE\n";
@@ -596,7 +570,7 @@ string Client::printCommands(){
 			break;
 		case ONTURN:
 			msg += "ROTATE\n";
-			msg += "SHIFT [0-3 pro vyber strany - 0 nahore, 1 vpravo, ...][A-F pro vyber licheho radku/sloupce - A nahore/vlevo]\n";
+			msg += "SHIFT [0-3 pro vyber strany - 0 nahore, 1 vpravo, ...][A-F pro vyber radku/sloupce oznaceneho sipkou - A nahore/vlevo]\n";
 			msg += "MOVE [A-F - souradnice radku (A - vrchni)][A-F - souradnice sloupce (A - levy)]\n";
 			msg += "SAVE [nazev hry]";
 			break;

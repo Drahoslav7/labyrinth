@@ -45,6 +45,9 @@ labyrinth2015-server: server/main.o $(SFILES) $(FILES)
 run:
 	./labyrinth2015-server 1620
 
+runclient:
+	./labyrinth2015 localhost 1620	
+
 setdebug: 
 	$(eval FLAGS += -D DEBUG=1)
 
