@@ -83,7 +83,6 @@ private:
 	Game *game = NULL;
 	bool shifted = false; // indikace zda hrac uz shiftoval v tomto tahu
 
-
 	void work();
 	std::string handleUserRequest(std::string, std::string);
 
