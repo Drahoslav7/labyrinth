@@ -264,7 +264,7 @@ string Client::doActionClient(string cmd, string response, string data){
 		case ONTURN:
 			if(cmd == "ROTATE"){
 				if(response == "OK"){
-					msg = "Blok otočen";
+					msg = "Blok otocen";
 				}else{
 					msg = "Blok nemuze byt otocen protoze jsi uz shiftnul. Nyni pohni figurkou.";
 				}
