@@ -150,8 +150,11 @@ string Client::doActionServer(string recvCmd, string data){
 		this->doMove(data);
 		return formatScoreboard() + board->toString();
 	}
+	if (recvCmd == "SAVED"){
+		return "Hra byla ulozena.";
+	}
 	if (recvCmd == "ENDGAME"){
-		state == WAITING;
+		state = WAITING;
 		figures.clear();
 		scoreboard.clear();
 		delete board;
@@ -288,8 +291,10 @@ string Client::doActionClient(string cmd, string response, string data){
 			}
 			if(cmd == "MOVE"){
 				if(response == "OK"){
-					state = PLAYING;
-					msg = "Na tahu je dalsi hrac";
+					if(state == ONTURN){
+						state = PLAYING;
+						msg = "Na tahu je dalsi hrac";	
+					}
 				}else{
 					msg = "Tento tah je neproveditelny. Tahni znovu.";
 				}
