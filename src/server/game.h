@@ -3,6 +3,9 @@ class Game;
 
 #include <vector>
 #include <string>
+#include <fstream>
+#include <iostream>
+#include <dirent.h>
 #include "player.h"
 #include "../shared/components.h"
 
@@ -28,8 +31,12 @@ public:
 	Player * getLeader();
 	bool isSomeoneReady();
 
+	bool save(std::string filename);
 
+	std::string getGameList();
+	bool loadGame(std::string filename);
 	bool createGame(std::string settings);
+
 
 	void sendInit();
 	void sendUpdate(std::string);
@@ -40,6 +47,8 @@ public:
 	bool doRotate();
 	bool doShift(std::string data);
 	bool doMove(std::string data);
+
+	bool isWin();
 
 	void cancel(); //leave all
 

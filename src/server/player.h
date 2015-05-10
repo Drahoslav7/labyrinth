@@ -43,6 +43,8 @@ public:
 	int acceptInvite();
 	int declineInvice();
 	void leaveGame();
+	void endGame(std::string winner);
+	void endGame(std::string winner, bool isLast);
 
 	int getState(){	return state; }
 	void setState(int state){ this->state = state; }

@@ -24,9 +24,12 @@ Player::Player(Connection *con){
 
 
 Player::~Player(){
+	// if(state != DEAD){
+	// 	PRD("~DIE");
+	// 	tell("DIE"); 
+	// 	PRD("DIE~");
+	// }
 	thread.join();
-	tell("DIE");
-	// remove(this);
 	delete connection;
 };
 
@@ -71,11 +74,16 @@ void Player::leaveGame(){
 	this->state = WAITING;
 	delete this->figure;
 	this->game = NULL;
-	try{
-		this->tell("GAMECANCELED");
-	} catch (boost::system::system_error & e) {
-		
-	}
+	this->tell("GAMECANCELED");
+}
+
+void Player::endGame(std::string winner, bool isLast = false){
+	this->state = WAITING;
+	delete this->figure;
+	if(isLast)
+		delete game;
+	game = NULL;
+	this->tell("ENDGAME " + winner);
 }
 
 
@@ -92,6 +100,7 @@ void Player::work(){
 			connection->recv(&req);
 		} catch (boost::system::system_error & e) {
 			ok = false;
+			break;
 		}
 
 		string cmd;
@@ -102,8 +111,9 @@ void Player::work(){
 
 		res = handleUserRequest(cmd, data);
 		
-		if(res == "DIE" && state != GODMODE)
+		if(res == "DIE" && state != GODMODE){
 			ok = false;
+		}
 		try{
 			connection->send(&res);
 		} catch (boost::system::system_error & e) {
@@ -112,17 +122,16 @@ void Player::work(){
 
 	}
 
-	if(game && game->getLeader() == this){
-		for(auto &p : players){
-			if(p != this && p->getGame() == game){
-				p->leaveGame();
-			}
-		}
-		game->cancel();
-	}
+	PRD("player work end");
 	state = DEAD;
 
-	PRD("player work end");
+	for(auto &p : players){ // všem ostatnim ve hře
+		if(game &&  p->getGame() == game && p != this ){
+			p->leaveGame();
+		}
+	}
+
+	PRD("player work end cleaned");
 }
 
 
@@ -188,14 +197,33 @@ std::string Player::handleUserRequest(std::string cmd, std::string data){
 				}
 			}
 			if(cmd == "LOADGAME"){
-				// TODO !
-				res = "NOPE";
+				// poslat sezman her
+				std::string gamelist = game->getGameList();
+				if(gamelist.size()){
+					res = "OK " + gamelist;
+				} else {
+					res = "NOPE";
+				}
 			}
 			break;
 
 		case CREATING_NEW:
 			if(cmd == "NEW"){
-				if(game->createGame(data)){
+				if(game->createGame(data)){ // A0
+					res = "OK";
+					state = READY;
+					game->sendInit();
+					game->nextTurn();
+				} else {
+					res = "NOPE";
+				}
+			}
+
+			break;
+
+		case CREATING_LOAD:
+			if(cmd == "LOAD"){
+				if(game->loadGame(data)){ // filename
 					res = "OK";
 					state = READY;
 					game->sendInit();
@@ -227,7 +255,7 @@ std::string Player::handleUserRequest(std::string cmd, std::string data){
 			break;
 
 
-		case READY:
+		case PLAYING:
 			if(!game->isOnTurn(this)){
 				res = "NOPE";
 				break;
@@ -250,6 +278,7 @@ std::string Player::handleUserRequest(std::string cmd, std::string data){
 					break;
 				} 
 				if(game->doShift(data)){
+					game->isWin();
 					this->shifted = true;
 					res = "OK";
 				} else {
@@ -259,12 +288,21 @@ std::string Player::handleUserRequest(std::string cmd, std::string data){
 			}
 			if(cmd == "MOVE"){
 				if(game->doMove(data)){
+					game->isWin();
 					this->shifted = false;
 					res = "OK";
 					game->nextTurn();
 				} else {
 					res = "NOPE";
 					break;
+				}
+			}
+
+			if(cmd == "SAVE"){
+				if(game->save(data)){
+					res = "OK";
+				} else {
+					res = "NOPE";
 				}
 			}
 			break;
@@ -301,7 +339,9 @@ std::string Player::handleUserRequest(std::string cmd, std::string data){
 
 
 void Player::tell(std::string msg){
-	connection->send(&msg);
+	if(state != DEAD){
+		connection->send(&msg);
+	}
 }
 
 
