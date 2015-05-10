@@ -80,8 +80,8 @@ void Player::leaveGame(){
 void Player::endGame(std::string winner, bool isLast = false){
 	this->state = WAITING;
 	delete this->figure;
-	if(isLast)
-		delete game;
+	// if(isLast)
+	// 	delete game;
 	game = NULL;
 	this->tell("ENDGAME " + winner);
 }

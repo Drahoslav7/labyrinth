@@ -144,8 +144,8 @@ bool Game::loadGame(std::string filename){ // akce LOAD
 		p->card = usersInfo[3 + cnt] - 'a' + 1;
 		p->score = usersInfo[4 + cnt] - '0';
 		origPackSize += p->score;
- 
-		cnt += 5;
+ 		origPackSize++;
+		cnt += 6;
 	}
 	PP;
 
@@ -200,7 +200,8 @@ void Game::sendInit(){
 		initCmd += colortoc(p->figure->getColor());
 		initCmd += p->figure->pos.x + 'A';
 		initCmd += p->figure->pos.y + 'A';
-		initCmd += (p->card + 'a' - 1);
+		initCmd += p->card + 'a' - 1;
+		initCmd += p->score + '0';
 		initCmd += p->nickname;
 		if(p != players.back()){
 			initCmd += ';';
