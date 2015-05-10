@@ -123,7 +123,7 @@ public:
 
 class Pack {
 	std::vector<Item> cards;
-
+	int originalSize = 0;
 public:
 	// vychozi
 	Pack() : Pack(12) {};
@@ -132,6 +132,14 @@ public:
 	Pack(unsigned int count){
 		for (Item i = 1; i <= count; ++i)
 			cards.push_back(i);
+		originalSize = count;
+	}
+
+	Pack(std::string str, int origs){
+		for(auto &i : str){
+			cards.push_back(i - 'a' + 1);
+		}
+		this->originalSize = origs;
 	}
 
 	Item draw(){
@@ -145,6 +153,10 @@ public:
 	}
 
 	void shuffle();
+
+	int getOrigSize(){
+		return originalSize;
+	};
 
 	std::string toString();
 

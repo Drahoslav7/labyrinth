@@ -43,7 +43,109 @@ Player * Game::getLeader(){
 }
 
 
-bool Game::createGame(std::string sets){
+bool Game::save(std::string filename){
+	if(!filename.size())
+		return false;
+	for(auto &c : filename){
+		if(!isalnum(c)){
+			return false;
+		}
+	}
+
+	filename = "saves/" + itos(this->players.size()) + filename + ".lab.txt";
+
+	// poskladat obsah
+	std::string content = "";
+	for(auto &p : players ){
+		content += colortoc(p->figure->getColor());
+		content += p->figure->pos.x + 'A';
+		content += p->figure->pos.y + 'A';
+		content += (p->card + 'a' - 1);
+		content += p->score + '0';
+		if(p != players.back()){
+			content += ';';
+		}
+	}
+	content += " " + board->toFormat() + " " + pack->toString();
+
+	//ulozit
+	fstream file;
+	file.open(filename.c_str(), ios::in);
+	if(file.is_open()){
+		file.close();
+		return false;
+	}
+	file.open(filename.c_str(), ios::out);
+	file << content;
+	file.close();
+	return true;
+}
+
+std::string Game::getGameList(){
+	std::string gamelist = "";
+	DIR *dir;
+	struct dirent *ent;
+	if ((dir = opendir ("saves")) != NULL) {
+		/* print all the files and directories within directory */
+		while ((ent = readdir (dir)) != NULL) {
+			// cout << "file:" << ent->d_name << endl;
+			if(ent->d_name[0] == this->players.size() + '0'){ // spravny pocet hracu
+				for(int i = 1; ent->d_name[i] != '.' && ent->d_name[i] != '\0'; i++){
+					gamelist += ent->d_name[i]; 
+				}
+				gamelist += ' ';
+			}
+			// cout << "gamelist:" << gamelist << endl;
+		}
+		closedir (dir);
+	} else {
+		cout << "can't open saves dir" << endl;
+	}
+	return gamelist;
+}
+
+bool Game::loadGame(std::string filename){ // akce LOAD
+	filename += "saves/" + itos(this->players.size()) + filename + ".lab.txt";
+	// nacist
+	fstream file;
+	file.open(filename.c_str(), ios::in);
+	if(!file.is_open()){
+		return false;
+	}
+	std::string content((std::istreambuf_iterator<char>(file)),
+		std::istreambuf_iterator<char>());
+
+	std::string boardFormat;
+	std::string usersInfo;
+	std::string packString;
+	split(content, ' ', &usersInfo, &boardFormat);
+	split(boardFormat, ' ', &boardFormat, &packString);
+
+	board = new Board(boardFormat); // umisti i itemy
+
+
+	int origPackSize = packString.size();
+	Color color = Color::INVISIBLE;
+	int cnt=0;
+	for(auto &p : players ){
+		// rozdat figurku
+		p->figure = new Figure(++color);
+		board->placeFigure(p->figure);
+		p->figure->pos.x = usersInfo[1 + cnt] - 'A';
+		p->figure->pos.y = usersInfo[2 + cnt] - 'A';
+		p->card = usersInfo[3 + cnt] - 'a' + 1;
+		p->score = usersInfo[4 + cnt] - '0';
+		origPackSize += p->score;
+ 
+		cnt += 5;
+	}
+
+	pack = new Pack(packString, origPackSize);
+
+}
+
+
+bool Game::createGame(std::string sets){ // akce NEW
 	if(sets.size() != 2){
 		return false;
 	}
@@ -83,11 +185,14 @@ void Game::sendInit(){
 	std::string initCmd = "INIT ";
 	for(auto &p : players){
 		initCmd += colortoc(p->figure->getColor());
+		initCmd += p->figure->pos.x + 'A';
+		initCmd += p->figure->pos.y + 'A';
 		initCmd += (p->card + 'a' - 1);
 		initCmd += p->nickname;
 		if(p != players.back()){
 			initCmd += ';';
 		}
+		p->setState(Player::PLAYING);
 	}
 
 	initCmd += " " + board->toFormat();
@@ -136,6 +241,7 @@ bool Game::doShift(std::string data){
 			p->card = pack->draw();
 			c = (p->card + 'a' - 1);
 			fig = colortoc(p->figure->getColor());
+			p->score++;
 		}
 	}
 
@@ -167,6 +273,7 @@ bool Game::doMove(std::string data){
 	if(board->pickUpItem(dest, me->card)){
 		me->card = pack->draw();
 		c = (me->card + 'a' - 1);
+		me->score++;
 	}
 
 	std::string msg = "MOVED ";
@@ -178,10 +285,23 @@ bool Game::doMove(std::string data){
 }
 
 
-
-void Game::cancel(){
-	for(auto &p : players){
-		p->leaveGame();
+bool Game::isWin(){
+	bool win;
+	for(auto &winner : players){
+		if(winner->score == (pack->getOrigSize()/players.size()) ){ // win
+			for(auto &p : players){
+				p->endGame(winner->nickname, p == players.back());
+			}
+			return true;
+		}
 	}
-	delete this;
+	return false;
 }
+
+
+// void Game::cancel(){
+// 	for(auto &p : players){
+// 		p->leaveGame();
+// 	}
+// 	delete this;
+// }

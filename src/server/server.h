@@ -22,12 +22,12 @@ public:
 	static int port;
 	static boost::asio::deadline_timer * timer;
 
-	std::vector<Game *> games;
+	// std::vector<Game *> games;
 
 private:
 	Connection * listenningConnection = NULL;
 	boost::asio::ip::tcp::acceptor acceptor;
-	// std::vector<Player *> waitingPlayers;
+	std::vector<Player *> allPlayerInstances;
 
 	Server(boost::asio::io_service & io_service);
 	void acceptClient(Connection * conn, const boost::system::error_code& e);

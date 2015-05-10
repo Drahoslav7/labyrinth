@@ -46,8 +46,8 @@ void Pack::shuffle(){
 
 std::string Pack::toString(){
 	std::string str = "";
-	for(Item item : cards)
-		str += (item + '@');
+	for(Item item : this->cards)
+		str += (item + 'a' - 1);
 	return str;
 }
 

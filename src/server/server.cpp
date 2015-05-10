@@ -50,8 +50,11 @@ void Server::listen(){
 void Server::stop(){
 	Server::io_service->stop();
 	acceptor.close();
-
-	games.clear();
+	for(auto &p : allPlayerInstances){
+		delete p; // vola join
+	}
+	allPlayerInstances.clear();
+	// games.clear();
 	Player::wipeall();
 
 	delete listenningConnection;
@@ -63,7 +66,7 @@ void Server::acceptClient(Connection * connection, const boost::system::error_co
 
 	if(!e){
 		Player * player = new Player(connection); // todo předat connection
-		// waitingPlayers.push_back(player);
+		allPlayerInstances.push_back(player);
 		listen();
 	}else{
 		Server::kill(0);
@@ -98,7 +101,7 @@ void Server::maintenance() {
 	PRD("udrzba");
 
 	// vypsat všechny
-	cout << Player::getPlayersInfo() << endl;
+	cout << Player::getPlayersInfo();// << endl;
 
 
 	// Player::pokeAll();
