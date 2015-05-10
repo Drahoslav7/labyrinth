@@ -304,7 +304,7 @@ std::string Board::toString(){
 	for (int i = 0; i < size; ++i){
 		str += "    |";
 		for (int j = 0; j < size; ++j){
-			str += board[i][j]->isTop() ? FF(0)+" "+FF(1)+"|" : FF(0)+"#"+FF(1)+"|";
+			str += board[i][j]->isTop() ? FF(0)+" "+FF(2)+"|" : FF(0)+"#"+FF(2)+"|";
 		}
 		str += "\n";
 
@@ -327,7 +327,7 @@ std::string Board::toString(){
 		
 		str += "    |";
 		for (int j = 0; j < size; ++j){
-			str += board[i][j]->isBottom() ? FF(3)+" "+FF(2)+"|" : FF(3)+"#"+FF(2)+"|";
+			str += board[i][j]->isBottom() ? FF(3)+" "+FF(1)+"|" : FF(3)+"#"+FF(1)+"|";
 		}
 		str += "\n    +";
 		for (int j = 0; j < size; ++j){
