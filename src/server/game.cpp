@@ -61,6 +61,8 @@ bool Game::createGame(std::string sets){
 
 	pack = new Pack(packSize);
 
+	pack->shuffle();
+
 	board->placeItems(pack->get());
 
 	Color color = Color::INVISIBLE;
