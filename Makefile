@@ -22,7 +22,7 @@ test:
 doc: doxygen
 
 doxygen: 
-	# todo
+	doxygen src/doxyconfig
 
 pack: clean
 	# tar -cvzf xbedna55-xkunca07.zip *
@@ -30,5 +30,6 @@ pack: clean
 	-zip -r xbedna55-xkunca07.zip *
 
 clean:
+	-rm -r doc/*
 	-rm *.zip
 	make clean -C src/

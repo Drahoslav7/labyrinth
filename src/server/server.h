@@ -25,8 +25,10 @@ class Server;
 #include "../shared/components.h"
 #include "../shared/debug.cpp"
 
-/////////////////////////////////////////////
 
+/**
+ * TCP server zajištující připojení klientů
+ */
 class Server {
 
 public:

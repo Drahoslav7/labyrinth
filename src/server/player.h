@@ -38,7 +38,7 @@ public:
 	Connection *connection;
 
 
-	enum {
+	enum states {
 		NONE,
 		STARTED,
 		WAITING,
