@@ -300,10 +300,11 @@ std::string Player::handleUserRequest(std::string cmd, std::string data){
 			}
 			if(cmd == "MOVE"){
 				if(game->doMove(data)){
-					if(!game->isWin()){
+					if(game->isWin()){
+						res = "OK";
+					} else {
 						game->nextTurn();
 						this->shifted = false;
-					} else {
 						res = "OK";
 					}
 				} else {
