@@ -32,7 +32,8 @@ labyrinth2015-cli: client/main.o $(CFILES) $(FILES)
 	g++ $(FLAGS) -o $@ $^ $(LFLAGS) 
 
 labyrinth2015-server: server/main.o $(SFILES) $(FILES)
-	g++ $(FLAGS) -o $@ $^ $(LFLAGS) 
+	g++ $(FLAGS) -o $@ $^ $(LFLAGS)
+	-mkdir saves
 
 
 %.o: %.cpp %.h
