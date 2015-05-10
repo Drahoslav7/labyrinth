@@ -109,7 +109,7 @@ std::string Block::toString(){
 	str += isTop() ? "# #" : "###" ;
 	str += "\n";
 	str += isLeft() ? " " : "#";
-	str += item ? item + '@' : ' ';
+	str += item ? item + 'a' - 1 : ' ';
 	str += isRight() ? " " : "#";
 	str += "\n";
 	str += isBottom() ? "# #" : "###";
