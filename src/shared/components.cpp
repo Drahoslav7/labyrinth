@@ -106,14 +106,20 @@ void Block::rotate(int rotation){
 
 std::string Block::toString(){
 	std::string str = "";
-	str += isTop() ? "# #" : "###" ;
 	str += "\n";
-	str += isLeft() ? " " : "#";
+	str += "\t+---+";
+	str += "\n";
+	str += isTop() ? "\t|# #|" : "\t|###|" ;
+	str += "\n";
+	str += isLeft() ? "\t| " : "\t|#";
 	str += item ? item + 'a' - 1 : ' ';
-	str += isRight() ? " " : "#";
+	str += isRight() ? " |" : "#|";
 	str += "\n";
-	str += isBottom() ? "# #" : "###";
+	str += isBottom() ? "\t|# #|" : "\t|###|";
 	str += "\n";
+	str += "\t+---+";
+	str += "\n";
+	
 	return str;
 }
 
@@ -252,28 +258,82 @@ Board::~Board(){
 
 std::string Board::toString(){
 	std::string str = "";
-	str += "+";
-	for (int j = 0; j < size; ++j)
+	// vrchni sipecky
+	str += "   ";
+	for (int n = 0; n < size/2; n++){
+		str += "       |";
+	}
+	str += "\n";
+	str += "   ";
+	for (int n = 0; n < size/2; n++){
+		str += "       |";
+	}
+	str += "\n";
+	str += "   ";
+	for (int n = 0; n < size/2; n++){
+		str += "       V";
+	}
+	str += "\n\n";
+
+	// konec vrchnich sipecek
+	str += "    +";
+	for (int j = 0; j < size; ++j){
 		str += "---+";
+	}
 	str += "\n";
 	for (int i = 0; i < size; ++i){
-		str += "|";
-		for (int j = 0; j < size; ++j)
-				str += board[i][j]->isTop() ? FF(0)+" "+FF(1)+"|" : FF(0)+"#"+FF(1)+"|";
-		str += "\n|";
+		str += "    |";
+		for (int j = 0; j < size; ++j){
+			str += board[i][j]->isTop() ? FF(0)+" "+FF(1)+"|" : FF(0)+"#"+FF(1)+"|";
+		}
+		str += "\n";
+
+		if(i%2 == 1){ // sipecka nalevo 
+			str += "--> |";
+		}else{
+			str += "    |";
+		}
+
 		for (int j = 0; j < size; ++j){
 			str += board[i][j]->isLeft() ? " " : "#";
 			str += board[i][j]->item?(board[i][j]->item + '`'):' ';
 			str += board[i][j]->isRight() ? " |" : "#|";
 		}
-		str += "\n|";
-		for (int j = 0; j < size; ++j)
+		if(i%2 == 1){ // sipecka napravo 
+			str += " <--\n";
+		}else{
+			str += "\n";
+		}
+		
+		str += "    |";
+		for (int j = 0; j < size; ++j){
 			str += board[i][j]->isBottom() ? FF(3)+" "+FF(2)+"|" : FF(3)+"#"+FF(2)+"|";
-		str += "\n+";
-		for (int j = 0; j < size; ++j)
+		}
+		str += "\n    +";
+		for (int j = 0; j < size; ++j){
 			str += "---+";
+		}
 		str += "\n";
 	}
+
+	// sipecky dole
+	str += "\n   ";
+	for (int n = 0; n < size/2; n++){
+		str += "       ^";
+	}
+	str += "\n";
+	str += "   ";
+	for (int n = 0; n < size/2; n++){
+		str += "       |";
+	}
+	str += "\n";
+	str += "   ";
+	for (int n = 0; n < size/2; n++){
+		str += "       |";
+	}
+	str += "\n";
+
+
 	str += spareBlock->toString();
 	
 	return str;

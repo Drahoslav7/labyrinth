@@ -9,7 +9,7 @@ using namespace std;
 int main(int argc, char const *argv[]){	
 
 	// test bordel na herni plochu
-	#if 0 
+	#if 1
 
 
 	// herni plocha
@@ -26,8 +26,8 @@ int main(int argc, char const *argv[]){
 	board->placeItems(cards.get());
 
 	// vytvorit figurky
-	Figure * gandalf = new Figure(Color::GREY);
-	Figure * saruman = new Figure(Color::WHITE);
+	Figure * gandalf = new Figure(Color::RED);
+	Figure * saruman = new Figure(Color::GREEN);
 	// Figure * frodo = new Figure(Color::INVISIBLE);
 	// Figure * bilbo = new Figure(Color::INVISIBLE);
 	// Figure * glum = new Figure(Color::GREEN);
@@ -39,7 +39,11 @@ int main(int argc, char const *argv[]){
 	// board->placeFigure(bilbo);
 	// board->placeFigure(glum);
 
-	cout << board->toString() << endl;
+	printColored(board->toString()); 
+
+	#endif
+
+	#if 0
 
 	// test hledani cesty
 	Coords pos1(1,2);

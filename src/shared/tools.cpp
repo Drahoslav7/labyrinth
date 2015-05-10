@@ -24,6 +24,78 @@ std::string itos(int i){
 	return str;
 }
 
+void printColored(std::string text){
+	#ifdef WIN32
+	        int colors[5] = {FOREGROUND_INTENSITY, FOREGROUND_INTENSITY | FOREGROUND_RED, FOREGROUND_INTENSITY | FOREGROUND_GREEN, FOREGROUND_INTENSITY | FOREGROUND_GREEN | FOREGROUND_BLUE, FOREGROUND_INTENSITY | FOREGROUND_RED | FOREGROUND_GREEN};
+	        HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	        CONSOLE_SCREEN_BUFFER_INFO con_info;
+	        GetConsoleScreenBufferInfo(hConsole, &con_info);
+	        const int saved_colors = con_info.wAttributes;
+	#else
+	        const char *colors[5] = {"\033[1;30m", "\033[0;31m", "\033[0;32m", "\033[0;36m", "\033[0;33m"};
+	#endif
+	 
+	for(auto &c : text){
+		#ifdef WIN32
+			if(islower(c)){
+	        	std::cout << c;
+				continue;
+			}
+			if(c == 'R'){				
+			    SetConsoleTextAttribute(hConsole, colors[1]); 
+	        	std::cout << c;
+		        SetConsoleTextAttribute(hConsole, saved_colors);
+				continue;
+			}
+			if(c == 'G'){				
+			    SetConsoleTextAttribute(hConsole, colors[2]); 
+	        	std::cout << c;
+		        SetConsoleTextAttribute(hConsole, saved_colors);
+				continue;
+			}
+			if(c == 'B'){				
+			    SetConsoleTextAttribute(hConsole, colors[3]); 
+	        	std::cout << c;
+		        SetConsoleTextAttribute(hConsole, saved_colors);
+				continue;
+			}
+			if(c == 'Y'){				
+			    SetConsoleTextAttribute(hConsole, colors[4]); 
+	        	std::cout << c;
+		        SetConsoleTextAttribute(hConsole, saved_colors);
+				continue;
+			}
+
+		    SetConsoleTextAttribute(hConsole, colors[0]); 
+	    	std::cout << c;
+	        SetConsoleTextAttribute(hConsole, saved_colors);
+		#else
+			if(islower(c)){
+	        	std::cout << c;
+				continue;
+			}
+			if(c == 'R'){				
+		        std::cout << colors[1] + text + "\x1b[0m";
+				continue;
+			}
+			if(c == 'G'){				
+		        std::cout << colors[2] + text + "\x1b[0m";
+				continue;
+			}
+			if(c == 'B'){				
+		        std::cout << colors[3] + text + "\x1b[0m";
+				continue;
+			}
+			if(c == 'Y'){				
+		        std::cout << colors[4] + text + "\x1b[0m";
+				continue;
+			}
+	        std::cout << colors[0] + text + "\x1b[0m";	
+		#endif
+	}
+}
+
+
 // std::string strbuftos(boost::asio::streambuf * strbuf){
 // 	std::ostringstream ss;
 // 	ss << *strbuf;

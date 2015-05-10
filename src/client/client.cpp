@@ -70,8 +70,11 @@ std::string Client::sendMessage(string message){
 };
 
 void Client::handleRead(){
+	if(!isRunning()){
+		return;
+	}
 
-	std::cout << "msg:" << readMsg << endl;
+	// std::cout << "msg:" << readMsg << endl;
 
 	string rcvCmd, rcvData, msg, cmd;
 	split(readMsg, ' ', &rcvCmd, &rcvData);
@@ -83,7 +86,9 @@ void Client::handleRead(){
 		sendedCmds.pop_front();
 	}
 
-	cout << msg << endl;
+	if(msg.size()){
+		cout << msg << endl;
+	}
 
 	if(isRunning()){
 		readMsg = "";
@@ -129,8 +134,9 @@ string Client::doActionServer(string recvCmd, string data){
 		split(data, ' ', &scboarddata, &boardformat);
 		board = new Board(boardformat);
 		initScoreboard(scboarddata);
-		cout << "zadek" << endl;
-		return "Hra zacala \n" + formatScoreboard() + board->toString();
+		cout << "Hra zacala." << endl;
+		printGamedesk();
+		return "";
 	}
 	if (recvCmd == "YOURTURN"){
 		state = ONTURN;
@@ -140,15 +146,18 @@ string Client::doActionServer(string recvCmd, string data){
 		// commands for board change
 	if (recvCmd == "ROTATED"){
 		this->doRotate();
-		return formatScoreboard() + board->toString();
+		printGamedesk();
+		return "";
 	}
 	if (recvCmd == "SHIFTED"){
 		this->doShift(data);
-		return formatScoreboard() + board->toString();
+		printGamedesk();
+		return "";
 	}
 	if (recvCmd == "MOVED"){
 		this->doMove(data);
-		return formatScoreboard() + board->toString();
+		printGamedesk();
+		return "";
 	}
 	if (recvCmd == "SAVED"){
 		return "Hra byla ulozena.";
@@ -452,6 +461,22 @@ string Client::formatScoreboard(){
 		msg += "\n";		
 	}
 	return msg;
+}
+
+void Client::printGamedesk(){
+	string color;
+	cout << "SCOREBOARD" << endl;
+	for(auto &line : scoreboard){
+		cout << "  ";
+		color = "";
+		color += line.color;
+		printColored(color);
+		cout << " " + line.nickname + " " + itos(line.points) + " ";
+		cout << line.card;
+		cout << endl << endl;		
+	}
+	printColored(board->toString());
+	cout << endl;
 }
 
 void Client::initFigure(char x, char y, char color){

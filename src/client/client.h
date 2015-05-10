@@ -72,6 +72,7 @@ private:
 	string formatPlayers(string);
 	string formatSavedGames(string);
 	string formatScoreboard();
+	void printGamedesk();
 	void initScoreboard(string);
 	void initFigure(char, char, char);
 
