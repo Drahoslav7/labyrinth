@@ -90,6 +90,7 @@ void Player::leaveGame(){
 
 void Player::endGame(std::string winner, bool isLast = false){
 	this->state = WAITING;
+	this->shifted = false; 
 	delete this->figure;
 	// if(isLast)
 	// 	delete game;

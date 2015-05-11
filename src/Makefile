@@ -24,16 +24,18 @@ SFILES = server/server.o server/player.o server/game.o
 
 labyrinth: labyrinth2015-server labyrinth2015-cli labyrinth2015
 
-labyrinth2015: client/main.o $(CFILES) $(FILES)
-	# GUI NOT IMPLEMENTED
-	# g++ $(FLAGS) -o $@ $^ $(LFLAGS) 
+labyrinth2015: 
+	#gui/main.o $(CFILES) $(FILES)
+	# g++ $(FLAGS) -o $@ $^ $(LFLAGS) -l Qt5Core -l Qt5Gui
+	cd gui/; qmake 
+	make -C gui/
 
 labyrinth2015-cli: client/main.o $(CFILES) $(FILES)
 	g++ $(FLAGS) -o $@ $^ $(LFLAGS) 
 
 labyrinth2015-server: server/main.o $(SFILES) $(FILES)
 	g++ $(FLAGS) -o $@ $^ $(LFLAGS)
-	-mkdir saves
+	-@mkdir saves
 
 
 %.o: %.cpp %.h
@@ -61,5 +63,6 @@ test: tests/main.o $(SFILES) $(FILES) $(CFILES)
 
 clean:
 	-rm labyrinth*.exe  labyrinth* test test.exe server/*.o client/*.o shared/*.o tests/*.o
+	make clean -C gui/
 
 .PHONY: setdebug labyrinth run

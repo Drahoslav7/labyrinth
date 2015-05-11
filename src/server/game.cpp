@@ -338,5 +338,5 @@ bool Game::isWin(){
 bool Game::isBlocked(){
 	Coords actPos = this->players[onTurnIndex]->figure->pos;
 	Coords forbiddenPos = this->players[onTurnIndex]->figure->prevPos;
-	return board->canDoAnyMove(actPos, forbiddenPos);
+	return !board->canDoAnyMove(actPos, forbiddenPos);
 };
