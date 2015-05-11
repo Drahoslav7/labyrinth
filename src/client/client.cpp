@@ -303,6 +303,8 @@ string Client::doActionClient(string cmd, string response, string data){
 					if(state == ONTURN){
 						state = PLAYING;
 						msg = "Na tahu je dalsi hrac";	
+					}else{
+						msg = "";
 					}
 				}else{
 					msg = "Tento tah je neproveditelny. Tahni znovu.";
