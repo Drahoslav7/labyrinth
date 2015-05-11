@@ -293,9 +293,18 @@ string Client::doActionClient(string cmd, string response, string data){
 			}
 			if(cmd == "SHIFT"){
 				if(response == "OK"){
-					msg = "Shift byl proveden.";
+					if (data == "BLOCKED"){
+						state = PLAYING;
+						msg = "Jsi zablokovan. Na tahu je dalsi hrac.";
+					}else{
+						msg = "Shift byl proveden.";
+					}
 				}else{
-					msg = "Shift jsi uz jednou udelal. Nyni tahni figurkou.";
+					if (data == "COORDS"){
+						msg = "Zadal jsi spatne souradnice pro shift.";
+					}else{
+						msg = "Shift jsi uz jednou udelal. Nyni tahni figurkou.";	
+					}
 				}
 			}
 			if(cmd == "MOVE"){
