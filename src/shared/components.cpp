@@ -640,3 +640,15 @@ std::string Board::toFormat(){
 
 	return str;
 }
+
+bool Board::canDoAnyMove(Coords actPos, Coords forbiddenPos){
+	Coords dest;
+	for(int i = 0; i < size; i++){
+		for(int j = 0; j < size; j++){
+			dest = {i,j};
+			if(dest != actPos && dest != forbiddenPos && isConnected(actPos, dest))
+				return true;
+		}
+	}
+	return false;
+}

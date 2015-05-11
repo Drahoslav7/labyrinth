@@ -288,11 +288,15 @@ std::string Player::handleUserRequest(std::string cmd, std::string data){
 				if(this->shifted){
 					res = "NOPE";
 					break;
-				} 
+				}
 				if(game->doShift(data)){
 					game->isWin();
 					this->shifted = true;
 					res = "OK";
+					if(game->isBlocked()){
+						game->nextTurn();
+						res += " BLOCKED";
+					}
 				} else {
 					res = "NOPE";
 				}

@@ -137,6 +137,9 @@ public:
 	bool operator==(Coords &pos2){
 		return (this->x == pos2.x && this->y == pos2.y);
 	} 
+	bool operator!=(Coords &pos2){
+		return !(*this == pos2);
+	}
 };
 
 class Pack {
@@ -201,15 +204,23 @@ class Figure {
 public:
 	Figure () {
 		this->color = Color::INVISIBLE;
+		pos = {-1,-1};
 	}
 	Figure (Color color){
+		pos = {-1,-1};
 		this->color = color;
 	}
 	Color getColor(){
 		return color;
 	}
 
+	void changePos(Coords newpos){
+		prevPos = pos;
+		pos = newpos;
+	}
+
 	Coords pos;
+	Coords prevPos;
 };
 
 // policko bludiste
@@ -351,6 +362,14 @@ public:
 	 * @return      false pokud na herí desce předmět není
 	 */
 	bool pickUpItem(Item);
+
+	/**
+	 * kontrola zda se lze z dané pozice někam pohnout, kromě zakázané pozice (předchozí tah)
+	 * @param  Coords aktuální pozice
+	 * @param  Coords zakázaná pozice
+	 * @return        true pokud lze provést tah
+	 */
+	bool canDoAnyMove(Coords, Coords);
 
 };
 

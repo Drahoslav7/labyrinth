@@ -156,8 +156,10 @@ bool Game::loadGame(std::string filename){ // akce LOAD
 		// rozdat figurku
 		p->figure = new Figure(++color);
 		board->placeFigure(p->figure);
-		p->figure->pos.x = usersInfo[1 + cnt] - 'A';
-		p->figure->pos.y = usersInfo[2 + cnt] - 'A';
+		// p->figure->pos.x = usersInfo[1 + cnt] - 'A';
+		// p->figure->pos.y = usersInfo[2 + cnt] - 'A';
+		Coords pos = {usersInfo[1 + cnt] - 'A', usersInfo[2 + cnt] - 'A'};
+		p->figure->changePos(pos);
 		p->card = usersInfo[3 + cnt] - 'a' + 1;
 		p->score = usersInfo[4 + cnt] - '0';
 		origPackSize += p->score;
@@ -294,11 +296,15 @@ bool Game::doMove(std::string data){
 	Coords dest(data[0] - 'A', data[1] - 'A');
 	Coords orig = me->figure->pos;
 
+	if(me->figure->prevPos == dest){
+		return false;
+	}
+
 	if(!board->isConnected(orig, dest)){
 		return false;
 	}
 
-	me->figure->pos = dest;
+	me->figure->changePos(dest);
 	// sebrat a liznout novou;
 	char c = '0';
 	if(board->pickUpItem(dest, me->card)){
@@ -329,10 +335,8 @@ bool Game::isWin(){
 	return false;
 }
 
-
-// void Game::cancel(){
-// 	for(auto &p : players){
-// 		p->leaveGame();
-// 	}
-// 	delete this;
-// }
+bool Game::isBlocked(){
+	Coords actPos = this->players[onTurnIndex]->figure->pos;
+	Coords forbiddenPos = this->players[onTurnIndex]->figure->prevPos;
+	return board->canDoAnyMove(actPos, forbiddenPos);
+};

@@ -139,6 +139,12 @@ public:
 	bool isWin();
 
 	/**
+	 * Kontrola zda nedošlo k zablokování hráče
+	 * @return true pokud hráč na tahu nemůže táhnout
+	 */
+	bool isBlocked();
+
+	/**
 	 * Odešle všem hráčm informaci o násilném ukončení hry jiným hráčem a odstraní je z aktuální hry
 	 */
 	void cancel(); 
