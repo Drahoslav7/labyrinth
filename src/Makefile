@@ -25,8 +25,6 @@ SFILES = server/server.o server/player.o server/game.o
 labyrinth: labyrinth2015-server labyrinth2015-cli labyrinth2015
 
 labyrinth2015: 
-	#gui/main.o $(CFILES) $(FILES)
-	# g++ $(FLAGS) -o $@ $^ $(LFLAGS) -l Qt5Core -l Qt5Gui
 	cd gui/; qmake 
 	make -C gui/
 
