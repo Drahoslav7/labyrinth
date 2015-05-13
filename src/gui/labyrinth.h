@@ -10,6 +10,7 @@
 // #include <QTextEdit>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <QStackedWidget>
 
 
 class Labyrinth : public QWidget {
@@ -22,11 +23,20 @@ class Labyrinth : public QWidget {
 	
 
 	private slots:
-		setOk();
+		void setOk();
+		void setBla();
 
 	private:
-		QVBoxLayout * LSelectNick;
-		QVBoxLayout * LWaitingRoom;
+		QVBoxLayout * mainlayout;
+
+		QWidget * connectingpage;
+		QVBoxLayout * connectingpagelayout;
+
+		QWidget * waitingpage;
+		QVBoxLayout * waitingpagelayout;
+
+		QWidget * nicknamepage;
+		QVBoxLayout * nicknamepagelayout;
 
 
 };

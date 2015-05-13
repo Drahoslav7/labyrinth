@@ -569,8 +569,9 @@ release/moc_labyrinth.cpp: C:/Qt/qt-5.4.1-x64-mingw492r1-sjlj-rev1/qt-5.4.1-x64-
 		C:/Qt/qt-5.4.1-x64-mingw492r1-sjlj-rev1/qt-5.4.1-x64-mingw492r1-sjlj-rev1/include/QtWidgets/QLineEdit \
 		C:/Qt/qt-5.4.1-x64-mingw492r1-sjlj-rev1/qt-5.4.1-x64-mingw492r1-sjlj-rev1/include/QtWidgets/QPushButton \
 		C:/Qt/qt-5.4.1-x64-mingw492r1-sjlj-rev1/qt-5.4.1-x64-mingw492r1-sjlj-rev1/include/QtWidgets/QVBoxLayout \
+		C:/Qt/qt-5.4.1-x64-mingw492r1-sjlj-rev1/qt-5.4.1-x64-mingw492r1-sjlj-rev1/include/QtWidgets/QStackedWidget \
 		labyrinth.h
-	'C:\Qt\qt-5.4.1-x64-mingw492r1-sjlj-rev1\qt-5.4.1-x64-mingw492r1-sjlj-rev1\bin\moc.exe' $(DEFINES) -D__GNUC__ -DWIN32 -IC:/Qt/qt-5.4.1-x64-mingw492r1-sjlj-rev1/qt-5.4.1-x64-mingw492r1-sjlj-rev1/mkspecs/win32-g++ -ID:/FIT/4/ICP/labyrinth/src/gui -ID:/FIT/4/ICP/labyrinth/src/gui -IC:/Qt/qt-5.4.1-x64-mingw492r1-sjlj-rev1/qt-5.4.1-x64-mingw492r1-sjlj-rev1/include -IC:/Qt/qt-5.4.1-x64-mingw492r1-sjlj-rev1/qt-5.4.1-x64-mingw492r1-sjlj-rev1/include/QtWidgets -IC:/Qt/qt-5.4.1-x64-mingw492r1-sjlj-rev1/qt-5.4.1-x64-mingw492r1-sjlj-rev1/include/QtGui -IC:/Qt/qt-5.4.1-x64-mingw492r1-sjlj-rev1/qt-5.4.1-x64-mingw492r1-sjlj-rev1/include/QtANGLE -IC:/Qt/qt-5.4.1-x64-mingw492r1-sjlj-rev1/qt-5.4.1-x64-mingw492r1-sjlj-rev1/include/QtCore labyrinth.h -o release/moc_labyrinth.cpp
+	'C:\Qt\qt-5.4.1-x64-mingw492r1-sjlj-rev1\qt-5.4.1-x64-mingw492r1-sjlj-rev1\bin\moc.exe' $(DEFINES) -D__GNUC__ -DWIN32 -IC:/Qt/qt-5.4.1-x64-mingw492r1-sjlj-rev1/qt-5.4.1-x64-mingw492r1-sjlj-rev1/mkspecs/win32-g++ -IC:/Codes/ICP/labyrinth/src/gui -IC:/Codes/ICP/labyrinth/src/gui -IC:/Qt/qt-5.4.1-x64-mingw492r1-sjlj-rev1/qt-5.4.1-x64-mingw492r1-sjlj-rev1/include -IC:/Qt/qt-5.4.1-x64-mingw492r1-sjlj-rev1/qt-5.4.1-x64-mingw492r1-sjlj-rev1/include/QtWidgets -IC:/Qt/qt-5.4.1-x64-mingw492r1-sjlj-rev1/qt-5.4.1-x64-mingw492r1-sjlj-rev1/include/QtGui -IC:/Qt/qt-5.4.1-x64-mingw492r1-sjlj-rev1/qt-5.4.1-x64-mingw492r1-sjlj-rev1/include/QtANGLE -IC:/Qt/qt-5.4.1-x64-mingw492r1-sjlj-rev1/qt-5.4.1-x64-mingw492r1-sjlj-rev1/include/QtCore labyrinth.h -o release/moc_labyrinth.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -1049,7 +1050,8 @@ release/main.o: main.cpp labyrinth.h \
 		C:/Qt/qt-5.4.1-x64-mingw492r1-sjlj-rev1/qt-5.4.1-x64-mingw492r1-sjlj-rev1/include/QtWidgets/Qlabel \
 		C:/Qt/qt-5.4.1-x64-mingw492r1-sjlj-rev1/qt-5.4.1-x64-mingw492r1-sjlj-rev1/include/QtWidgets/QLineEdit \
 		C:/Qt/qt-5.4.1-x64-mingw492r1-sjlj-rev1/qt-5.4.1-x64-mingw492r1-sjlj-rev1/include/QtWidgets/QPushButton \
-		C:/Qt/qt-5.4.1-x64-mingw492r1-sjlj-rev1/qt-5.4.1-x64-mingw492r1-sjlj-rev1/include/QtWidgets/QVBoxLayout
+		C:/Qt/qt-5.4.1-x64-mingw492r1-sjlj-rev1/qt-5.4.1-x64-mingw492r1-sjlj-rev1/include/QtWidgets/QVBoxLayout \
+		C:/Qt/qt-5.4.1-x64-mingw492r1-sjlj-rev1/qt-5.4.1-x64-mingw492r1-sjlj-rev1/include/QtWidgets/QStackedWidget
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release/main.o main.cpp
 
 release/labyrinth.o: labyrinth.cpp labyrinth.h \
@@ -1513,7 +1515,8 @@ release/labyrinth.o: labyrinth.cpp labyrinth.h \
 		C:/Qt/qt-5.4.1-x64-mingw492r1-sjlj-rev1/qt-5.4.1-x64-mingw492r1-sjlj-rev1/include/QtWidgets/Qlabel \
 		C:/Qt/qt-5.4.1-x64-mingw492r1-sjlj-rev1/qt-5.4.1-x64-mingw492r1-sjlj-rev1/include/QtWidgets/QLineEdit \
 		C:/Qt/qt-5.4.1-x64-mingw492r1-sjlj-rev1/qt-5.4.1-x64-mingw492r1-sjlj-rev1/include/QtWidgets/QPushButton \
-		C:/Qt/qt-5.4.1-x64-mingw492r1-sjlj-rev1/qt-5.4.1-x64-mingw492r1-sjlj-rev1/include/QtWidgets/QVBoxLayout
+		C:/Qt/qt-5.4.1-x64-mingw492r1-sjlj-rev1/qt-5.4.1-x64-mingw492r1-sjlj-rev1/include/QtWidgets/QVBoxLayout \
+		C:/Qt/qt-5.4.1-x64-mingw492r1-sjlj-rev1/qt-5.4.1-x64-mingw492r1-sjlj-rev1/include/QtWidgets/QStackedWidget
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release/labyrinth.o labyrinth.cpp
 
 release/moc_labyrinth.o: release/moc_labyrinth.cpp 

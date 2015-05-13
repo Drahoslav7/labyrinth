@@ -7,7 +7,7 @@ TARGET = labyrinth2015-2
 INCLUDEPATH += .
 
 # Input
-HEADERS += labyrinth.h #../client/client.h ../shared/components.h ../shared/tools.h
+HEADERS += labyrinth.h # ../client/client.h ../shared/components.h ../shared/tools.h
 SOURCES += main.cpp labyrinth.cpp # ../client/client.cpp ../shared/components.cpp ../shared/tools.cpp
 
 QT += widgets
