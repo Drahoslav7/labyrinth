@@ -5,10 +5,11 @@
 TEMPLATE = app
 TARGET = labyrinth2015-2
 INCLUDEPATH += .
-QMAKE_CXXFLAGS += -std=c++11 -Wextra -Wall -l boost_system -l boost_thread -lwsock32 -lws2_32 
+QMAKE_CXXFLAGS += -std=c++11 -Wextra -Wall 
+LIBS += -LC:\MinGW\mingw64\lib -lboost_system -lboost_thread -lwsock32 -lws2_32 
 
 # Input
-HEADERS += labyrinth.h  ../client/client.h ../shared/components.h ../shared/tools.h ../shared/connection.h 
+HEADERS += labyrinth.h ../client/client.h ../shared/components.h ../shared/tools.h ../shared/connection.h 
 SOURCES += main.cpp labyrinth.cpp  ../client/client.cpp ../shared/components.cpp ../shared/tools.cpp ../shared/connection.cpp ../shared/debug.cpp
 
 QT += widgets
